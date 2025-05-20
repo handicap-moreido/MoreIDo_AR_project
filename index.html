@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hand Tracking AR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Load Mediapipe Hands for hand tracking -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
+  <!-- Link to external CSS and JS files -->
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+
+<body>
+  <!-- Video element to capture camera feed -->
+  <video id="input_video" autoplay playsinline muted style="display: none;"></video>
+
+  <!-- Canvas for drawing hand landmarks -->
+  <canvas id="output_canvas"></canvas>
+
+  <!-- UI for showing instructions -->
+  <div id="ui">
+    <p id="instructions">Show your hand to start!</p>
+  </div>
+</body>
+</html>
