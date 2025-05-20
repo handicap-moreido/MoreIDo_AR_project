@@ -1,43 +1,105 @@
 /* Make the body and html take up the full screen and hide scrolling */
 body, html {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  background-color: black;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background-color: black;
 }
 
 /* Ensure the video element fits properly within the window */
 #input_video {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 100%;      /* Take up full width */
-  height: auto;     /* Maintain aspect ratio */
-  object-fit: contain; /* Fit the video in the available space without zooming */
-  z-index: 1;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 100%;      /* Take up full width */
+    height: auto;     /* Maintain aspect ratio */
+    object-fit: contain; /* Fit the video in the available space without zooming */
+    z-index: 1;
+    display: none; /* Hide the video since we're showing canvas */
 }
 
 /* Adjust canvas size to fill the screen and show the video feed */
 #output_canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;  /* This makes sure the canvas matches the screen */
-  z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;  /* Keep aspect ratio within screen */
+    z-index: 2;
 }
 
 /* Style the UI overlay text */
 #ui {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    text-align: center;
+    color: rgb(225, 78, 20);
+    font-size: 2em;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* Button Style */
+#action_button {
+    position: absolute;
+    bottom: 20px; /* Distance from the bottom of the screen */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust position to truly center it */
+    background-color: rgba(0, 150, 255, 0.8); /* Button color */
+    color: white;
+    font-size: 1.5em;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 5; /* Ensure the button appears above other elements */
+}
+
+/* Button Hover Effect */
+#action_button:hover {
+    background-color: rgba(0, 150, 255, 1);
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #3874c4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+#loading-screen img {
+    max-width: 200px;
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(2); opacity: 0.7; }
+    100% { transform: scale(1.05); opacity: 1; }
+}
+
+.hand-video {
+    display: none;
+    position: absolute;
+    width: 200px;   /* Adjust size here */
+    height: 200px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.sprite-animation {
   position: absolute;
-  top: 20px;
-  width: 100%;
-  text-align: center;
-  color: rgb(225, 78, 20);
-  font-size: 2em;
-  pointer-events: none;
+  width: 100px;
+  height: 100px;
   z-index: 3;
 }
