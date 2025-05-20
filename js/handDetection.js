@@ -5,16 +5,27 @@ import { animations } from './animations.js';
 
 const spriteImg = document.createElement('img');
 spriteImg.className = 'sprite-animation';
+
+// Set styles for sprite image
+spriteImg.style.position = 'fixed';
+spriteImg.style.width = '100px';
+spriteImg.style.height = '100px';
+spriteImg.style.pointerEvents = 'none';
+spriteImg.style.display = 'none';
+
 document.body.appendChild(spriteImg);
+
+// Remove subtitle div creation, rely on the one in index.html
+const subtitleElement = document.getElementById('subtitle');
 
 const animationKeys = Object.keys(animations);
 let currentAnimationIndex = 0;
-let animator = new Animator(spriteImg, animations[animationKeys[0]], 12, onAnimationComplete);
+
+let animator = new Animator(spriteImg, animations[animationKeys[0]], 12, onAnimationComplete, subtitleElement);
 
 function onAnimationComplete() {
   currentAnimationIndex++;
   if (currentAnimationIndex >= animationKeys.length) {
-    // Restart from first animation or stop playing - your choice
     currentAnimationIndex = 0;
   }
   animator.setFrames(animations[animationKeys[currentAnimationIndex]]);
@@ -54,6 +65,8 @@ function drawSpriteAtPalm(x, y) {
   const spriteWidth = 100;
   const spriteHeight = 100;
 
+  console.log('drawSpriteAtPalm:', x, y);  // Debug log
+
   spriteImg.style.left = `${x * window.innerWidth - spriteWidth / 2}px`;
   spriteImg.style.top = `${y * window.innerHeight - spriteHeight / 2}px`;
   spriteImg.style.display = 'block';
@@ -67,5 +80,5 @@ function stopAnimation() {
   spriteImg.style.display = 'none';
   animator.stop();
   animator.reset();
-  currentAnimationIndex = 0; // reset to start from first animation next time
+  currentAnimationIndex = 0;
 }

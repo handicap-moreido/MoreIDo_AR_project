@@ -1,81 +1,73 @@
-// animator.js
-
-// The Animator class controls the playback of a sprite animation by cycling through image URLs and updating the image element at a set frame rate.
 export class Animator {
-  /**
-   * Constructor to initialize the Animator.
-   * @param {HTMLElement} imageElement - The <img> element to animate.
-   * @param {string[]} frameUrls - An array of image URLs representing animation frames.
-   * @param {number} frameRate - Number of frames per second. Default is 12.
-   * @param {Function|null} onComplete - Optional callback called when the animation finishes.
-   *
-   * !!!!!!once this is ported OUT of glitch, The ANIMATIONS will have to be reformatted from https links to a local folder path
-   */
-  constructor(imageElement, frameUrls, frameRate = 12, onComplete = null) {
-    this.imageElement = imageElement;   // The image element on the page where frames will be shown
-    this.frameUrls = frameUrls;         // Array of image sources (frames of the animation)
-    this.frameRate = frameRate;         // How fast the animation plays (frames per second)
-    this.currentFrame = 0;              // Index of the current frame being displayed
-    this.interval = null;               // Reference to the setInterval controlling the animation loop
-    this.onComplete = onComplete;       // Callback to call when animation finishes
+  constructor(imageElement, animationData, frameRate = 12, onComplete = null, subtitleElement = null) {
+    this.imageElement = imageElement;
+    this.frameUrls = animationData.frames;
+    this.frameRate = frameRate;
+    this.currentFrame = 0;
+    this.interval = null;
+    this.onComplete = onComplete;
+
+    this.audio = new Audio(animationData.audio);
+    this.subtitleElement = subtitleElement || document.getElementById('subtitle');
+    this.subtitleText = animationData.subtitle || '';
   }
 
-  /**
-   * Starts the animation loop.
-   * If it's already running, it does nothing.
-   */
   start() {
-    if (this.interval) return; // Prevent starting multiple loops at the same time
+    if (this.interval) return;
+
+    // Play audio once at start
+    if (this.audio) {
+      this.audio.currentTime = 0;
+      this.audio.play();
+    }
+
+    // Show subtitle text
+    if (this.subtitleElement) {
+      this.subtitleElement.innerText = this.subtitleText;
+      this.subtitleElement.style.display = 'block';
+    }
 
     this.interval = setInterval(() => {
-      // Update the image's source to the current frame
       this.imageElement.src = this.frameUrls[this.currentFrame];
-
-      // If this is the last frame, trigger onComplete and stop animation
       if (this.currentFrame === this.frameUrls.length - 1) {
         if (this.onComplete) this.onComplete();
         this.stop();
       } else {
-        // Otherwise, advance to the next frame
         this.currentFrame++;
       }
-    }, 1000 / this.frameRate); // Run every X milliseconds, based on the frame rate
+    }, 1000 / this.frameRate);
   }
 
-  /**
-   * Stops the animation loop.
-   */
   stop() {
-    clearInterval(this.interval); // Stop the loop
-    this.interval = null;         // Reset the interval reference
+    clearInterval(this.interval);
+    this.interval = null;
+
+    // Stop audio if playing
+    if (this.audio) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    }
+
+    // Hide subtitle
+    if (this.subtitleElement) {
+      this.subtitleElement.style.display = 'none';
+    }
   }
 
-  /**
-   * Resets the animation back to the first frame.
-   * This does not stop or start the animation.
-   */
   reset() {
-    this.currentFrame = 0; // Go back to the first frame
+    this.currentFrame = 0;
   }
 
-  /**
-   * Allows you to change the frames used in the animation.
-   * It also resets the animation to the beginning.
-   * @param {string[]} newFrames - New array of frame image URLs.
-   */
-  setFrames(newFrames) {
-    this.frameUrls = newFrames;
-    this.reset(); // Start from the beginning of the new frames
+  setFrames(animationData) {
+    this.frameUrls = animationData.frames;
+    this.audio = new Audio(animationData.audio);
+    this.subtitleText = animationData.subtitle || '';
+    this.reset();
   }
 
-  /**
-   * Allows you to change the frame rate of the animation.
-   * It restarts the animation with the new speed.
-   * @param {number} newRate - The new frame rate (frames per second).
-   */
   setFrameRate(newRate) {
-    this.frameRate = newRate; // Update the frame rate
-    this.stop();              // Stop the current animation loop
-    this.start();             // Start a new one with the new timing
+    this.frameRate = newRate;
+    this.stop();
+    this.start();
   }
 }

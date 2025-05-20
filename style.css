@@ -103,3 +103,19 @@ body, html {
   height: 100px;
   z-index: 3;
 }
+
+#subtitle {
+  position: fixed;           /* stay fixed on screen */
+  bottom: 20px;              /* distance from bottom */
+  left: 50%;                 /* center horizontally */
+  transform: translateX(-50%);
+  color: white;
+  font-size: 1.5em;
+  text-align: center;
+  width: 80%;                /* optional: width to constrain text */
+  pointer-events: none;      /* so clicks pass through */
+  text-shadow: 2px 2px 4px black;  /* improve readability */
+  z-index: 10;               /* above most other UI */
+  user-select: none;         /* no text selection */
+}
+
