@@ -1,5 +1,5 @@
 export class Animator {
-  constructor(imageElement, animationData, frameRate = 12, onComplete = null, subtitleElement = null) {
+  constructor(imageElement, animationData, frameRate = 12, onComplete = null, subtitleElement = null, translateFunc = null) {
     this.imageElement = imageElement;
     this.frameUrls = animationData.frames;
     this.frameRate = frameRate;
@@ -9,7 +9,9 @@ export class Animator {
 
     this.audio = new Audio(animationData.audio);
     this.subtitleElement = subtitleElement || document.getElementById('subtitle');
-    this.subtitleText = animationData.subtitle || '';
+
+    this.subtitleKey = animationData.subtitle || '';
+    this.translate = translateFunc || ((key) => key);  // fallback: identity function
   }
 
   start() {
@@ -21,9 +23,9 @@ export class Animator {
       this.audio.play();
     }
 
-    // Show subtitle text
+    // Show translated subtitle text
     if (this.subtitleElement) {
-      this.subtitleElement.innerText = this.subtitleText;
+      this.subtitleElement.innerText = this.translate(this.subtitleKey);
       this.subtitleElement.style.display = 'block';
     }
 
@@ -62,10 +64,14 @@ export class Animator {
     this.currentFrame = 0;
   }
 
-  setFrames(animationData) {
+  // Updated to accept animationData and translateFunc, and update subtitleKey accordingly
+  setFrames(animationData, translateFunc = null) {
     this.frameUrls = animationData.frames;
     this.audio = new Audio(animationData.audio);
-    this.subtitleText = animationData.subtitle || '';
+    this.subtitleKey = animationData.subtitle || '';
+    if (translateFunc) {
+      this.translate = translateFunc;
+    }
     this.reset();
   }
 

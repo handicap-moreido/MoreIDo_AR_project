@@ -2,6 +2,7 @@ import { canvasElement, canvasCtx, videoElement } from './camera.js';
 import { checkIfPalmOpen, calculateHandCenter } from './handUtils.js';
 import { Animator } from './animator.js';
 import { animations } from './animations.js';
+import { translate, onLanguageChange } from './language.js';
 
 const spriteImg = document.createElement('img');
 spriteImg.className = 'sprite-animation';
@@ -15,22 +16,42 @@ spriteImg.style.display = 'none';
 
 document.body.appendChild(spriteImg);
 
-// Remove subtitle div creation, rely on the one in index.html
 const subtitleElement = document.getElementById('subtitle');
+const instructionElement = document.getElementById('instructions');
 
 const animationKeys = Object.keys(animations);
 let currentAnimationIndex = 0;
-
 let animationFinished = false;
 
-let animator = new Animator(spriteImg, animations[animationKeys[0]], 12, onAnimationComplete, subtitleElement);
+let animator = new Animator(
+  spriteImg,
+  animations[animationKeys[0]],
+  12,
+  onAnimationComplete,
+  subtitleElement,
+  translate
+);
+
+// Subscribe to language changes to update subtitle live
+onLanguageChange(() => {
+  if (!animationFinished) {
+    const key = animationKeys[currentAnimationIndex];
+    if (key) {
+      animator.setFrames(animations[key], translate);
+      // If animation running, update subtitle immediately
+      if (animator.interval && animator.subtitleElement) {
+        animator.subtitleElement.innerText = translate(animations[key].subtitle);
+      }
+    }
+  }
+});
 
 function onAnimationComplete() {
   currentAnimationIndex++;
   if (currentAnimationIndex >= animationKeys.length) {
     showThankYouPanel();
   } else {
-    animator.setFrames(animations[animationKeys[currentAnimationIndex]]);
+    animator.setFrames(animations[animationKeys[currentAnimationIndex]], translate);
     animator.reset();
     animator.start();
   }
@@ -49,24 +70,23 @@ export function onResults(results) {
     const isPalmOpen = checkIfPalmOpen(landmarks);
 
     if (isPalmOpen) {
-      
       const handCenter = calculateHandCenter(landmarks);
       drawSpriteAtPalm(handCenter.x, handCenter.y);
-      document.getElementById('instructions').innerText = "";
+      instructionElement.innerText = "";
     } else {
       stopAnimation();
-      document.getElementById('instructions').innerText = "Show your palm!";
+      instructionElement.innerText = translate("instructions_show_palm");
     }
   } else {
     stopAnimation();
-    document.getElementById('instructions').innerText = "Show your hand to start!";
+    instructionElement.innerText = translate("instructions_start");
   }
 
   canvasCtx.restore();
 }
 
 function drawSpriteAtPalm(x, y) {
-  if (animationFinished) return; // prevent restarting after final animation
+  if (animationFinished) return;
 
   const spriteWidth = 100;
   const spriteHeight = 100;
@@ -97,5 +117,5 @@ function showThankYouPanel() {
   const button = document.getElementById('visit-link-button');
   button.addEventListener('click', () => {
     window.open('https://www.handicapinternational.be/', '_blank');
-  }, { once: true }); // Prevent multiple bindings
+  }, { once: true });
 }

@@ -1,5 +1,6 @@
 import { startCamera, toggleCamera, videoElement } from './camera.js';
 import { onResults } from './handDetection.js';
+import { initLanguageSwitcher, updateLanguage } from './language.js'; //Import language handlers
 
 // Initialize everything
 startCamera();
@@ -19,19 +20,6 @@ document.addEventListener('touchend', function (event) {
 const hands = new Hands({
   locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
 });
-
-/*
-// Get the button and add the click event listener
-const button = document.getElementById('action_button');
-button.addEventListener('click', () => {
-  //console.log('Button clicked!');
-  const uiElement = document.getElementById('ui');
-  //uiElement.innerText = 'Switching Camera...';
-
-  // Toggle between front and back camera
-  toggleCamera();
-});
-*/
 
 hands.setOptions({
   maxNumHands: 1,
@@ -54,6 +42,10 @@ camera.start();
 window.addEventListener('load', () => {
   const loadingScreen = document.getElementById('loading-screen');
   const actionButton = document.getElementById('action_button');
+
+  // Language system init
+  initLanguageSwitcher();
+  updateLanguage('en'); // default language
 
   // Hide the loading screen after everything's ready
   setTimeout(() => {

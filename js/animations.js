@@ -8,13 +8,13 @@ export const animations = {
       'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/RedNinja.5.png?v=1747774224893',
     ],
     audio: 'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/339132__indigoray__beep-boing.wav?v=1747782682784',
-    subtitle: 'Red Ninja attack!',
+    subtitle: 'anim1_subtitle',
   },
   anim2: {
     frames: [
-      'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/HI.png?v=1747684116473',
+      'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/final_00008.jpg?v=1747942334369',
     ],
     audio: 'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/99219__mtadder__boop2.wav?v=1747782682958',
-    subtitle: 'Saying hi!',
+    subtitle: 'anim2_subtitle',
   },
 };
