@@ -27,14 +27,18 @@ export class Animator {
       this.subtitleElement.style.display = 'block';
     }
 
+    this.imageElement.src = this.frameUrls[this.currentFrame];
+
     this.interval = setInterval(() => {
-      this.imageElement.src = this.frameUrls[this.currentFrame];
-      if (this.currentFrame === this.frameUrls.length - 1) {
-        if (this.onComplete) this.onComplete();
+      this.currentFrame++;
+
+      if (this.currentFrame >= this.frameUrls.length) {
         this.stop();
-      } else {
-        this.currentFrame++;
+        if (this.onComplete) this.onComplete();
+        return;
       }
+
+      this.imageElement.src = this.frameUrls[this.currentFrame];
     }, 1000 / this.frameRate);
   }
 

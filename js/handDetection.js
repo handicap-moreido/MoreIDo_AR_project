@@ -21,16 +21,19 @@ const subtitleElement = document.getElementById('subtitle');
 const animationKeys = Object.keys(animations);
 let currentAnimationIndex = 0;
 
+let animationFinished = false;
+
 let animator = new Animator(spriteImg, animations[animationKeys[0]], 12, onAnimationComplete, subtitleElement);
 
 function onAnimationComplete() {
   currentAnimationIndex++;
   if (currentAnimationIndex >= animationKeys.length) {
-    currentAnimationIndex = 0;
+    showThankYouPanel();
+  } else {
+    animator.setFrames(animations[animationKeys[currentAnimationIndex]]);
+    animator.reset();
+    animator.start();
   }
-  animator.setFrames(animations[animationKeys[currentAnimationIndex]]);
-  animator.reset();
-  animator.start();
 }
 
 export function onResults(results) {
@@ -46,6 +49,7 @@ export function onResults(results) {
     const isPalmOpen = checkIfPalmOpen(landmarks);
 
     if (isPalmOpen) {
+      
       const handCenter = calculateHandCenter(landmarks);
       drawSpriteAtPalm(handCenter.x, handCenter.y);
       document.getElementById('instructions').innerText = "";
@@ -62,10 +66,10 @@ export function onResults(results) {
 }
 
 function drawSpriteAtPalm(x, y) {
+  if (animationFinished) return; // prevent restarting after final animation
+
   const spriteWidth = 100;
   const spriteHeight = 100;
-
-  console.log('drawSpriteAtPalm:', x, y);  // Debug log
 
   spriteImg.style.left = `${x * window.innerWidth - spriteWidth / 2}px`;
   spriteImg.style.top = `${y * window.innerHeight - spriteHeight / 2}px`;
@@ -81,4 +85,12 @@ function stopAnimation() {
   animator.stop();
   animator.reset();
   currentAnimationIndex = 0;
+}
+
+function showThankYouPanel() {
+  animationFinished = true;
+  const panel = document.getElementById('thank-you-panel');
+  panel.style.visibility = 'visible';
+  panel.style.opacity = '1';
+  panel.style.pointerEvents = 'auto';
 }
