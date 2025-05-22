@@ -128,8 +128,10 @@ body, html {
   background-color: rgba(0, 0, 0, 0.9);
   color: white;
   display: flex;
+  flex-direction: column;      /* stack vertically */
   align-items: center;
   justify-content: center;
+  gap: 20px;                   /* space between lines */
   font-size: 2em;
   z-index: 10000;
   opacity: 0;

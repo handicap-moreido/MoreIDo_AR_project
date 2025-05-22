@@ -93,4 +93,9 @@ function showThankYouPanel() {
   panel.style.visibility = 'visible';
   panel.style.opacity = '1';
   panel.style.pointerEvents = 'auto';
+
+  const button = document.getElementById('visit-link-button');
+  button.addEventListener('click', () => {
+    window.open('https://www.handicapinternational.be/', '_blank');
+  }, { once: true }); // Prevent multiple bindings
 }
