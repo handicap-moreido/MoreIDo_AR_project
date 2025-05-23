@@ -147,3 +147,32 @@ body, html {
     visibility: visible;
   }
 }
+
+#language-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998; /* just behind the loading screen which is 9999 */
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+#language-switcher {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#language-switcher button {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+

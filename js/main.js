@@ -41,18 +41,30 @@ camera.start();
 
 window.addEventListener('load', () => {
   const loadingScreen = document.getElementById('loading-screen');
-  const actionButton = document.getElementById('action_button');
+  const languagePanel = document.getElementById('language-panel');
 
-  // Language system init
   initLanguageSwitcher();
   updateLanguage('en'); // default language
 
-  // Hide the loading screen after everything's ready
+  // Hide loading screen after 3 seconds
   setTimeout(() => {
     loadingScreen.style.opacity = '0';
     setTimeout(() => {
       loadingScreen.style.display = 'none';
-      //actionButton.disabled = false;
+      // No need to show language panel — it's already behind and visible
     }, 500);
   }, 3000);
+
+  // Hide language panel when a language is selected
+  document.querySelectorAll('#language-switcher button').forEach(button => {
+    button.addEventListener('click', () => {
+      languagePanel.style.opacity = '0';
+      setTimeout(() => {
+        languagePanel.style.display = 'none';
+      }, 500);
+    });
+  });
 });
+
+
+
