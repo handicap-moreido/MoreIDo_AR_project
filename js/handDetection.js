@@ -22,6 +22,7 @@ const instructionElement = document.getElementById('instructions');
 const animationKeys = Object.keys(animations);
 let currentAnimationIndex = 0;
 let animationFinished = false;
+let pauseInProgress = false;
 
 let animator = new Animator(
   spriteImg,
@@ -34,11 +35,10 @@ let animator = new Animator(
 
 // Subscribe to language changes to update subtitle live
 onLanguageChange(() => {
-  if (!animationFinished) {
+  if (!animationFinished && !pauseInProgress) {
     const key = animationKeys[currentAnimationIndex];
     if (key) {
       animator.setFrames(animations[key], translate);
-      // If animation running, update subtitle immediately
       if (animator.interval && animator.subtitleElement) {
         animator.subtitleElement.innerText = translate(animations[key].subtitle);
       }
@@ -49,12 +49,22 @@ onLanguageChange(() => {
 function onAnimationComplete() {
   currentAnimationIndex++;
   if (currentAnimationIndex >= animationKeys.length) {
-    showThankYouPanel();
+    pauseBeforePanel();
   } else {
     animator.setFrames(animations[animationKeys[currentAnimationIndex]], translate);
     animator.reset();
     animator.start();
   }
+}
+
+function pauseBeforePanel() {
+  pauseInProgress = true;
+  animator.stop();
+  spriteImg.style.display = 'none';
+  instructionElement.innerText = '';
+  setTimeout(() => {
+    showThankYouPanel();
+  }, 2000); // 2 second pause before showing panel
 }
 
 export function onResults(results) {
@@ -64,6 +74,12 @@ export function onResults(results) {
   canvasCtx.save();
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
   canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+  if (pauseInProgress || animationFinished) {
+    stopAnimation();
+    canvasCtx.restore();
+    return;
+  }
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
     const landmarks = results.multiHandLandmarks[0];
@@ -86,7 +102,7 @@ export function onResults(results) {
 }
 
 function drawSpriteAtPalm(x, y) {
-  if (animationFinished) return;
+  if (animationFinished || pauseInProgress) return;
 
   const spriteWidth = 100;
   const spriteHeight = 100;
@@ -109,6 +125,7 @@ function stopAnimation() {
 
 function showThankYouPanel() {
   animationFinished = true;
+  pauseInProgress = false;
   const panel = document.getElementById('thank-you-panel');
   panel.style.visibility = 'visible';
   panel.style.opacity = '1';
