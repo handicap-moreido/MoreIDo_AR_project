@@ -1,5 +1,5 @@
 import { canvasElement, canvasCtx, videoElement } from './camera.js';
-import { checkIfPalmOpen, calculateHandCenter } from './handUtils.js';
+import { checkIfPalmOpen, calculateHandCenter, checkIfFist } from './handUtils.js';
 import { Animator } from './animator.js';
 import { animations } from './animations.js';
 import { translate, onLanguageChange } from './language.js';
@@ -7,7 +7,6 @@ import { translate, onLanguageChange } from './language.js';
 const spriteImg = document.createElement('img');
 spriteImg.className = 'sprite-animation';
 
-// Set styles for sprite image
 spriteImg.style.position = 'fixed';
 spriteImg.style.width = '100px';
 spriteImg.style.height = '100px';
@@ -33,7 +32,6 @@ let animator = new Animator(
   translate
 );
 
-// Subscribe to language changes to update subtitle live
 onLanguageChange(() => {
   if (!animationFinished && !pauseInProgress) {
     const key = animationKeys[currentAnimationIndex];
@@ -46,15 +44,39 @@ onLanguageChange(() => {
   }
 });
 
+// Called when current animation finishes playing
 function onAnimationComplete() {
+  const currentAnim = animations[animationKeys[currentAnimationIndex]];
+
+  if (currentAnim.requiresGesture) {
+    // Pause and wait for fist gesture
+    animator.waitForGesture();
+    instructionElement.innerText = translate("instructions_show_closed_fist");
+  } else {
+    // Go to next animation immediately
+    advanceToNextAnimation();
+  }
+}
+
+// Advances to the next animation in the sequence
+function advanceToNextAnimation() {
   currentAnimationIndex++;
+
   if (currentAnimationIndex >= animationKeys.length) {
     pauseBeforePanel();
-  } else {
-    animator.setFrames(animations[animationKeys[currentAnimationIndex]], translate);
-    animator.reset();
-    animator.start();
+    return;
   }
+
+  // Reset gesture pause state before starting new animation
+  animator.isPausedForGesture = false;
+
+  const nextAnim = animations[animationKeys[currentAnimationIndex]];
+  animator.setFrames(nextAnim, translate);
+  animator.reset();
+
+  animator.start();
+
+  instructionElement.innerText = ""; // Clear any instructions
 }
 
 function pauseBeforePanel() {
@@ -64,7 +86,7 @@ function pauseBeforePanel() {
   instructionElement.innerText = '';
   setTimeout(() => {
     showThankYouPanel();
-  }, 2000); // 2 second pause before showing panel
+  }, 2000);
 }
 
 export function onResults(results) {
@@ -83,9 +105,23 @@ export function onResults(results) {
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
     const landmarks = results.multiHandLandmarks[0];
-    const isPalmOpen = checkIfPalmOpen(landmarks);
 
-    if (isPalmOpen) {
+    if (animator.isPausedForGesture) {
+      // Waiting for fist gesture
+      if (checkIfFist(landmarks)) {
+        // Gesture detected, resume animation and advance
+        animator.gestureDetected();
+        instructionElement.innerText = "";
+        advanceToNextAnimation();
+      } else {
+        // Still waiting for fist gesture
+        instructionElement.innerText = translate("instructions_show_closed_fist");
+      }
+      canvasCtx.restore();
+      return;
+    }
+
+    if (checkIfPalmOpen(landmarks)) {
       const handCenter = calculateHandCenter(landmarks);
       drawSpriteAtPalm(handCenter.x, handCenter.y);
       instructionElement.innerText = "";
@@ -120,7 +156,7 @@ function stopAnimation() {
   spriteImg.style.display = 'none';
   animator.stop();
   animator.reset();
-  currentAnimationIndex = 0;
+  // DO NOT reset currentAnimationIndex here so progress isn't lost
 }
 
 function showThankYouPanel() {

@@ -13,6 +13,7 @@ let constraints = {
 let currentStream = null; // Holds the current video stream
 
 // Start the camera with current constraints
+
 export function startCamera() {
   // Stop existing camera stream if any
   if (currentStream) {
