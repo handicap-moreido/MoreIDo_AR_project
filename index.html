@@ -3,41 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>Hand Tracking AR</title>
-  
-  <!-- Disables pinch zoom -->
+
+  <!-- Disable pinch zoom -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <!-- Load Mediapipe Hands for hand tracking -->
+  <!-- MediaPipe libraries -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 
-  <!-- Link to external CSS and JS files -->
+  <!-- External styles and JavaScript -->
   <link rel="stylesheet" href="style.css">
   <script type="module" src="js/main.js"></script>
-</head>
 
 <body>
-  <!-- Video element to capture camera feed -->
+
+  <!-- Hidden video element (camera input) -->
   <video id="input_video" autoplay playsinline muted style="display: none;"></video>
 
-  <!-- Canvas for drawing hand landmarks -->
+  <!-- Canvas element for rendering output -->
   <canvas id="output_canvas"></canvas>
-  
-  <!-- Loading Screen -->
+
+  <!-- Loading screen with image -->
   <div id="loading-screen">
-    <img src="https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/HI.png?v=1747684116473" alt="Loading...">
+    <img src="https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/HI.png?v=1747684116473" alt="Loading..." />
   </div>
-  
-  <!-- UI for showing instructions -->
+
+  <!-- UI feedback/instructions -->
   <div id="ui">
     <p id="instructions">Show your hand to start!</p>
   </div>
-  
-  <!-- Subtitle Div for animations -->
-  <div id="subtitle" style="position: fixed; bottom: 10%; width: 100%; text-align: center; font-size: 1.5rem; color: white; text-shadow: 0 0 5px black; display: none;"></div>
-  
-  <!-- Language Selection Panel -->
+
+  <!-- Subtitle animation element -->
+  <div id="subtitle"></div>
+
+  <!-- Language selector -->
   <div id="language-panel">
     <div id="language-switcher">
       <button data-lang="en">English</button>
@@ -46,6 +46,7 @@
     </div>
   </div>
 
+  <!-- Thank you screen -->
   <div id="thank-you-panel" style="visibility: hidden; opacity: 0; pointer-events: none;">
     <h2 style="margin-bottom: 10px;">Thank you for participating!</h2>
     <p style="margin-bottom: 10px;">You’ve completed the experience.</p>

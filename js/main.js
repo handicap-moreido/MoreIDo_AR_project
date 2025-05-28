@@ -1,22 +1,9 @@
+// main.js
 import { startCamera, toggleCamera, videoElement } from './camera.js';
 import { onResults } from './handDetection.js';
-import { initLanguageSwitcher, updateLanguage } from './language.js'; //Import language handlers
+import { initLanguageSwitcher, updateLanguage } from './language.js';
 
-// Initialize everything
-startCamera();
-
-let lastTap = 0;
-
-document.addEventListener('touchend', function (event) {
-  const currentTime = new Date().getTime();
-  if (currentTime - lastTap < 300) {
-    // Double tap detected
-    toggleCamera();
-    event.preventDefault(); // Prevent double-tap zoom
-  }
-  lastTap = currentTime;
-}, false);
-
+// Setup MediaPipe Hands
 const hands = new Hands({
   locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
 });
@@ -30,6 +17,7 @@ hands.setOptions({
 
 hands.onResults(onResults);
 
+// Setup MediaPipe camera loop (will start after camera starts)
 const camera = new Camera(videoElement, {
   onFrame: async () => {
     await hands.send({ image: videoElement });
@@ -37,21 +25,34 @@ const camera = new Camera(videoElement, {
   width: 640,
   height: 480
 });
-camera.start();
 
 window.addEventListener('load', () => {
   const loadingScreen = document.getElementById('loading-screen');
   const languagePanel = document.getElementById('language-panel');
 
+  // Start default camera first, then start MediaPipe camera feed
+  startCamera().then(() => camera.start());
+
+  // Double-tap to toggle camera
+  let lastTap = 0;
+  document.addEventListener('touchend', function (event) {
+    const currentTime = new Date().getTime();
+    if (currentTime - lastTap < 300) {
+      toggleCamera();
+      event.preventDefault();
+    }
+    lastTap = currentTime;
+  }, false);
+
+  // Language setup
   initLanguageSwitcher();
-  updateLanguage('en'); // default language
+  updateLanguage('en');
 
   // Hide loading screen after 3 seconds
   setTimeout(() => {
     loadingScreen.style.opacity = '0';
     setTimeout(() => {
       loadingScreen.style.display = 'none';
-      // No need to show language panel — it's already behind and visible
     }, 500);
   }, 3000);
 
@@ -65,6 +66,3 @@ window.addEventListener('load', () => {
     });
   });
 });
-
-
-

@@ -5,6 +5,7 @@ export const translations = {
     learn_more: "Learn More",
     instructions_show_palm: "Show your palm!",
     instructions_start: "Show your hand to start!",
+    instructions_show_closed_fist: "Close Your Hand!",
     anim1_subtitle: "Red Ninja attack!",
     anim2_subtitle: "Saying hi!",
   },
@@ -14,6 +15,7 @@ export const translations = {
     learn_more: "Leer meer",
     instructions_show_palm: "Toon je handpalm!",
     instructions_start: "Toon je hand om te beginnen!",
+    instructions_show_closed_fist: "Close Your Hand!",
     anim1_subtitle: "Rode Ninja-aanval!",
     anim2_subtitle: "Zegt hallo!",
   },
@@ -23,6 +25,7 @@ export const translations = {
     learn_more: "En savoir plus",
     instructions_show_palm: "Montrez votre paume!",
     instructions_start: "Montrez votre main pour commencer!",
+    instructions_show_closed_fistt: "Close Your Hand!",
     anim1_subtitle: "Attaque du Ninja Rouge !",
     anim2_subtitle: "Dit bonjour !",
   }
