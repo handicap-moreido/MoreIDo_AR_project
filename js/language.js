@@ -1,18 +1,20 @@
 import { translations } from './translations.js';
 
+//Default language (can be chnaged but used for testing purposes)
 let currentLang = 'en';
 const languageChangeListeners = [];
 
-// Helper to get translated text
+//Helper to get translated text
+//Translates the key using the current language
 export function translate(key) {
   return translations[currentLang][key] || key;
 }
 
-// Update UI text and notify listeners
+//Update UI text and notify listeners
 export function updateLanguage(lang) {
   currentLang = lang;
 
-  // Update static UI elements
+  //Update static UI elements
   const thankYouHeading = document.querySelector('#thank-you-panel h2');
   const thankYouPara = document.querySelector('#thank-you-panel p');
   const learnMoreBtn = document.getElementById('visit-link-button');
@@ -23,7 +25,7 @@ export function updateLanguage(lang) {
   if (learnMoreBtn) learnMoreBtn.innerText = translate('learn_more');
   if (instructionsEl) instructionsEl.innerText = translate('instructions_start');
 
-  // Notify listeners (for dynamic text like animation subtitles)
+  //Notify listeners (for dynamic text like animation subtitles)
   languageChangeListeners.forEach(cb => cb(currentLang));
 }
 
@@ -45,12 +47,12 @@ export function initLanguageSwitcher() {
   });
 }
 
-// Let other modules listen for language changes
+//Let other modules listen for language changes
 export function onLanguageChange(callback) {
   languageChangeListeners.push(callback);
 }
 
-// New helper to update animation subtitle element with translated subtitle
+//New helper to update animation subtitle element with translated subtitle
 export function updateAnimationSubtitle(subtitleKey) {
   const subtitleEl = document.getElementById('subtitle');
   if (subtitleEl) {

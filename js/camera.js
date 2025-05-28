@@ -1,4 +1,4 @@
-// camera.js
+//Get video and canvas elements from the page
 export const videoElement = document.getElementById('input_video');
 export const canvasElement = document.getElementById('output_canvas');
 export const canvasCtx = canvasElement.getContext('2d');
@@ -7,7 +7,7 @@ let currentStream = null;
 let videoDevices = [];
 let currentCameraIndex = 0;
 
-// Request permission by temporarily getting any camera stream to reveal device labels
+//Request permission by temporarily getting any camera stream to reveal device labels
 async function requestCameraAccess() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -17,13 +17,13 @@ async function requestCameraAccess() {
   }
 }
 
-// Fetch list of video input devices with labels
+//Fetch list of video input devices with labels
 async function getVideoDevices() {
-  await requestCameraAccess(); // ensures labels are available
+  await requestCameraAccess(); //ensures labels are available
   const devices = await navigator.mediaDevices.enumerateDevices();
   videoDevices = devices.filter(device => device.kind === 'videoinput');
 
-  // Sort devices so back cameras come first (if any)
+  //Sort devices so back cameras come first (if any)
   videoDevices.sort((a, b) => {
     const aLabel = a.label.toLowerCase();
     const bLabel = b.label.toLowerCase();
@@ -37,7 +37,7 @@ async function getVideoDevices() {
   });
 }
 
-// Start camera with specified index
+//Start camera with specified index
 export async function startCamera(index = 0) {
   if (currentStream) {
     currentStream.getTracks().forEach(track => track.stop());
@@ -50,7 +50,7 @@ export async function startCamera(index = 0) {
     return;
   }
 
-  if (index >= videoDevices.length) index = 0; // fallback
+  if (index >= videoDevices.length) index = 0; //fallback
 
   currentCameraIndex = index;
   const selectedDevice = videoDevices[currentCameraIndex];
@@ -83,7 +83,7 @@ export async function startCamera(index = 0) {
   }
 }
 
-// Toggle to the next camera
+//Toggle to the next camera
 export function toggleCamera() {
   if (videoDevices.length <= 1) {
     console.warn("No other camera to switch to.");

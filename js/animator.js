@@ -1,5 +1,7 @@
 export class Animator {
-  constructor(imageElement, animationData, frameRate = 12, onComplete = null, subtitleElement = null, translateFunc = null) {
+  //Constructor (most importantly defines the frame rate!)
+  constructor(imageElement, animationData, frameRate = 24, onComplete = null, subtitleElement = null, translateFunc = null) {
+    //Image element to show animation frames
     this.imageElement = imageElement;
     this.frameUrls = animationData.frames;
     this.frameRate = frameRate;
@@ -7,16 +9,20 @@ export class Animator {
     this.interval = null;
     this.onComplete = onComplete;
 
+    //Loads the audio clip
     this.audio = new Audio(animationData.audio);
     this.subtitleElement = subtitleElement || document.getElementById('subtitle');
 
+    //Info about subtitles and gesture requirments
     this.subtitleKey = animationData.subtitle || '';
     this.requiresGesture = animationData.requiresGesture || false;
     this.translate = translateFunc || ((key) => key);
 
+    //Pause bool to wait for gesture (if needed)
     this.isPausedForGesture = false;
   }
 
+  //Start playing the animation
   start() {
     if (this.interval) return;
 
@@ -32,11 +38,13 @@ export class Animator {
 
     this.imageElement.src = this.frameUrls[this.currentFrame];
 
+    //Plays the images at the specified frame rate
     this.interval = setInterval(() => {
       if (this.isPausedForGesture) return;
 
       this.currentFrame++;
 
+      //Stops if all frames are shown
       if (this.currentFrame >= this.frameUrls.length) {
         this.stop();
         if (this.onComplete) this.onComplete();
@@ -47,6 +55,7 @@ export class Animator {
     }, 1000 / this.frameRate);
   }
 
+  //Stop the anim and reset
   stop() {
     clearInterval(this.interval);
     this.interval = null;
@@ -61,12 +70,14 @@ export class Animator {
     }
   }
 
+  //Pause without resetting (important for gesture usage!!!)
   pause() {
     clearInterval(this.interval);
     this.interval = null;
     if (this.audio) this.audio.pause();
   }
 
+  //Resume from where it was paused (important for gesture usage!!!)
   resume() {
     if (this.interval) return;
     if (this.audio) this.audio.play();
@@ -83,10 +94,12 @@ export class Animator {
     }, 1000 / this.frameRate);
   }
 
+  //Reset animation to first frame
   reset() {
     this.currentFrame = 0;
   }
 
+  //Update animation content
   setFrames(animationData, translateFunc = null) {
     this.frameUrls = animationData.frames;
     this.audio = new Audio(animationData.audio);
@@ -97,21 +110,23 @@ export class Animator {
     }
     this.reset();
   }
-
+ 
+  //Change speed of animation
   setFrameRate(newRate) {
     this.frameRate = newRate;
     this.stop();
     this.start();
   }
 
+  //Pause when waiting for gesture
   waitForGesture() {
     // Pause animation and audio while waiting for gesture
     this.isPausedForGesture = true;
     if (this.audio) this.audio.pause();
   }
 
+  //Resume after gesture detected
   gestureDetected() {
-    // Resume animation and audio after gesture is detected
     this.isPausedForGesture = false;
     if (this.audio) this.audio.play();
   }

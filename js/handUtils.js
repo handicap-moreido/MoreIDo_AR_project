@@ -1,6 +1,6 @@
 // handUtils.js
 
-// Check if palm is open (4 or more fingers open)
+//Check if palm is open (4 or more fingers open (can be modified to require less))
 export function checkIfPalmOpen(landmarks) {
   const thumbTip = landmarks[4];
   const indexTip = landmarks[8];
@@ -22,10 +22,11 @@ export function checkIfPalmOpen(landmarks) {
 
   const openFingers = [thumbOpen, indexOpen, middleOpen, ringOpen, pinkyOpen].filter(Boolean).length;
 
+  //If we want to check for less fingers we chnage it here
   return openFingers >= 4;
 }
 
-// Calculate center point of the hand (using wrist and finger bases)
+//Calculate center point of the hand (using wrist and finger bases(Average))
 export function calculateHandCenter(landmarks) {
   const points = [landmarks[0], landmarks[5], landmarks[9], landmarks[13], landmarks[17]];
   let centerX = 0;
@@ -42,9 +43,9 @@ export function calculateHandCenter(landmarks) {
   return { x: centerX, y: centerY };
 }
 
-// Optional: check if hand is closed (fist)
+//Check if hand is closed (fist)
 export function checkIfFist(landmarks) {
-  // Very simple check: if most fingertips are below their bases
+  //If most fingertips are below their bases
   const thumbTip = landmarks[4];
   const indexTip = landmarks[8];
   const middleTip = landmarks[12];
@@ -65,5 +66,6 @@ export function checkIfFist(landmarks) {
 
   const closedFingers = [thumbClosed, indexClosed, middleClosed, ringClosed, pinkyClosed].filter(Boolean).length;
 
+  //This is like the opposite of the open hand we check if there position is closed rather than open (super simplified)
   return closedFingers >= 4;
 }

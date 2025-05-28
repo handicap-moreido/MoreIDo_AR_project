@@ -1,9 +1,9 @@
-// main.js
+//Import camera and hand detection logic
 import { startCamera, toggleCamera, videoElement } from './camera.js';
 import { onResults } from './handDetection.js';
 import { initLanguageSwitcher, updateLanguage } from './language.js';
 
-// Setup MediaPipe Hands
+//Setup MediaPipe Hands
 const hands = new Hands({
   locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
 });
@@ -17,7 +17,7 @@ hands.setOptions({
 
 hands.onResults(onResults);
 
-// Setup MediaPipe camera loop (will start after camera starts)
+//Setup MediaPipe camera loop
 const camera = new Camera(videoElement, {
   onFrame: async () => {
     await hands.send({ image: videoElement });
@@ -30,10 +30,10 @@ window.addEventListener('load', () => {
   const loadingScreen = document.getElementById('loading-screen');
   const languagePanel = document.getElementById('language-panel');
 
-  // Start default camera first, then start MediaPipe camera feed
+  //Start default camera first, then start MediaPipe camera feed
   startCamera().then(() => camera.start());
 
-  // Double-tap to toggle camera
+  //Double-tap to toggle camera
   let lastTap = 0;
   document.addEventListener('touchend', function (event) {
     const currentTime = new Date().getTime();
@@ -44,11 +44,11 @@ window.addEventListener('load', () => {
     lastTap = currentTime;
   }, false);
 
-  // Language setup
+  //Language setup
   initLanguageSwitcher();
   updateLanguage('en');
 
-  // Hide loading screen after 3 seconds
+  //Hide loading screen after 3 seconds
   setTimeout(() => {
     loadingScreen.style.opacity = '0';
     setTimeout(() => {
@@ -56,7 +56,7 @@ window.addEventListener('load', () => {
     }, 500);
   }, 3000);
 
-  // Hide language panel when a language is selected
+  //Hide language panel when a language is selected
   document.querySelectorAll('#language-switcher button').forEach(button => {
     button.addEventListener('click', () => {
       languagePanel.style.opacity = '0';
