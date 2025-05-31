@@ -153,16 +153,23 @@ function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
 
   const baseSpriteSize = 100;
-  const scaleX = 3; // Width scale
-  const scaleY = 4; // Height scale — increased to make sprite appear taller
+  const scaleX = 3;
+  const scaleY = 4;
 
   const spriteWidth = baseSpriteSize * scaleX;
   const spriteHeight = baseSpriteSize * scaleY;
 
+  // Convert normalized (x,y) to canvas pixel coords
+  const canvasRect = canvasElement.getBoundingClientRect();
+
+  const pixelX = canvasRect.left + x * canvasRect.width;
+  const pixelY = canvasRect.top + y * canvasRect.height;
+
+  // Center the sprite on the hand center point
   spriteImg.style.width = `${spriteWidth}px`;
   spriteImg.style.height = `${spriteHeight}px`;
-  spriteImg.style.left = `${x * window.innerWidth - spriteWidth / 2}px`;
-  spriteImg.style.top = `${y * window.innerHeight - spriteHeight / 2}px`;
+  spriteImg.style.left = `${pixelX - spriteWidth / 2}px`;
+  spriteImg.style.top = `${pixelY - spriteHeight / 2}px`;
   spriteImg.style.display = 'block';
 
   if (!animator.interval) {
