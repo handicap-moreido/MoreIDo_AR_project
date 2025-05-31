@@ -2,24 +2,24 @@ export const animations = {
   anim1: {
     //Array of images for each frame
     frames: [
-      'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/RedNinja.1.png?v=1747774160273',
-      'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/RedNinja.2.png?v=1747774170775',
-      'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/RedNinja.3.png?v=1747774192945',
-      'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/RedNinja.4.png?v=1747774149906',
-      'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/RedNinja.5.png?v=1747774224893',
+      //0 to 253
+      ...Array.from({ length: 254 }, (_, i) => {
+        const frameNumber = i.toString().padStart(5, '0');
+        return `Assets/Images/render_24f_${frameNumber}.png`;
+      })
     ],
-    //Audio Clip to play during the animation (it should match the animation in terms of time)
-    audio: 'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/339132__indigoray__beep-boing.wav?v=1747782682784',
+    //Audio Clip to play during the animation
+    audio: 'Assets/Audio/beep-boing.wav',
     //Subtitles to display during the animation
     subtitle: 'anim1_subtitle',
-    //A check to see if a specific gesture is required to proceed (the closed fist for the explosion)
+    //A check to see if a specific gesture is required to proceed
     requiresGesture: true
   },
   anim2: {
     frames: [
-      'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/frames_00000.png?v=1747948779762',
+      'Assets/Images/frames_00000.png',
     ],
-    audio: 'https://cdn.glitch.global/595c562f-872a-44d6-acf9-bd70e99e9dce/99219__mtadder__boop2.wav?v=1747782682958',
+    audio: 'Assets/Audio/boop2.wav',
     subtitle: 'anim2_subtitle',
     requiresGesture: false
   }
