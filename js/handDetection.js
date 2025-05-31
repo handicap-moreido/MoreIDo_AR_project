@@ -30,7 +30,7 @@ let pauseInProgress = false;
 let animator = new Animator(
   spriteImg,
   animations[animationKeys[0]],
-  12,
+  24,
   onAnimationComplete,
   subtitleElement,
   translate
@@ -145,9 +145,13 @@ export function onResults(results) {
 function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
 
-  const spriteWidth = 300;
-  const spriteHeight = 250;
+  const baseSpriteSize = 100;
+  const scale = 3;
+  const spriteWidth = baseSpriteSize * scale;
+  const spriteHeight = baseSpriteSize * scale;
 
+  spriteImg.style.width = `${spriteWidth}px`;
+  spriteImg.style.height = `${spriteHeight}px`;
   spriteImg.style.left = `${x * window.innerWidth - spriteWidth / 2}px`;
   spriteImg.style.top = `${y * window.innerHeight - spriteHeight / 2}px`;
   spriteImg.style.display = 'block';
@@ -156,6 +160,7 @@ function drawSpriteAtPalm(x, y) {
     animator.start();
   }
 }
+
 
 function stopAnimation() {
   spriteImg.style.display = 'none';
