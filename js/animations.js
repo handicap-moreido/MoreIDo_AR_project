@@ -5,7 +5,7 @@ export const animations = {
       //0 to 253
       ...Array.from({ length: 254 }, (_, i) => {
         const frameNumber = i.toString().padStart(5, '0');
-        return `Assets/Images/render_24f_${frameNumber}.png`;
+        return `Assets/Images/render_24f_${frameNumber}.webp`;
       })
     ],
     //Audio Clip to play during the animation
