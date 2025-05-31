@@ -145,8 +145,8 @@ export function onResults(results) {
 function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
 
-  const spriteWidth = 100;
-  const spriteHeight = 100;
+  const spriteWidth = 300;
+  const spriteHeight = 250;
 
   spriteImg.style.left = `${x * window.innerWidth - spriteWidth / 2}px`;
   spriteImg.style.top = `${y * window.innerHeight - spriteHeight / 2}px`;

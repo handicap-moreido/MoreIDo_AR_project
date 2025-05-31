@@ -1,6 +1,6 @@
 export class Animator {
   //Constructor (most importantly defines the frame rate!)
-  constructor(imageElement, animationData, frameRate = 24, onComplete = null, subtitleElement = null, translateFunc = null) {
+  constructor(imageElement, animationData, frameRate = 48, onComplete = null, subtitleElement = null, translateFunc = null) {
     //Image element to show animation frames
     this.imageElement = imageElement;
     this.frameUrls = animationData.frames;
