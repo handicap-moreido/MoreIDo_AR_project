@@ -153,9 +153,11 @@ function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
 
   const baseSpriteSize = 100;
-  const scale = 3;
-  const spriteWidth = baseSpriteSize * scale;
-  const spriteHeight = baseSpriteSize * scale;
+  const scaleX = 3; // Width scale
+  const scaleY = 4; // Height scale — increased to make sprite appear taller
+
+  const spriteWidth = baseSpriteSize * scaleX;
+  const spriteHeight = baseSpriteSize * scaleY;
 
   spriteImg.style.width = `${spriteWidth}px`;
   spriteImg.style.height = `${spriteHeight}px`;
@@ -167,6 +169,7 @@ function drawSpriteAtPalm(x, y) {
     animator.start();
   }
 }
+
 
 function stopAnimation() {
   spriteImg.style.display = 'none';
