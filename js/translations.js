@@ -7,7 +7,7 @@ export const translations = {
     instructions_show_palm: "Show your palm!",
     instructions_start: "Show your hand to start!",
     instructions_show_closed_fist: "Close Your Hand!",
-    anim1_subtitle: "Red Ninja attack!",
+    anim1_subtitle: "this is a long subtitle message because i need to see how it will look and if it is readable, this is a long subtitle message because i need to see how it will look and if it is readable",
     anim2_subtitle: "Saying hi!",
   },
   nl: {
