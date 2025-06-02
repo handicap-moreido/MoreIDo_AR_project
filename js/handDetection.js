@@ -36,6 +36,9 @@ let pauseInProgress = false;
 
 let lastTapTime = 0;
 
+const handPromptContainer = document.getElementById('handPromptContainer');
+let showHandPrompt = false;
+
 // Create animator object to handle sprite animation
 let animator = new Animator(
   spriteImg,
@@ -118,6 +121,11 @@ export function onResults(results) {
   }
 
   if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    if (showHandPrompt) {
+      handPromptContainer.style.display = 'none';
+      showHandPrompt = false;
+    }
+
     const landmarks = results.multiHandLandmarks[0];
 
     if (animator.isPausedForGesture) {
@@ -210,6 +218,11 @@ const doubleTapPanel = document.getElementById('doubleTapInstructions');
 
 function onUserDoubleTapStart() {
   doubleTapPanel.style.display = 'none';
+
+  // Show hand detection prompt GIF
+  handPromptContainer.style.display = 'block';
+  showHandPrompt = true;
+
   startExperience(); // just clears pause states
 }
 
