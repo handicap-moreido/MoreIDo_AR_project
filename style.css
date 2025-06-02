@@ -233,14 +233,14 @@ body, html {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  width: 90vw;
-  max-width: 300px;
+  width: 70vw;
+  max-width: 275px;
   aspect-ratio: 3 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 10px;
-  font-size: 1em;
+  font-size: 0.75em;
   color: rgba(0, 150, 255, 1);
   box-sizing: border-box;
 }
