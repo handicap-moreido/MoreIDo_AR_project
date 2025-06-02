@@ -278,17 +278,17 @@ body, html {
 
 /* Responsive Typography & Scaling */
 @media (max-width: 600px) {
-  /* Panel font size bigger */
-  #ui,
-  #thank-you-panel,
-  #language-panel {
-    font-size: 2rem; /* Use rem here */
+  #instructions {
+    font-size: 1.5rem;
   }
 
-  /* Button font size smaller and absolute */
-  .thank-you-button,
-  #language-switcher button {
-    font-size: 1rem; /* fixed size relative to root */
+  #thank-you-panel h2 {
+    font-size: 3rem;
+  }
+
+  #thank-you-panel .thank-you-button,
+  #thank-you-panel .thank-you-link {
+    font-size: 1rem;
   }
 
   #globe-icon {
