@@ -190,7 +190,7 @@ body, html {
 }
 
 #language-switcher button {
-  background-image: url('Assets/UIAssets/Buttons/LangWhite.png');
+  background-image: url('Assets/UIAssets/Buttons/LangWhiteOutlineButton.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
