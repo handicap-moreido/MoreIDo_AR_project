@@ -1,228 +1,238 @@
-/* ✅ Custom Font Definition */
+/* Custom Font Definitions */
 @font-face {
-  font-family: 'InterBold';
-  src: url('Assets/Fonts/InterBold.ttf') format('truetype');
+  font-family: 'NunitoExtraBold';
+  src: url('Assets/Fonts/NunitoExtraBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'NunitoRegular';
+  src: url('Assets/Fonts/NunitoRegular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 /* Make the body and html take up the full screen and hide scrolling */
 body, html {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    font-family: 'InterBold', sans-serif; /* Apply custom font globally */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  font-family: 'NunitoExtraBold', sans-serif; /* Apply bold font globally */
 }
 
 /* Ensure the video element fits properly within the window */
 #input_video {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    z-index: 1;
-    display: none;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
+  display: none;
 }
 
 /* Adjust canvas size to fill the screen and show the video feed */
 #output_canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 2;
 }
 
 /* Style the UI overlay text */
 #ui {
-    position: absolute;
-    top: 20px;
-    width: 100%;
-    text-align: center;
-    color: rgb(225, 78, 20);
-    font-size: 2em;
-    pointer-events: none;
-    z-index: 3;
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  text-align: center;
+  color: rgb(225, 78, 20);
+  font-size: 2em;
+  pointer-events: none;
+  z-index: 3;
+  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 /* Button Style */
 #action_button {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 150, 255, 0.8);
-    color: white;
-    font-size: 1.5em;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    z-index: 5;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 150, 255, 0.8);
+  color: white;
+  font-size: 1.5em;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 5;
+  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 /* Button Hover Effect */
 #action_button:hover {
-    background-color: rgba(0, 150, 255, 1);
+  background-color: rgba(0, 150, 255, 1);
 }
 
 #loading-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #3874c4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    transition: opacity 0.5s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #3874c4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease;
 }
 
 #loading-screen img {
-    max-width: 200px;
-    animation: pulse 1s infinite alternate;
+  max-width: 200px;
+  animation: pulse 1s infinite alternate;
 }
 
 @keyframes pulse {
-    0% { transform: scale(2); opacity: 0.7; }
-    100% { transform: scale(1.05); opacity: 1; }
+  0% { transform: scale(2); opacity: 0.7; }
+  100% { transform: scale(1.05); opacity: 1; }
 }
 
 .hand-video {
-    display: none;
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    pointer-events: none;
-    z-index: 3;
+  display: none;
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  pointer-events: none;
+  z-index: 3;
 }
 
 .sprite-animation {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    z-index: 3;
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  z-index: 3;
 }
 
 #subtitle {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 1.5em;
-    text-align: center;
-    width: 80%;
-    pointer-events: none;
-    text-shadow: 2px 2px 4px black;
-    z-index: 10;
-    user-select: none;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 1.5em;
+  text-align: center;
+  width: 80%;
+  pointer-events: none;
+  text-shadow: 2px 2px 4px black;
+  z-index: 10;
+  user-select: none;
+  font-family: 'NunitoRegular', sans-serif;
 }
 
 #thank-you-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    font-size: 2em;
-    z-index: 10000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 1s ease;
-    pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 2em;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease;
+  pointer-events: none;
+  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 @keyframes fadeIn {
-    to {
-        opacity: 1;
-        pointer-events: auto;
-        visibility: visible;
-    }
+  to {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+  }
 }
 
 #language-panel {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(57, 23, 207, 1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9998;
-    opacity: 1;
-    transition: opacity 0.5s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 150, 255, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+  opacity: 1;
+  transition: opacity 0.5s ease;
 }
 
 #language-switcher {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 #language-switcher button {
-    background-image: url('Assets/UIAssets/Buttons/LangWhite.png');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    width: 300px;
-    aspect-ratio: 3 / 1;
-    transform: scale(2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 20px;
-    font-size: 1.5em;
-    color: rgb(0, 0, 0);
-    text-shadow: 1px 1px 2px black;
-    box-sizing: border-box;
+  background-image: url('Assets/UIAssets/Buttons/LangWhite.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: 300px;
+  aspect-ratio: 3 / 1;
+  transform: scale(2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  font-size: 1.5em;
+  color: rgb(255, 255, 255);
+  box-sizing: border-box;
+  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 #instructions {
-    position: fixed;
-    top: env(safe-area-inset-top, 20px);
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 15px;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    font-size: 1.2rem;
-    max-width: 90vw;
-    z-index: 1000;
-    border-radius: 8px;
-    box-sizing: border-box;
+  position: fixed;
+  top: env(safe-area-inset-top, 20px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 15px;
+  color: white;
+  font-size: 1.2rem;
+  max-width: 90vw;
+  z-index: 1000;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 #language-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
 }
 
 #globe-icon {
-    width: 80px;
-    height: auto;
-    filter: brightness(0) saturate(100%) invert(29%) sepia(99%) saturate(2127%) hue-rotate(184deg) brightness(93%) contrast(101%);
+  width: 80px;
+  height: auto;
 }
