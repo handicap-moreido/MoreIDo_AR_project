@@ -13,7 +13,6 @@
   font-style: normal;
 }
 
-/* Make the body and html take up the full screen and hide scrolling */
 body, html {
   margin: 0;
   padding: 0;
@@ -24,7 +23,6 @@ body, html {
   font-family: 'NunitoExtraBold', sans-serif;
 }
 
-/* Ensure the video element fits properly within the window */
 #input_video {
   position: absolute;
   top: 10px;
@@ -36,7 +34,6 @@ body, html {
   display: none;
 }
 
-/* Adjust canvas size to fill the screen and show the video feed */
 #output_canvas {
   position: absolute;
   top: 0;
@@ -47,7 +44,6 @@ body, html {
   z-index: 2;
 }
 
-/* Style the UI overlay text */
 #ui {
   position: absolute;
   top: 20px;
@@ -57,10 +53,8 @@ body, html {
   font-size: 2em;
   pointer-events: none;
   z-index: 3;
-  font-family: 'NunitoExtraBold', sans-serif;
 }
 
-/* Button Style */
 #action_button {
   position: absolute;
   bottom: 20px;
@@ -74,10 +68,8 @@ body, html {
   border-radius: 10px;
   cursor: pointer;
   z-index: 5;
-  font-family: 'NunitoExtraBold', sans-serif;
 }
 
-/* Button Hover Effect */
 #action_button:hover {
   background-color: rgba(0, 150, 255, 1);
 }
@@ -138,50 +130,40 @@ body, html {
   font-family: 'NunitoRegular', sans-serif;
 }
 
-#thank-you-panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(00, 119, 200, 1);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  font-size: 2em;
-  z-index: 10000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 1s ease;
-  pointer-events: none;
-  font-family: 'NunitoExtraBold', sans-serif;
-}
-
-#thank-you-panel a {
-  pointer-events: auto;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-    pointer-events: auto;
-    visibility: visible;
-  }
-}
-
+#thank-you-panel,
 #language-panel {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 150, 255, 1);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 10000;
+  text-align: center;
+  padding: 5vw;
+  box-sizing: border-box;
+}
+
+#thank-you-panel {
+  background-color: rgba(0, 119, 200, 1);
+  color: white;
+  font-size: 2em;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s ease;
+  pointer-events: none;
+}
+
+#thank-you-panel a {
+  pointer-events: auto;
+}
+
+#language-panel {
+  background: rgba(0, 150, 255, 1);
   z-index: 9998;
   opacity: 1;
   transition: opacity 0.5s ease;
@@ -190,7 +172,10 @@ body, html {
 #language-switcher {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 20px;
+  width: 100%;
+  max-width: 90vw;
 }
 
 #language-switcher button {
@@ -201,17 +186,16 @@ body, html {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  width: 300px;
+  width: 90vw;
+  max-width: 300px;
   aspect-ratio: 3 / 1;
-  transform: scale(2);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 20px;
-  font-size: 1.5em;
-  color: rgb(255, 255, 255);
+  padding: 0 10px;
+  font-size: 1.2em;
+  color: white;
   box-sizing: border-box;
-  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 #instructions {
@@ -226,7 +210,6 @@ body, html {
   z-index: 1000;
   border-radius: 8px;
   box-sizing: border-box;
-  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 #language-wrapper {
@@ -234,14 +217,14 @@ body, html {
   flex-direction: column;
   align-items: center;
   gap: 30px;
+  width: 100%;
 }
 
 #globe-icon {
-  width: 80px;
+  width: 60px;
   height: auto;
 }
 
-/* Thank You Button Style */
 .thank-you-button {
   background-image: url('Assets/UIAssets/Buttons/LangWhiteFull.png');
   background-size: contain;
@@ -250,26 +233,24 @@ body, html {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  width: 500px;
+  width: 90vw;
+  max-width: 400px;
   aspect-ratio: 3 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 20px;
-  font-size: 1.5em;
+  padding: 0 10px;
+  font-size: 1.2em;
   color: rgba(0, 150, 255, 1);
-  font-family: 'NunitoExtraBold', sans-serif;
   box-sizing: border-box;
 }
 
 .thank-you-button:hover {
-  filter: brightness(1.2); /* slightly brighter */
-  transform: scale(1.05);  /* slightly larger */
+  filter: brightness(1.2);
+  transform: scale(1.05);
   transition: all 0.3s ease;
 }
 
-
-/* Thank You Link Style */
 .thank-you-link {
   color: #ffffff;
   text-decoration: underline;
@@ -280,22 +261,36 @@ body, html {
   border: none;
   display: inline;
   font-size: 1em;
-  font-family: 'NunitoExtraBold', sans-serif;
   transition: color 0.2s ease;
 }
 
 .thank-you-link:hover {
   color: rgba(0, 150, 255, 1);
-  text-decoration: underline;
 }
 
-/* Container for link and button */
 .link-and-button {
   display: flex;
   flex-direction: column;
-  align-items: center; /* center horizontally */
-  justify-content: center; /* center vertically (optional) */
+  align-items: center;
+  justify-content: center;
   gap: 6px;
   text-align: center;
 }
 
+/* Responsive Typography & Scaling */
+@media (max-width: 600px) {
+  #ui,
+  #thank-you-panel,
+  #language-panel {
+    font-size: 1.2em;
+  }
+
+  .thank-you-button,
+  #language-switcher button {
+    font-size: 1em;
+  }
+
+  #globe-icon {
+    width: 50px;
+  }
+}
