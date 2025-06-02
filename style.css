@@ -281,12 +281,12 @@ body, html {
   #ui,
   #thank-you-panel,
   #language-panel {
-    font-size: 0.7em;
+    font-size: 2em;
   }
 
   .thank-you-button,
   #language-switcher button {
-    font-size: 2em;
+    font-size: 0.7em;
   }
 
   #globe-icon {
