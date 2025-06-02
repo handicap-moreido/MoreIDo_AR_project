@@ -151,7 +151,6 @@ body, html {
 #thank-you-panel {
   background-color: rgba(0, 119, 200, 1);
   color: white;
-  font-size: 2em;
   opacity: 0;
   visibility: hidden;
   transition: opacity 1s ease;
@@ -233,15 +232,15 @@ body, html {
   background-color: transparent;
   border: none;
   cursor: pointer;
-  width: 70vw;
-  max-width: 350px;
+  width: 70vw;         /* smaller width */
+  max-width: 300px;    /* smaller max width */
   aspect-ratio: 3 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
-  font-size: 2em;
-  color: rgb(0, 150, 255);
+  padding: 0 15px;     /* a bit more horizontal padding */
+  font-size: 1em;      /* smaller font size */
+  color: rgba(0, 150, 255, 1);;
   box-sizing: border-box;
 }
 
@@ -282,7 +281,7 @@ body, html {
   #ui,
   #thank-you-panel,
   #language-panel {
-    font-size: 1.2em;
+    font-size: 0.7em;
   }
 
   .thank-you-button,
