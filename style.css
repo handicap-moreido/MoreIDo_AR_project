@@ -294,3 +294,24 @@ body, html {
     width: 50px;
   }
 }
+
+#doubleTapInstructions {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* translucent, if desired */
+  z-index: 5; /* MUST be lower than your language selection's z-index */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* ← makes it click-through */
+}
+
+#doubleTapInstructions img {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+

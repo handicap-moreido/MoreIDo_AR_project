@@ -34,6 +34,8 @@ let currentAnimationIndex = 0;
 let animationFinished = false;
 let pauseInProgress = false;
 
+let lastTapTime = 0;
+
 // Create animator object to handle sprite animation
 let animator = new Animator(
   spriteImg,
@@ -177,7 +179,6 @@ function drawSpriteAtPalm(x, y) {
   }
 }
 
-
 function stopAnimation() {
   spriteImg.style.display = 'none';
   animator.stop(); // Only stop, don't reset
@@ -204,3 +205,32 @@ function showThankYouPanel() {
     window.open('https://docs.google.com/forms/d/e/1FAIpQLSe15mp24kB68aT9eyer4Z8bhXlJxJ0qgkP9QeC4BAe4mJdZCg/viewform?usp=header', '_blank');
   }, { once: true });
 }
+
+const doubleTapPanel = document.getElementById('doubleTapInstructions');
+
+function onUserDoubleTapStart() {
+  doubleTapPanel.style.display = 'none';
+  startExperience();
+}
+
+function startExperience() {
+  // Start your app here
+  animator.start();
+  spriteImg.style.display = 'block';
+  updateInstruction();
+}
+
+// Touch: detect double tap
+window.addEventListener('touchend', (e) => {
+  const now = Date.now();
+  if (now - lastTapTime < 300) {
+    onUserDoubleTapStart();
+  }
+  lastTapTime = now;
+});
+
+// Desktop: detect double click
+window.addEventListener('dblclick', () => {
+  onUserDoubleTapStart();
+});
+
