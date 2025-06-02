@@ -1,3 +1,11 @@
+/* ✅ Custom Font Definition */
+@font-face {
+  font-family: 'InterBold';
+  src: url('Assets/Fonts/InterBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Make the body and html take up the full screen and hide scrolling */
 body, html {
     margin: 0;
@@ -6,6 +14,7 @@ body, html {
     width: 100%;
     height: 100%;
     background-color: black;
+    font-family: 'InterBold', sans-serif; /* Apply custom font globally */
 }
 
 /* Ensure the video element fits properly within the window */
@@ -13,11 +22,11 @@ body, html {
     position: absolute;
     top: 10px;
     left: 10px;
-    width: 100%;      /* Take up full width */
-    height: auto;     /* Maintain aspect ratio */
-    object-fit: contain; /* Fit the video in the available space without zooming */
+    width: 100%;
+    height: auto;
+    object-fit: contain;
     z-index: 1;
-    display: none; /* Hide the video since we're showing canvas */
+    display: none;
 }
 
 /* Adjust canvas size to fill the screen and show the video feed */
@@ -27,7 +36,7 @@ body, html {
     left: 0;
     width: 100vw;
     height: 100vh;
-    object-fit: cover;  /* Keep aspect ratio within screen */
+    object-fit: cover;
     z-index: 2;
 }
 
@@ -46,17 +55,17 @@ body, html {
 /* Button Style */
 #action_button {
     position: absolute;
-    bottom: 20px; /* Distance from the bottom of the screen */
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Adjust position to truly center it */
-    background-color: rgba(0, 150, 255, 0.8); /* Button color */
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 150, 255, 0.8);
     color: white;
     font-size: 1.5em;
     padding: 10px 20px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    z-index: 5; /* Ensure the button appears above other elements */
+    z-index: 5;
 }
 
 /* Button Hover Effect */
@@ -91,132 +100,129 @@ body, html {
 .hand-video {
     display: none;
     position: absolute;
-    width: 200px;   /* Adjust size here */
+    width: 200px;
     height: 200px;
     pointer-events: none;
     z-index: 3;
 }
 
 .sprite-animation {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  z-index: 3;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    z-index: 3;
 }
 
 #subtitle {
-  position: fixed;           /* stay fixed on screen */
-  bottom: 20px;              /* distance from bottom */
-  left: 50%;                 /* center horizontally */
-  transform: translateX(-50%);
-  color: white;
-  font-size: 1.5em;
-  text-align: center;
-  width: 80%;                /* optional: width to constrain text */
-  pointer-events: none;      /* so clicks pass through */
-  text-shadow: 2px 2px 4px black;  /* improve readability */
-  z-index: 10;               /* above most other UI */
-  user-select: none;         /* no text selection */
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+    width: 80%;
+    pointer-events: none;
+    text-shadow: 2px 2px 4px black;
+    z-index: 10;
+    user-select: none;
 }
 
 #thank-you-panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.9);
-  color: white;
-  display: flex;
-  flex-direction: column;      /* stack vertically */
-  align-items: center;
-  justify-content: center;
-  gap: 20px;                   /* space between lines */
-  font-size: 2em;
-  z-index: 10000;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 1s ease;
-  pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    font-size: 2em;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease;
+    pointer-events: none;
 }
 
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-    pointer-events: auto;
-    visibility: visible;
-  }
+    to {
+        opacity: 1;
+        pointer-events: auto;
+        visibility: visible;
+    }
 }
 
 #language-panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(57, 23, 207, 1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9998; /* just behind the loading screen which is 9999 */
-  opacity: 1;
-  transition: opacity 0.5s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(57, 23, 207, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+    opacity: 1;
+    transition: opacity 0.5s ease;
 }
 
 #language-switcher {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 #language-switcher button {
-  background-image: url('Assets/UIAssets/Buttons/LangWhite.png');
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  width: 300px; /* Set a base width */
-  aspect-ratio: 3 / 1; /* Match your button image ratio */
-  transform: scale(2); /* Adjust visual scale */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 20px; /* Add padding around text */
-  font-size: 1.5em; /* Scales with transform */
-  color: rgb(0, 0, 0); /* Make text visible on background */
-  text-shadow: 1px 1px 2px black; /* Improves readability */
-  box-sizing: border-box; /* Ensures padding fits inside */
+    background-image: url('Assets/UIAssets/Buttons/LangWhite.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    width: 300px;
+    aspect-ratio: 3 / 1;
+    transform: scale(2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    font-size: 1.5em;
+    color: rgb(0, 0, 0);
+    text-shadow: 1px 1px 2px black;
+    box-sizing: border-box;
 }
 
 #instructions {
-  position: fixed;
-  top: env(safe-area-inset-top, 20px); /* 20px fallback if no safe-area */
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 15px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  font-size: 1.2rem;
-  max-width: 90vw;
-  z-index: 1000;
-  border-radius: 8px;
-  box-sizing: border-box;
+    position: fixed;
+    top: env(safe-area-inset-top, 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 15px;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 1.2rem;
+    max-width: 90vw;
+    z-index: 1000;
+    border-radius: 8px;
+    box-sizing: border-box;
 }
 
 #language-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px; /* Space between globe and buttons */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
 }
 
 #globe-icon {
-  width: 80px;
-  height: auto;
-  filter: brightness(0) saturate(100%) invert(29%) sepia(99%) saturate(2127%) hue-rotate(184deg) brightness(93%) contrast(101%);
+    width: 80px;
+    height: auto;
+    filter: brightness(0) saturate(100%) invert(29%) sepia(99%) saturate(2127%) hue-rotate(184deg) brightness(93%) contrast(101%);
 }
-
-
-
