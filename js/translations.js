@@ -2,7 +2,7 @@ export const translations = {
   en: {
     thank_you: "Thank you for participating!",
     completed: "You’ve completed the experience.",
-    learn_more: "Learn More",
+    learn_more: "Sign the petition",
     instructions_show_palm: "Show your palm!",
     instructions_start: "Show your hand to start!",
     instructions_show_closed_fist: "Close Your Hand!",

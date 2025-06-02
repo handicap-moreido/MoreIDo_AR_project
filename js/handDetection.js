@@ -194,6 +194,7 @@ function showThankYouPanel() {
 
   const button = document.getElementById('visit-link-button');
   button.addEventListener('click', () => {
-    window.open('https://www.handicapinternational.be/', '_blank');
+    window.open('https://www.youtube.com/watch?v=xvFZjo5PgG0&pp=0gcJCdgAo7VqN5tD', '_blank');
   }, { once: true });
 }
+

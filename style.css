@@ -21,7 +21,7 @@ body, html {
   width: 100%;
   height: 100%;
   background-color: black;
-  font-family: 'NunitoExtraBold', sans-serif; /* Apply bold font globally */
+  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 /* Ensure the video element fits properly within the window */
@@ -144,7 +144,7 @@ body, html {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(00, 119, 200, 1);
   color: white;
   display: flex;
   flex-direction: column;
@@ -158,6 +158,10 @@ body, html {
   transition: opacity 1s ease;
   pointer-events: none;
   font-family: 'NunitoExtraBold', sans-serif;
+}
+
+#thank-you-panel a {
+  pointer-events: auto;
 }
 
 @keyframes fadeIn {
@@ -236,3 +240,55 @@ body, html {
   width: 80px;
   height: auto;
 }
+
+/* Thank You Button Style */
+.thank-you-button {
+  background-image: url('Assets/UIAssets/Buttons/LangWhiteFull.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  width: 500px;
+  aspect-ratio: 3 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  font-size: 1.5em;
+  color: rgba(0, 150, 255, 1);
+  font-family: 'NunitoExtraBold', sans-serif;
+  box-sizing: border-box;
+}
+
+/* Thank You Link Style */
+.thank-you-link {
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+  border: none;
+  display: inline;
+  font-size: 1em;
+  font-family: 'NunitoExtraBold', sans-serif;
+  transition: color 0.2s ease;
+}
+
+.thank-you-link:hover {
+  color: rgba(0, 150, 255, 1);
+  text-decoration: underline;
+}
+
+/* Container for link and button */
+.link-and-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center horizontally */
+  justify-content: center; /* center vertically (optional) */
+  gap: 6px;
+  text-align: center;
+}
+
