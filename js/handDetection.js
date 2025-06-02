@@ -210,17 +210,16 @@ const doubleTapPanel = document.getElementById('doubleTapInstructions');
 
 function onUserDoubleTapStart() {
   doubleTapPanel.style.display = 'none';
-  startExperience();
+  startExperience(); // just clears pause states
 }
 
 function startExperience() {
-  // Start your app here
-  animator.start();
-  spriteImg.style.display = 'block';
-  updateInstruction();
+  // Only show animation when a palm is detected in onResults
+  animationFinished = false;
+  pauseInProgress = false;
 }
 
-// Touch: detect double tap
+//detect double tap
 window.addEventListener('touchend', (e) => {
   const now = Date.now();
   if (now - lastTapTime < 300) {
