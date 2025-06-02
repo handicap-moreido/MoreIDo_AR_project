@@ -154,7 +154,7 @@ body, html {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(57, 23, 207, 1);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -170,7 +170,7 @@ body, html {
 }
 
 #language-switcher button {
-  background-image: url('Assets/UIAssets/Buttons/LangButton.png');
+  background-image: url('Assets/UIAssets/Buttons/LangWhite.png');
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -185,13 +185,9 @@ body, html {
   justify-content: center;
   padding: 0 20px; /* Add padding around text */
   font-size: 1.5em; /* Scales with transform */
-  color: white; /* Make text visible on background */
+  color: rgb(0, 0, 0); /* Make text visible on background */
   text-shadow: 1px 1px 2px black; /* Improves readability */
   box-sizing: border-box; /* Ensures padding fits inside */
-}
-
-#language-switcher button:hover {
-  transform: scale(1.05);
 }
 
 #instructions {
@@ -208,3 +204,19 @@ body, html {
   border-radius: 8px;
   box-sizing: border-box;
 }
+
+#language-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px; /* Space between globe and buttons */
+}
+
+#globe-icon {
+  width: 80px;
+  height: auto;
+  filter: brightness(0) saturate(100%) invert(29%) sepia(99%) saturate(2127%) hue-rotate(184deg) brightness(93%) contrast(101%);
+}
+
+
+
