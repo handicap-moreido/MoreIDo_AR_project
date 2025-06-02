@@ -192,9 +192,15 @@ function showThankYouPanel() {
   panel.style.opacity = '1';
   panel.style.pointerEvents = 'auto';
 
-  const button = document.getElementById('visit-link-button');
-  button.addEventListener('click', () => {
-    window.open('https://www.youtube.com/watch?v=xvFZjo5PgG0&pp=0gcJCdgAo7VqN5tD', '_blank');
+  // Existing button event
+  const button1 = document.getElementById('visit-link-button');
+  button1.addEventListener('click', () => {
+    window.open('https://www.handicapinternational.be/nl/petition/stopbombing', '_blank');
+  }, { once: true });
+
+  // New button event
+  const button2 = document.getElementById('visit-link-button-2');
+  button2.addEventListener('click', () => {
+    window.open('https://docs.google.com/forms/d/e/1FAIpQLSe15mp24kB68aT9eyer4Z8bhXlJxJ0qgkP9QeC4BAe4mJdZCg/viewform?usp=header', '_blank');
   }, { once: true });
 }
-
