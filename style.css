@@ -170,9 +170,28 @@ body, html {
 }
 
 #language-switcher button {
-  padding: 12px 24px;
-  font-size: 1.2rem;
+  background-image: url('Assets/UIAssets/Buttons/LangButton.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  border: none;
   cursor: pointer;
+  width: 300px; /* Set a base width */
+  aspect-ratio: 3 / 1; /* Match your button image ratio */
+  transform: scale(2); /* Adjust visual scale */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px; /* Add padding around text */
+  font-size: 1.5em; /* Scales with transform */
+  color: white; /* Make text visible on background */
+  text-shadow: 1px 1px 2px black; /* Improves readability */
+  box-sizing: border-box; /* Ensures padding fits inside */
+}
+
+#language-switcher button:hover {
+  transform: scale(1.05);
 }
 
 #instructions {
