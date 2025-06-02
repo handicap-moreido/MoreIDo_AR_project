@@ -262,6 +262,13 @@ body, html {
   box-sizing: border-box;
 }
 
+.thank-you-button:hover {
+  filter: brightness(1.2); /* slightly brighter */
+  transform: scale(1.05);  /* slightly larger */
+  transition: all 0.3s ease;
+}
+
+
 /* Thank You Link Style */
 .thank-you-link {
   color: #ffffff;
