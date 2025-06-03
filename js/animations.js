@@ -1,6 +1,6 @@
 export const animations = {
   anim1: {
-    frames: Array.from({ length: 144 }, (_, i) => {
+    frames: Array.from({ length: 119 }, (_, i) => {
       const frameNumber = i.toString().padStart(5, '0');
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),

@@ -133,10 +133,8 @@ function onAnimationComplete() {
     instructionElement.innerText = translate("instructions_show_closed_fist");
   } else {
     advanceToNextAnimation();
-    setTimeout(() => {
-      animator.start();
-      instructionElement.innerText = '';
-    }, 100);
+    animator.start();
+    instructionElement.innerText = '';
   }
 }
 
@@ -189,6 +187,7 @@ export function onResults(results) {
         animator.gestureDetected();
         instructionElement.innerText = '';
         advanceToNextAnimation();
+        animator.start();
       } else {
         instructionElement.innerText = translate("instructions_show_closed_fist");
       }
