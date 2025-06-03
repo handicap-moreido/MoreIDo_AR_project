@@ -22,14 +22,17 @@ const doubleTapPanel = document.getElementById('doubleTapInstructions');
 
 const loadingElement = document.getElementById('loading') || document.createElement('div');
 loadingElement.id = 'loading';
-loadingElement.style.display = 'none';
+loadingElement.style.display = 'block';
 loadingElement.style.position = 'fixed';
 loadingElement.style.top = '50%';
 loadingElement.style.left = '50%';
 loadingElement.style.transform = 'translate(-50%, -50%)';
 loadingElement.style.color = 'white';
 loadingElement.style.fontSize = '24px';
-loadingElement.innerText = 'Loading animation...';
+loadingElement.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+loadingElement.style.padding = '20px';
+loadingElement.style.borderRadius = '10px';
+loadingElement.innerText = 'Loading assets... 0%';
 document.body.appendChild(loadingElement);
 
 // Animation control
@@ -39,56 +42,66 @@ let animationFinished = false;
 let pauseInProgress = false;
 let lastTapTime = 0;
 let showHandPrompt = false;
-let backgroundLoaded = false;
 const preloadStatus = {};
+let totalAssets = 0;
+let loadedAssets = 0;
 
-// Preload given animations
-function preloadFrames(animKeys, callback = null) {
-  let toLoad = 0;
+// Calculate total assets to preload
+animationKeys.forEach(key => {
+  const anim = animations[key];
+  totalAssets += anim.frames.length + 1; // Frames + audio
+});
 
-  animKeys.forEach(key => {
+// Preload all animations and audio
+function preloadAssets(callback) {
+  animationKeys.forEach(key => {
     const anim = animations[key];
     if (preloadStatus[key]) return;
 
+    // Preload images
     const images = anim.frames.map(src => {
       const img = new Image();
       img.src = src;
-      img.onload = loaded;
+      img.onload = () => updateProgress();
       img.onerror = () => {
         console.warn(`Failed to load frame: ${src}`);
-        loaded();
+        updateProgress();
       };
       return img;
     });
 
+    // Preload audio
+    const audio = new Audio();
+    audio.src = anim.audio;
+    audio.preload = 'auto';
+    audio.oncanplaythrough = () => updateProgress();
+    audio.onerror = () => {
+      console.warn(`Failed to load audio: ${anim.audio}`);
+      updateProgress();
+    };
+
     anim.preloadedImages = images;
+    anim.preloadedAudio = audio;
     preloadStatus[key] = false;
-    toLoad += anim.frames.length;
   });
 
-  function loaded() {
-    toLoad--;
-    if (toLoad === 0) {
-      animKeys.forEach(k => preloadStatus[k] = true);
+  function updateProgress() {
+    loadedAssets++;
+    const progress = Math.round((loadedAssets / totalAssets) * 100);
+    loadingElement.innerText = `Loading assets... ${progress}%`;
+    if (loadedAssets >= totalAssets) {
+      animationKeys.forEach(k => preloadStatus[k] = true);
+      loadingElement.style.display = 'none';
       if (callback) callback();
     }
   }
 }
 
-// Initial preload
-preloadFrames(['anim1', 'anim2', 'anim3'], () => {
-  console.log("Initial animations loaded");
+// Start preloading all assets
+preloadAssets(() => {
+  console.log("All assets preloaded");
   startExperience();
 });
-
-// Background preload
-function startBackgroundLoad() {
-  if (!backgroundLoaded) {
-    console.log("Starting background load for anim4–anim10");
-    preloadFrames(['anim4', 'anim5', 'anim6', 'anim7', 'anim8', 'anim9', 'anim10']);
-    backgroundLoaded = true;
-  }
-}
 
 // Animator setup
 let animator = new Animator(
@@ -119,9 +132,6 @@ function onAnimationComplete() {
     animator.waitForGesture();
     instructionElement.innerText = translate("instructions_show_closed_fist");
   } else {
-    if (currentAnimationIndex === 0) {
-      startBackgroundLoad();
-    }
     advanceToNextAnimation();
     setTimeout(() => {
       animator.start();
@@ -138,22 +148,9 @@ function advanceToNextAnimation() {
   }
 
   const nextKey = animationKeys[currentAnimationIndex];
-
-  function trySetNextAnimation() {
-    if (!preloadStatus[nextKey]) {
-      console.log(`Waiting for preload: ${nextKey}`);
-      loadingElement.style.display = 'block';
-      setTimeout(trySetNextAnimation, 100);
-      return;
-    }
-
-    loadingElement.style.display = 'none';
-    const nextAnim = animations[nextKey];
-    animator.setFrames(nextAnim, translate);
-    animator.reset();
-  }
-
-  trySetNextAnimation();
+  const nextAnim = animations[nextKey];
+  animator.setFrames(nextAnim, translate);
+  animator.reset();
 }
 
 function pauseBeforePanel() {
@@ -237,7 +234,7 @@ function drawSpriteAtPalm(x, y) {
   spriteImg.style.top = `${py - height / 2}px`;
   spriteImg.style.display = 'block';
 
-  if (!animator.interval) {
+  if (!animator.rafId) {
     animator.start();
   }
 }
