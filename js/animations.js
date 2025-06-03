@@ -13,7 +13,7 @@ export const animations = {
     //Subtitles to display during the animation
     subtitle: 'anim1_subtitle',
     //A check to see if a specific gesture is required to proceed
-    requiresGesture: true
+    requiresGesture: false
   },
   anim2: {
     frames: [
