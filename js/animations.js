@@ -24,7 +24,7 @@ export const animations = {
     }),
     audio: 'Assets/Audio/ENG_379-442f.mp3',
     subtitle: 'anim3_subtitle',
-    requiresGesture: false
+    requiresGesture: true
   },
   anim4: {
     frames: Array.from({ length: 98 }, (_, i) => {

@@ -4,7 +4,7 @@ import { Animator } from './animator.js';
 import { animations } from './animations.js';
 import { translate, onLanguageChange } from './language.js';
 
-// Sprite image setup
+// Sprite setup
 const spriteImg = document.createElement('img');
 spriteImg.className = 'sprite-animation';
 spriteImg.style.position = 'fixed';
@@ -19,6 +19,7 @@ const subtitleElement = document.getElementById('subtitle');
 const instructionElement = document.getElementById('instructions');
 const handPromptContainer = document.getElementById('handPromptContainer');
 const doubleTapPanel = document.getElementById('doubleTapInstructions');
+
 const loadingElement = document.getElementById('loading') || document.createElement('div');
 loadingElement.id = 'loading';
 loadingElement.style.display = 'none';
@@ -31,29 +32,28 @@ loadingElement.style.fontSize = '24px';
 loadingElement.innerText = 'Loading animation...';
 document.body.appendChild(loadingElement);
 
-// Animation control variables
+// Animation control
 const animationKeys = Object.keys(animations);
 let currentAnimationIndex = 0;
 let animationFinished = false;
 let pauseInProgress = false;
 let lastTapTime = 0;
 let showHandPrompt = false;
-const loadedAnimations = {};
 let backgroundLoaded = false;
-const preloadStatus = {}; // Tracks if each animation is preloaded
+const preloadStatus = {};
 
-// Preload animations
+// Preload given animations
 function preloadFrames(animKeys, callback = null) {
   let toLoad = 0;
 
   animKeys.forEach(key => {
     const anim = animations[key];
-    if (preloadStatus[key]) return; // Skip if already loaded
+    if (preloadStatus[key]) return;
 
     const images = anim.frames.map(src => {
       const img = new Image();
       img.src = src;
-      img.onload = () => loaded();
+      img.onload = loaded;
       img.onerror = () => {
         console.warn(`Failed to load frame: ${src}`);
         loaded();
@@ -75,16 +75,16 @@ function preloadFrames(animKeys, callback = null) {
   }
 }
 
-// Preload first few animations immediately
+// Initial preload
 preloadFrames(['anim1', 'anim2', 'anim3'], () => {
   console.log("Initial animations loaded");
   startExperience();
 });
 
-// Background preload remaining animations
+// Background preload
 function startBackgroundLoad() {
   if (!backgroundLoaded) {
-    console.log('Starting background load for anim4–anim10');
+    console.log("Starting background load for anim4–anim10");
     preloadFrames(['anim4', 'anim5', 'anim6', 'anim7', 'anim8', 'anim9', 'anim10']);
     backgroundLoaded = true;
   }
@@ -104,16 +104,16 @@ onLanguageChange(() => {
   if (!animationFinished && !pauseInProgress) {
     const key = animationKeys[currentAnimationIndex];
     animator.setFrames(animations[key], translate);
-    if (animator.interval && animator.subtitleElement) {
+    if (animator.subtitleElement) {
       animator.subtitleElement.innerText = translate(animations[key].subtitle);
     }
   }
 });
 
 function onAnimationComplete() {
-  const currentAnimKey = animationKeys[currentAnimationIndex];
-  const currentAnim = animations[currentAnimKey];
-  console.log(`Animation ${currentAnimKey} completed`);
+  const currentKey = animationKeys[currentAnimationIndex];
+  const currentAnim = animations[currentKey];
+  console.log(`Animation ${currentKey} completed`);
 
   if (currentAnim.requiresGesture) {
     animator.waitForGesture();
@@ -137,23 +137,23 @@ function advanceToNextAnimation() {
     return;
   }
 
-  const nextAnimKey = animationKeys[currentAnimationIndex];
+  const nextKey = animationKeys[currentAnimationIndex];
 
   function trySetNextAnimation() {
-    if (!preloadStatus[nextAnimKey]) {
-      console.log(`Waiting for preload: ${nextAnimKey}`);
+    if (!preloadStatus[nextKey]) {
+      console.log(`Waiting for preload: ${nextKey}`);
       loadingElement.style.display = 'block';
-      setTimeout(trySetNextAnimation, 100); // Check again shortly
+      setTimeout(trySetNextAnimation, 100);
       return;
     }
 
     loadingElement.style.display = 'none';
-    const nextAnim = animations[nextAnimKey];
+    const nextAnim = animations[nextKey];
     animator.setFrames(nextAnim, translate);
     animator.reset();
   }
 
-  trySetNextAnimation(); // Start checking preload
+  trySetNextAnimation();
 }
 
 function pauseBeforePanel() {
@@ -161,9 +161,7 @@ function pauseBeforePanel() {
   animator.stop();
   spriteImg.style.display = 'none';
   instructionElement.innerText = '';
-  setTimeout(() => {
-    showThankYouPanel();
-  }, 2000);
+  setTimeout(() => showThankYouPanel(), 2000);
 }
 
 // Called by Mediapipe
@@ -181,7 +179,7 @@ export function onResults(results) {
     return;
   }
 
-  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+  if (results.multiHandLandmarks?.length > 0) {
     if (showHandPrompt) {
       handPromptContainer.style.display = 'none';
       showHandPrompt = false;
@@ -201,16 +199,15 @@ export function onResults(results) {
       return;
     }
 
-  if (checkIfPalmOpen(landmarks)) {
-    const handCenter = calculateHandCenter(landmarks);
-    drawSpriteAtPalm(handCenter.x, handCenter.y);
-    instructionElement.innerText = '';
+    if (checkIfPalmOpen(landmarks)) {
+      const handCenter = calculateHandCenter(landmarks);
+      drawSpriteAtPalm(handCenter.x, handCenter.y);
+      instructionElement.innerText = '';
 
-    if (!animator.rafId) {
-      animator.resume();
-    }
-  }
-  else {
+      if (!animator.rafId) {
+        animator.resume();
+      }
+    } else {
       stopAnimation();
       instructionElement.innerText = translate("instructions_show_palm");
     }
@@ -225,20 +222,19 @@ export function onResults(results) {
 function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
 
-  const baseSpriteSize = 100;
-  const scaleX = 3;
-  const scaleY = 4;
-  const spriteWidth = baseSpriteSize * scaleX;
-  const spriteHeight = baseSpriteSize * scaleY;
+  const baseSize = 100;
+  const scaleX = 3, scaleY = 4;
+  const width = baseSize * scaleX;
+  const height = baseSize * scaleY;
 
-  const canvasRect = canvasElement.getBoundingClientRect();
-  const pixelX = canvasRect.left + x * canvasRect.width;
-  const pixelY = canvasRect.top + y * canvasRect.height;
+  const rect = canvasElement.getBoundingClientRect();
+  const px = rect.left + x * rect.width;
+  const py = rect.top + y * rect.height;
 
-  spriteImg.style.width = `${spriteWidth}px`;
-  spriteImg.style.height = `${spriteHeight}px`;
-  spriteImg.style.left = `${pixelX - spriteWidth / 2}px`;
-  spriteImg.style.top = `${pixelY - spriteHeight / 2}px`;
+  spriteImg.style.width = `${width}px`;
+  spriteImg.style.height = `${height}px`;
+  spriteImg.style.left = `${px - width / 2}px`;
+  spriteImg.style.top = `${py - height / 2}px`;
   spriteImg.style.display = 'block';
 
   if (!animator.interval) {
@@ -254,18 +250,17 @@ function stopAnimation() {
 function showThankYouPanel() {
   animationFinished = true;
   pauseInProgress = false;
+
   const panel = document.getElementById('thank-you-panel');
   panel.style.visibility = 'visible';
   panel.style.opacity = '1';
   panel.style.pointerEvents = 'auto';
 
-  const button1 = document.getElementById('visit-link-button');
-  button1.addEventListener('click', () => {
+  document.getElementById('visit-link-button')?.addEventListener('click', () => {
     window.open('https://www.handicapinternational.be/nl/petition/stopbombing', '_blank');
   }, { once: true });
 
-  const button2 = document.getElementById('visit-link-button-2');
-  button2.addEventListener('click', () => {
+  document.getElementById('visit-link-button-2')?.addEventListener('click', () => {
     window.open('https://docs.google.com/forms/d/e/1FAIpQLSe15mp24kB68aT9eyer4Z8bhXlJxJ0qgkP9QeC4BAe4mJdZCg/viewform?usp=header', '_blank');
   }, { once: true });
 }
@@ -277,7 +272,7 @@ function onUserDoubleTapStart() {
 }
 
 function startExperience() {
-  console.log('Starting experience, resetting to anim1');
+  console.log("Starting experience, resetting to anim1");
   animationFinished = false;
   pauseInProgress = false;
   currentAnimationIndex = 0;
@@ -286,13 +281,13 @@ function startExperience() {
   animator.reset();
 }
 
-// Ensure audio is unlocked on iOS
+// Audio unlock for iOS
 window.addEventListener('touchstart', () => {
   const audio = new Audio();
   audio.play().catch(() => {});
 }, { once: true });
 
-// Detect double-tap via timing
+// Double tap detection
 window.addEventListener('touchend', (e) => {
   const now = Date.now();
   if (now - lastTapTime < 300) {
@@ -301,7 +296,6 @@ window.addEventListener('touchend', (e) => {
   lastTapTime = now;
 });
 
-// Fallback for desktop/laptop double-click
 window.addEventListener('dblclick', () => {
   onUserDoubleTapStart();
 });

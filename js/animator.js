@@ -5,9 +5,9 @@ export class Animator {
     this.onComplete = onComplete;
     this.subtitleElement = subtitleElement;
     this.translate = translateFunc || (key => key);
-    this.isPausedForGesture = false;
     this.audio = new Audio();
     this.audio.preload = 'auto';
+    this.isPausedForGesture = false;
 
     this.setFrames(animationData);
     this.rafId = null;
@@ -35,60 +35,13 @@ export class Animator {
     if (this.isPlaying || !this.preloadedFrames.length) return;
 
     this.isPlaying = true;
-    this.audio.play().catch(e => console.warn('Audio play blocked:', e));
+    this.audio.play().catch(e => console.warn("Audio play blocked:", e));
 
     if (this.subtitleElement) {
       this.subtitleElement.innerText = this.translate(this.subtitleKey);
       this.subtitleElement.style.display = 'block';
     }
 
-    const animate = (timestamp) => {
-      if (!this.isPlaying || this.isPausedForGesture) return;
-
-      if (!this.lastFrameTime) this.lastFrameTime = timestamp;
-      const elapsed = timestamp - this.lastFrameTime;
-
-      if (elapsed >= this.frameInterval) {
-        this.lastFrameTime = timestamp;
-
-        if (this.currentFrame >= this.preloadedFrames.length) {
-          this.stop();
-          if (this.onComplete) this.onComplete();
-          return;
-        }
-
-        this.imageElement.src = this.preloadedFrames[this.currentFrame].src;
-        this.currentFrame++;
-      }
-
-      this.rafId = requestAnimationFrame(animate);
-    };
-
-    this.rafId = requestAnimationFrame(animate);
-  }
-
-  stop() {
-    if (this.rafId) cancelAnimationFrame(this.rafId);
-    this.rafId = null;
-    this.audio.pause();
-    this.isPlaying = false;
-    if (this.subtitleElement) {
-      this.subtitleElement.style.display = 'none';
-    }
-  }
-
-  pause() {
-    if (this.rafId) cancelAnimationFrame(this.rafId);
-    this.rafId = null;
-    this.audio.pause();
-    this.isPlaying = false;
-  }
-
-  resume() {
-    if (this.isPlaying || !this.preloadedFrames.length) return;
-    this.isPlaying = true;
-    this.audio.play().catch(e => console.warn('Audio resume failed:', e));
-    this.lastFrameTime = performance.now();
     this.rafId = requestAnimationFrame(this._animate.bind(this));
   }
 
@@ -111,6 +64,31 @@ export class Animator {
       this.currentFrame++;
     }
 
+    this.rafId = requestAnimationFrame(this._animate.bind(this));
+  }
+
+  stop() {
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.rafId = null;
+    this.audio.pause();
+    this.isPlaying = false;
+    if (this.subtitleElement) {
+      this.subtitleElement.style.display = 'none';
+    }
+  }
+
+  pause() {
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.rafId = null;
+    this.audio.pause();
+    this.isPlaying = false;
+  }
+
+  resume() {
+    if (this.isPlaying || !this.preloadedFrames.length) return;
+    this.isPlaying = true;
+    this.audio.play().catch(e => console.warn("Audio resume failed:", e));
+    this.lastFrameTime = performance.now();
     this.rafId = requestAnimationFrame(this._animate.bind(this));
   }
 
