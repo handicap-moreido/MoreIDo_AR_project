@@ -4,7 +4,7 @@ import { Animator } from './animator.js';
 import { animations } from './animations.js';
 import { translate, onLanguageChange } from './language.js';
 
-// Sprite image
+// Sprite image setup
 const spriteImg = document.createElement('img');
 spriteImg.className = 'sprite-animation';
 spriteImg.style.position = 'fixed';
@@ -17,6 +17,8 @@ document.body.appendChild(spriteImg);
 // UI elements
 const subtitleElement = document.getElementById('subtitle');
 const instructionElement = document.getElementById('instructions');
+const handPromptContainer = document.getElementById('handPromptContainer');
+const doubleTapPanel = document.getElementById('doubleTapInstructions');
 const loadingElement = document.getElementById('loading') || document.createElement('div');
 loadingElement.id = 'loading';
 loadingElement.style.display = 'none';
@@ -29,47 +31,50 @@ loadingElement.style.fontSize = '24px';
 loadingElement.innerText = 'Loading animation...';
 document.body.appendChild(loadingElement);
 
+// Animation control variables
 const animationKeys = Object.keys(animations);
 let currentAnimationIndex = 0;
 let animationFinished = false;
 let pauseInProgress = false;
 let lastTapTime = 0;
-const handPromptContainer = document.getElementById('handPromptContainer');
 let showHandPrompt = false;
 const loadedAnimations = {};
+let backgroundLoaded = false;
 
+// Preload animations
 function preloadFrames(animKeys, callback = null) {
-  let toLoad = animKeys.length;
+  let toLoad = 0;
+
   animKeys.forEach(key => {
     const anim = animations[key];
-    const firstFrame = new Image();
-    firstFrame.src = anim.frames[0];
-    const audio = new Audio(anim.audio);
-    audio.preload = 'auto';
+    const images = anim.frames.map(src => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => loaded();
+      img.onerror = () => {
+        console.warn(`Failed to load frame: ${src}`);
+        loaded();
+      };
+      return img;
+    });
 
-    firstFrame.onload = () => {
-      loadedAnimations[key] = true;
-      toLoad--;
-      if (toLoad === 0 && callback) callback();
-    };
-
-    firstFrame.onerror = () => {
-      console.error(`Failed to preload frame for ${key}`);
-      loadedAnimations[key] = true;
-      toLoad--;
-      if (toLoad === 0 && callback) callback();
-    };
+    anim.preloadedImages = images;
+    toLoad += anim.frames.length;
   });
+
+  function loaded() {
+    toLoad--;
+    if (toLoad === 0 && callback) callback();
+  }
 }
 
-// Load anim1–anim3 before start
+// Preload first few animations immediately
 preloadFrames(['anim1', 'anim2', 'anim3'], () => {
   console.log("Initial animations loaded");
   startExperience();
 });
 
-// Background load anim4–anim10
-let backgroundLoaded = false;
+// Background preload remaining animations
 function startBackgroundLoad() {
   if (!backgroundLoaded) {
     console.log('Starting background load for anim4–anim10');
@@ -154,6 +159,7 @@ function pauseBeforePanel() {
   }, 2000);
 }
 
+// Called by Mediapipe
 export function onResults(results) {
   canvasElement.width = results.image.width;
   canvasElement.height = results.image.height;
@@ -210,7 +216,6 @@ function drawSpriteAtPalm(x, y) {
   const baseSpriteSize = 100;
   const scaleX = 3;
   const scaleY = 4;
-
   const spriteWidth = baseSpriteSize * scaleX;
   const spriteHeight = baseSpriteSize * scaleY;
 
@@ -253,8 +258,6 @@ function showThankYouPanel() {
   }, { once: true });
 }
 
-const doubleTapPanel = document.getElementById('doubleTapInstructions');
-
 function onUserDoubleTapStart() {
   doubleTapPanel.style.display = 'none';
   handPromptContainer.style.display = 'block';
@@ -271,11 +274,13 @@ function startExperience() {
   animator.reset();
 }
 
+// Ensure audio is unlocked on iOS
 window.addEventListener('touchstart', () => {
   const audio = new Audio();
   audio.play().catch(() => {});
 }, { once: true });
 
+// Detect double-tap via timing
 window.addEventListener('touchend', (e) => {
   const now = Date.now();
   if (now - lastTapTime < 300) {
@@ -284,6 +289,7 @@ window.addEventListener('touchend', (e) => {
   lastTapTime = now;
 });
 
+// Fallback for desktop/laptop double-click
 window.addEventListener('dblclick', () => {
   onUserDoubleTapStart();
 });

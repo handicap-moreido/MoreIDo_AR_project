@@ -1,58 +1,72 @@
 export class Animator {
   constructor(imageElement, animationData, frameRate = 24, onComplete = null, subtitleElement = null, translateFunc = null) {
     this.imageElement = imageElement;
-    this.frameUrls = animationData.frames;
     this.frameRate = frameRate;
-    this.currentFrame = 0;
-    this.interval = null;
     this.onComplete = onComplete;
-    this.audio = new Audio(animationData.audio);
-    this.subtitleElement = subtitleElement || document.getElementById('subtitle');
+    this.subtitleElement = subtitleElement;
+    this.translate = translateFunc || (key => key);
+    this.isPausedForGesture = false;
+    this.audio = new Audio();
+    this.audio.preload = 'auto';
+
+    this.setFrames(animationData);
+    this.rafId = null;
+  }
+
+  setFrames(animationData) {
+    this.stop();
+    this.currentFrame = 0;
+    this.lastFrameTime = null;
+    this.frameInterval = 1000 / this.frameRate;
     this.subtitleKey = animationData.subtitle || '';
     this.requiresGesture = animationData.requiresGesture || false;
-    this.translate = translateFunc || ((key) => key);
-    this.isPausedForGesture = false;
-    this.isLoaded = false;
-    this.imageElement.onload = () => { this.isLoaded = true; };
-    this.imageElement.onerror = () => console.error(`Failed to load frame: ${this.frameUrls[this.currentFrame]}`);
-    this.imageElement.src = this.frameUrls[0];
+    this.audio.src = animationData.audio;
+    this.preloadedFrames = animationData.frames.map(src => {
+      const img = new Image();
+      img.src = src;
+      return img;
+    });
   }
 
   start() {
-    if (this.interval || !this.isLoaded) return;
+    if (this.rafId || !this.preloadedFrames.length) return;
 
-    console.log(`Starting animation with ${this.frameUrls.length} frames, audio: ${this.audio.src}`);
-
-    if (this.audio) {
-      this.audio.currentTime = 0;
-      this.audio.play().catch(err => console.error('Audio playback error:', err));
-    }
+    this.audio.currentTime = 0;
+    this.audio.play().catch(e => console.warn('Audio play blocked:', e));
 
     if (this.subtitleElement) {
       this.subtitleElement.innerText = this.translate(this.subtitleKey);
       this.subtitleElement.style.display = 'block';
     }
 
-    this.imageElement.src = this.frameUrls[this.currentFrame];
-
-    this.interval = setInterval(() => {
+    const animate = (timestamp) => {
       if (this.isPausedForGesture) return;
 
-      this.currentFrame++;
+      if (!this.lastFrameTime) this.lastFrameTime = timestamp;
+      const elapsed = timestamp - this.lastFrameTime;
 
-      if (this.currentFrame >= this.frameUrls.length) {
-        this.stop();
-        if (this.onComplete) this.onComplete();
-        return;
+      if (elapsed >= this.frameInterval) {
+        this.lastFrameTime = timestamp;
+
+        if (this.currentFrame >= this.preloadedFrames.length) {
+          this.stop();
+          if (this.onComplete) this.onComplete();
+          return;
+        }
+
+        this.imageElement.src = this.preloadedFrames[this.currentFrame].src;
+        this.currentFrame++;
       }
 
-      this.imageElement.src = this.frameUrls[this.currentFrame];
-    }, 1000 / this.frameRate);
+      this.rafId = requestAnimationFrame(animate);
+    };
+
+    this.rafId = requestAnimationFrame(animate);
   }
 
   stop() {
-    clearInterval(this.interval);
-    this.interval = null;
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.rafId = null;
     if (this.audio) {
       this.audio.pause();
       this.audio.currentTime = 0;
@@ -63,39 +77,21 @@ export class Animator {
   }
 
   pause() {
-    clearInterval(this.interval);
-    this.interval = null;
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.rafId = null;
     if (this.audio) this.audio.pause();
   }
 
   resume() {
-    if (this.interval) return;
-    if (this.audio) this.audio.play().catch(err => console.error('Audio playback error:', err));
+    if (this.rafId || !this.preloadedFrames.length) return;
+    this.audio.play().catch(e => console.warn('Audio resume failed:', e));
     this.start();
   }
 
   reset() {
+    this.stop();
     this.currentFrame = 0;
-    this.isLoaded = false;
-    this.imageElement.src = this.frameUrls[0];
-  }
-
-  setFrames(animationData, translateFunc = null) {
-    this.stop();
-    this.frameUrls = animationData.frames;
-    this.audio = new Audio(animationData.audio);
-    this.subtitleKey = animationData.subtitle || '';
-    this.requiresGesture = animationData.requiresGesture || false;
-    if (translateFunc) {
-      this.translate = translateFunc;
-    }
-    this.reset();
-  }
-
-  setFrameRate(newRate) {
-    this.frameRate = newRate;
-    this.stop();
-    this.start();
+    this.imageElement.src = this.preloadedFrames[0]?.src || '';
   }
 
   waitForGesture() {
