@@ -4,42 +4,81 @@ import { Animator } from './animator.js';
 import { animations } from './animations.js';
 import { translate, onLanguageChange } from './language.js';
 
-//Preload all animation frames to prevent lag
-Object.values(animations).forEach(anim => {
-  anim.frames.forEach(url => {
-    const img = new Image();
-    img.src = url;
-  });
-});
-
-// Create and style the sprite image used for animations
+// Sprite image
 const spriteImg = document.createElement('img');
 spriteImg.className = 'sprite-animation';
-
 spriteImg.style.position = 'fixed';
 spriteImg.style.width = '100px';
 spriteImg.style.height = '100px';
 spriteImg.style.pointerEvents = 'none';
 spriteImg.style.display = 'none';
-
 document.body.appendChild(spriteImg);
 
-// Get subtitle and instruction elements from the DOM
+// UI elements
 const subtitleElement = document.getElementById('subtitle');
 const instructionElement = document.getElementById('instructions');
+const loadingElement = document.getElementById('loading') || document.createElement('div');
+loadingElement.id = 'loading';
+loadingElement.style.display = 'none';
+loadingElement.style.position = 'fixed';
+loadingElement.style.top = '50%';
+loadingElement.style.left = '50%';
+loadingElement.style.transform = 'translate(-50%, -50%)';
+loadingElement.style.color = 'white';
+loadingElement.style.fontSize = '24px';
+loadingElement.innerText = 'Loading animation...';
+document.body.appendChild(loadingElement);
 
-// Setup animation keys and tracking variables
 const animationKeys = Object.keys(animations);
 let currentAnimationIndex = 0;
 let animationFinished = false;
 let pauseInProgress = false;
-
 let lastTapTime = 0;
-
 const handPromptContainer = document.getElementById('handPromptContainer');
 let showHandPrompt = false;
+const loadedAnimations = {};
 
-// Create animator object to handle sprite animation
+function preloadFrames(animKeys, callback = null) {
+  let toLoad = animKeys.length;
+  animKeys.forEach(key => {
+    const anim = animations[key];
+    const firstFrame = new Image();
+    firstFrame.src = anim.frames[0];
+    const audio = new Audio(anim.audio);
+    audio.preload = 'auto';
+
+    firstFrame.onload = () => {
+      loadedAnimations[key] = true;
+      toLoad--;
+      if (toLoad === 0 && callback) callback();
+    };
+
+    firstFrame.onerror = () => {
+      console.error(`Failed to preload frame for ${key}`);
+      loadedAnimations[key] = true;
+      toLoad--;
+      if (toLoad === 0 && callback) callback();
+    };
+  });
+}
+
+// Load anim1–anim3 before start
+preloadFrames(['anim1', 'anim2', 'anim3'], () => {
+  console.log("Initial animations loaded");
+  startExperience();
+});
+
+// Background load anim4–anim10
+let backgroundLoaded = false;
+function startBackgroundLoad() {
+  if (!backgroundLoaded) {
+    console.log('Starting background load for anim4–anim10');
+    preloadFrames(['anim4', 'anim5', 'anim6', 'anim7', 'anim8', 'anim9', 'anim10']);
+    backgroundLoaded = true;
+  }
+}
+
+// Animator setup
 let animator = new Animator(
   spriteImg,
   animations[animationKeys[0]],
@@ -49,51 +88,60 @@ let animator = new Animator(
   translate
 );
 
-// Update subtitles and animation frames if language changes
 onLanguageChange(() => {
   if (!animationFinished && !pauseInProgress) {
     const key = animationKeys[currentAnimationIndex];
-    if (key) {
-      animator.setFrames(animations[key], translate);
-      if (animator.interval && animator.subtitleElement) {
-        animator.subtitleElement.innerText = translate(animations[key].subtitle);
-      }
+    animator.setFrames(animations[key], translate);
+    if (animator.interval && animator.subtitleElement) {
+      animator.subtitleElement.innerText = translate(animations[key].subtitle);
     }
   }
 });
 
-// Called when current animation finishes playing
 function onAnimationComplete() {
-  const currentAnim = animations[animationKeys[currentAnimationIndex]];
+  const currentAnimKey = animationKeys[currentAnimationIndex];
+  const currentAnim = animations[currentAnimKey];
+  console.log(`Animation ${currentAnimKey} completed`);
 
   if (currentAnim.requiresGesture) {
-    // Pause and wait for fist gesture
     animator.waitForGesture();
     instructionElement.innerText = translate("instructions_show_closed_fist");
   } else {
-    // Go to next animation immediately
+    if (currentAnimationIndex === 0) {
+      startBackgroundLoad();
+    }
     advanceToNextAnimation();
+    setTimeout(() => {
+      animator.start();
+      instructionElement.innerText = '';
+    }, 100);
   }
 }
 
-// Advances to the next animation in the sequence
 function advanceToNextAnimation() {
   currentAnimationIndex++;
-
   if (currentAnimationIndex >= animationKeys.length) {
     pauseBeforePanel();
     return;
   }
 
-  // Reset gesture pause state before starting new animation
-  animator.isPausedForGesture = false;
+  const nextAnimKey = animationKeys[currentAnimationIndex];
+  const nextAnim = animations[nextAnimKey];
+  loadingElement.style.display = 'block';
 
-  const nextAnim = animations[animationKeys[currentAnimationIndex]];
-  animator.setFrames(nextAnim, translate);
-  animator.reset(); // This reset is okay here for new animation
-  animator.start();
+  const preload = new Image();
+  preload.src = nextAnim.frames[0];
 
-  instructionElement.innerText = ""; // Clear any instructions
+  preload.onload = () => {
+    loadingElement.style.display = 'none';
+    animator.setFrames(nextAnim, translate);
+    animator.reset();
+  };
+
+  preload.onerror = () => {
+    loadingElement.innerText = 'Error loading animation';
+    console.error(`Failed to load frame: ${nextAnim.frames[0]}`);
+  };
 }
 
 function pauseBeforePanel() {
@@ -129,14 +177,11 @@ export function onResults(results) {
     const landmarks = results.multiHandLandmarks[0];
 
     if (animator.isPausedForGesture) {
-      // Waiting for fist gesture
       if (checkIfFist(landmarks)) {
-        // Gesture detected, resume animation and advance
         animator.gestureDetected();
-        instructionElement.innerText = "";
+        instructionElement.innerText = '';
         advanceToNextAnimation();
       } else {
-        // Still waiting for fist gesture
         instructionElement.innerText = translate("instructions_show_closed_fist");
       }
       canvasCtx.restore();
@@ -146,7 +191,7 @@ export function onResults(results) {
     if (checkIfPalmOpen(landmarks)) {
       const handCenter = calculateHandCenter(landmarks);
       drawSpriteAtPalm(handCenter.x, handCenter.y);
-      instructionElement.innerText = "";
+      instructionElement.innerText = '';
     } else {
       stopAnimation();
       instructionElement.innerText = translate("instructions_show_palm");
@@ -169,13 +214,10 @@ function drawSpriteAtPalm(x, y) {
   const spriteWidth = baseSpriteSize * scaleX;
   const spriteHeight = baseSpriteSize * scaleY;
 
-  // Convert normalized (x,y) to canvas pixel coords
   const canvasRect = canvasElement.getBoundingClientRect();
-
   const pixelX = canvasRect.left + x * canvasRect.width;
   const pixelY = canvasRect.top + y * canvasRect.height;
 
-  // Center the sprite on the hand center point
   spriteImg.style.width = `${spriteWidth}px`;
   spriteImg.style.height = `${spriteHeight}px`;
   spriteImg.style.left = `${pixelX - spriteWidth / 2}px`;
@@ -189,8 +231,7 @@ function drawSpriteAtPalm(x, y) {
 
 function stopAnimation() {
   spriteImg.style.display = 'none';
-  animator.stop(); // Only stop, don't reset
-  // animator.reset();
+  animator.stop();
 }
 
 function showThankYouPanel() {
@@ -201,13 +242,11 @@ function showThankYouPanel() {
   panel.style.opacity = '1';
   panel.style.pointerEvents = 'auto';
 
-  // Existing button event
   const button1 = document.getElementById('visit-link-button');
   button1.addEventListener('click', () => {
     window.open('https://www.handicapinternational.be/nl/petition/stopbombing', '_blank');
   }, { once: true });
 
-  // New button event
   const button2 = document.getElementById('visit-link-button-2');
   button2.addEventListener('click', () => {
     window.open('https://docs.google.com/forms/d/e/1FAIpQLSe15mp24kB68aT9eyer4Z8bhXlJxJ0qgkP9QeC4BAe4mJdZCg/viewform?usp=header', '_blank');
@@ -218,21 +257,25 @@ const doubleTapPanel = document.getElementById('doubleTapInstructions');
 
 function onUserDoubleTapStart() {
   doubleTapPanel.style.display = 'none';
-
-  // Show hand detection prompt GIF
   handPromptContainer.style.display = 'block';
   showHandPrompt = true;
-
-  startExperience(); // just clears pause states
 }
 
 function startExperience() {
-  // Only show animation when a palm is detected in onResults
+  console.log('Starting experience, resetting to anim1');
   animationFinished = false;
   pauseInProgress = false;
+  currentAnimationIndex = 0;
+  animator.stop();
+  animator.setFrames(animations[animationKeys[0]], translate);
+  animator.reset();
 }
 
-//detect double tap
+window.addEventListener('touchstart', () => {
+  const audio = new Audio();
+  audio.play().catch(() => {});
+}, { once: true });
+
 window.addEventListener('touchend', (e) => {
   const now = Date.now();
   if (now - lastTapTime < 300) {
@@ -241,7 +284,6 @@ window.addEventListener('touchend', (e) => {
   lastTapTime = now;
 });
 
-// Desktop: detect double click
 window.addEventListener('dblclick', () => {
   onUserDoubleTapStart();
 });
