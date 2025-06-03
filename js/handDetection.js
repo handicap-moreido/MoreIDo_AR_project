@@ -40,6 +40,7 @@ let lastTapTime = 0;
 let showHandPrompt = false;
 const loadedAnimations = {};
 let backgroundLoaded = false;
+const preloadStatus = {}; // Tracks if each animation is preloaded
 
 // Preload animations
 function preloadFrames(animKeys, callback = null) {
@@ -47,6 +48,8 @@ function preloadFrames(animKeys, callback = null) {
 
   animKeys.forEach(key => {
     const anim = animations[key];
+    if (preloadStatus[key]) return; // Skip if already loaded
+
     const images = anim.frames.map(src => {
       const img = new Image();
       img.src = src;
@@ -59,12 +62,16 @@ function preloadFrames(animKeys, callback = null) {
     });
 
     anim.preloadedImages = images;
+    preloadStatus[key] = false;
     toLoad += anim.frames.length;
   });
 
   function loaded() {
     toLoad--;
-    if (toLoad === 0 && callback) callback();
+    if (toLoad === 0) {
+      animKeys.forEach(k => preloadStatus[k] = true);
+      if (callback) callback();
+    }
   }
 }
 
@@ -131,22 +138,22 @@ function advanceToNextAnimation() {
   }
 
   const nextAnimKey = animationKeys[currentAnimationIndex];
-  const nextAnim = animations[nextAnimKey];
-  loadingElement.style.display = 'block';
 
-  const preload = new Image();
-  preload.src = nextAnim.frames[0];
+  function trySetNextAnimation() {
+    if (!preloadStatus[nextAnimKey]) {
+      console.log(`Waiting for preload: ${nextAnimKey}`);
+      loadingElement.style.display = 'block';
+      setTimeout(trySetNextAnimation, 100); // Check again shortly
+      return;
+    }
 
-  preload.onload = () => {
     loadingElement.style.display = 'none';
+    const nextAnim = animations[nextAnimKey];
     animator.setFrames(nextAnim, translate);
     animator.reset();
-  };
+  }
 
-  preload.onerror = () => {
-    loadingElement.innerText = 'Error loading animation';
-    console.error(`Failed to load frame: ${nextAnim.frames[0]}`);
-  };
+  trySetNextAnimation(); // Start checking preload
 }
 
 function pauseBeforePanel() {
@@ -194,11 +201,16 @@ export function onResults(results) {
       return;
     }
 
-    if (checkIfPalmOpen(landmarks)) {
-      const handCenter = calculateHandCenter(landmarks);
-      drawSpriteAtPalm(handCenter.x, handCenter.y);
-      instructionElement.innerText = '';
-    } else {
+  if (checkIfPalmOpen(landmarks)) {
+    const handCenter = calculateHandCenter(landmarks);
+    drawSpriteAtPalm(handCenter.x, handCenter.y);
+    instructionElement.innerText = '';
+
+    if (!animator.rafId) {
+      animator.resume();
+    }
+  }
+  else {
       stopAnimation();
       instructionElement.innerText = translate("instructions_show_palm");
     }
@@ -236,7 +248,7 @@ function drawSpriteAtPalm(x, y) {
 
 function stopAnimation() {
   spriteImg.style.display = 'none';
-  animator.stop();
+  animator.pause();
 }
 
 function showThankYouPanel() {

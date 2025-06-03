@@ -11,13 +11,16 @@ export class Animator {
 
     this.setFrames(animationData);
     this.rafId = null;
+    this.currentFrame = 0;
+    this.lastFrameTime = null;
+    this.frameInterval = 1000 / this.frameRate;
+    this.isPlaying = false;
   }
 
   setFrames(animationData) {
     this.stop();
     this.currentFrame = 0;
     this.lastFrameTime = null;
-    this.frameInterval = 1000 / this.frameRate;
     this.subtitleKey = animationData.subtitle || '';
     this.requiresGesture = animationData.requiresGesture || false;
     this.audio.src = animationData.audio;
@@ -29,9 +32,9 @@ export class Animator {
   }
 
   start() {
-    if (this.rafId || !this.preloadedFrames.length) return;
+    if (this.isPlaying || !this.preloadedFrames.length) return;
 
-    this.audio.currentTime = 0;
+    this.isPlaying = true;
     this.audio.play().catch(e => console.warn('Audio play blocked:', e));
 
     if (this.subtitleElement) {
@@ -40,7 +43,7 @@ export class Animator {
     }
 
     const animate = (timestamp) => {
-      if (this.isPausedForGesture) return;
+      if (!this.isPlaying || this.isPausedForGesture) return;
 
       if (!this.lastFrameTime) this.lastFrameTime = timestamp;
       const elapsed = timestamp - this.lastFrameTime;
@@ -67,10 +70,8 @@ export class Animator {
   stop() {
     if (this.rafId) cancelAnimationFrame(this.rafId);
     this.rafId = null;
-    if (this.audio) {
-      this.audio.pause();
-      this.audio.currentTime = 0;
-    }
+    this.audio.pause();
+    this.isPlaying = false;
     if (this.subtitleElement) {
       this.subtitleElement.style.display = 'none';
     }
@@ -79,13 +80,38 @@ export class Animator {
   pause() {
     if (this.rafId) cancelAnimationFrame(this.rafId);
     this.rafId = null;
-    if (this.audio) this.audio.pause();
+    this.audio.pause();
+    this.isPlaying = false;
   }
 
   resume() {
-    if (this.rafId || !this.preloadedFrames.length) return;
+    if (this.isPlaying || !this.preloadedFrames.length) return;
+    this.isPlaying = true;
     this.audio.play().catch(e => console.warn('Audio resume failed:', e));
-    this.start();
+    this.lastFrameTime = performance.now();
+    this.rafId = requestAnimationFrame(this._animate.bind(this));
+  }
+
+  _animate(timestamp) {
+    if (!this.isPlaying || this.isPausedForGesture) return;
+
+    if (!this.lastFrameTime) this.lastFrameTime = timestamp;
+    const elapsed = timestamp - this.lastFrameTime;
+
+    if (elapsed >= this.frameInterval) {
+      this.lastFrameTime = timestamp;
+
+      if (this.currentFrame >= this.preloadedFrames.length) {
+        this.stop();
+        if (this.onComplete) this.onComplete();
+        return;
+      }
+
+      this.imageElement.src = this.preloadedFrames[this.currentFrame].src;
+      this.currentFrame++;
+    }
+
+    this.rafId = requestAnimationFrame(this._animate.bind(this));
   }
 
   reset() {
