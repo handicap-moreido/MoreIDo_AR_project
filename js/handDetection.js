@@ -245,4 +245,3 @@ window.addEventListener('touchend', (e) => {
 window.addEventListener('dblclick', () => {
   onUserDoubleTapStart();
 });
-

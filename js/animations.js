@@ -1,26 +1,92 @@
 export const animations = {
   anim1: {
-    //Array of images for each frame
-    frames: [
-      //0 to 253
-      ...Array.from({ length: 144 }, (_, i) => {
-        const frameNumber = i.toString().padStart(5, '0');
-        return `Assets/Images/render_24f_${frameNumber}.webp`;
-      })
-    ],
-    //Audio Clip to play during the animation
+    frames: Array.from({ length: 144 }, (_, i) => {
+      const frameNumber = i.toString().padStart(5, '0');
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
     audio: 'Assets/Audio/ENG_000-144f.mp3',
-    //Subtitles to display during the animation
     subtitle: 'anim1_subtitle',
-    //A check to see if a specific gesture is required to proceed
     requiresGesture: false
   },
   anim2: {
-    frames: [
-      'Assets/Images/frames_00000.png',
-    ],
-    audio: 'Assets/Audio/boop2.wav',
+    frames: Array.from({ length: 233 }, (_, i) => {
+      const frameNumber = (i + 144).toString().padStart(5, '0'); // Start after anim1
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_145-378f.mp3', // Replace with actual file
     subtitle: 'anim2_subtitle',
+    requiresGesture: false
+  },
+  anim3: {
+    frames: Array.from({ length: 63 }, (_, i) => {
+      const frameNumber = (i + 377).toString().padStart(5, '0'); // Start after anim2
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_379-442f.mp3',
+    subtitle: 'anim3_subtitle',
+    requiresGesture: false
+  },
+  anim4: {
+    frames: Array.from({ length: 98 }, (_, i) => {
+      const frameNumber = (i + 440).toString().padStart(5, '0'); // Start after anim3
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_443-541.mp3',
+    subtitle: 'anim4_subtitle',
+    requiresGesture: false
+  },
+  anim5: {
+    frames: Array.from({ length: 168 }, (_, i) => {
+      const frameNumber = (i + 538).toString().padStart(5, '0'); // Start after anim4
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_542-710.mp3',
+    subtitle: 'anim5_subtitle',
+    requiresGesture: false
+  },
+  anim6: {
+    frames: Array.from({ length: 150 }, (_, i) => {
+      const frameNumber = (i + 706).toString().padStart(5, '0'); // Start after anim5
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_711-861.mp3',
+    subtitle: 'anim6_subtitle',
+    requiresGesture: false
+  },
+  anim7: {
+    frames: Array.from({ length: 169 }, (_, i) => {
+      const frameNumber = (i + 856).toString().padStart(5, '0'); // Start after anim6
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_862-1031.mp3',
+    subtitle: 'anim7_subtitle',
+    requiresGesture: false
+  },
+  anim8: {
+    frames: Array.from({ length: 193 }, (_, i) => {
+      const frameNumber = (i + 1025).toString().padStart(5, '0'); // Start after anim7
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_1032-1225.mp3',
+    subtitle: 'anim8_subtitle',
+    requiresGesture: false
+  },
+  anim9: {
+    frames: Array.from({ length: 203 }, (_, i) => {
+      const frameNumber = (i + 1218).toString().padStart(5, '0'); // Start after anim8
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_1226-1429.mp3',
+    subtitle: 'anim9_subtitle',
+    requiresGesture: false
+  },
+  anim10: {
+    frames: Array.from({ length: 193 }, (_, i) => {
+      const frameNumber = (i + 1421).toString().padStart(5, '0'); // Start after anim9
+      return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/ENG_1430-1623.mp3',
+    subtitle: 'anim10_subtitle',
     requiresGesture: false
   }
 };
