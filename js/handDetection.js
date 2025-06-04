@@ -57,6 +57,9 @@ let countdownStartTime = null;
 let countdownInProgress = false;
 const countdownElement = document.getElementById('gestureCountdown');
 
+const thankYouAudio = new Audio('Assets/Audio/anim11.mp3'); // Update path if needed
+thankYouAudio.preload = 'auto';
+
 // Calculate total assets to preload
 animationKeys.forEach(key => {
   const anim = animations[key];
@@ -97,7 +100,7 @@ function preloadAssets(callback) {
       anim.preloadedGestureSfx = gestureAudio;
     }
 
-    // Preload audio
+    // Preload main animation audio
     const audio = new Audio();
     audio.src = anim.audio;
     audio.preload = 'auto';
@@ -111,6 +114,16 @@ function preloadAssets(callback) {
     anim.preloadedAudio = audio;
     preloadStatus[key] = false;
   });
+
+  // 🔊 Preload thank-you panel audio
+  thankYouAudio.oncanplaythrough = () => updateProgress();
+  thankYouAudio.onerror = () => {
+    console.warn(`Failed to load thank you audio`);
+    updateProgress();
+  };
+
+  // Manually increase totalAssets count for thank-you audio
+  totalAssets++;
 
   function updateProgress() {
     loadedAssets++;
@@ -129,15 +142,19 @@ function unlockAllAudio() {
   if (audioUnlocked) return;
   audioUnlocked = true;
 
-  // No need to play/pause — just ensure they’re preloaded
+  // Trigger loading of preloaded animation and gesture audio
   animationKeys.forEach(key => {
     const anim = animations[key];
     anim.preloadedAudio?.load();
     anim.preloadedGestureSfx?.load();
   });
 
+  // Trigger loading of thank-you panel audio
+  thankYouAudio.load();
+
   console.log('Audio unlocked and preloaded silently');
 }
+
 
 // Start preloading all assets
 preloadAssets(() => {
@@ -206,7 +223,7 @@ function pauseBeforePanel() {
   instructionElement.innerText = '';
   stopMusic();
   currentBackgroundTrack = 'default';
-  setTimeout(() => showThankYouPanel(), 2000);
+  setTimeout(() => showThankYouPanel(), 10);
 }
 
 export function onResults(results) {
@@ -357,6 +374,14 @@ function showThankYouPanel() {
   panel.style.visibility = 'visible';
   panel.style.opacity = '1';
   panel.style.pointerEvents = 'auto';
+
+  // Play thank you audio
+  if (thankYouAudio) {
+    thankYouAudio.currentTime = 0;
+    thankYouAudio.play().catch(err => {
+      console.warn('Failed to play thank you audio:', err);
+    });
+  }
 
   document.getElementById('visit-link-button')?.addEventListener('click', () => {
     window.open('https://www.handicapinternational.be/nl/petition/stopbombing', '_blank');

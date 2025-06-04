@@ -212,6 +212,19 @@ body, html {
   box-sizing: border-box;
 }
 
+#gestureCountdown {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  z-index: 9999;
+}
+
 
 #language-wrapper {
   display: flex;
