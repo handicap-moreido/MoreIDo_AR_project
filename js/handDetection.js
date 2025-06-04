@@ -124,21 +124,14 @@ function unlockAllAudio() {
   if (audioUnlocked) return;
   audioUnlocked = true;
 
+  // No need to play/pause — just ensure they’re preloaded
   animationKeys.forEach(key => {
     const anim = animations[key];
-    if (anim.preloadedAudio) {
-      anim.preloadedAudio.play().then(() => {
-        anim.preloadedAudio.pause();
-        anim.preloadedAudio.currentTime = 0;
-      }).catch(() => {});
-    }
-    if (anim.preloadedGestureSfx) {
-      anim.preloadedGestureSfx.play().then(() => {
-        anim.preloadedGestureSfx.pause();
-        anim.preloadedGestureSfx.currentTime = 0;
-      }).catch(() => {});
-    }
+    anim.preloadedAudio?.load();
+    anim.preloadedGestureSfx?.load();
   });
+
+  console.log('Audio unlocked and preloaded silently');
 }
 
 // Start preloading all assets
