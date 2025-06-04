@@ -250,6 +250,26 @@ export function onResults(results) {
     const landmarks = results.multiHandLandmarks[0];
 
     if (animator.isPausedForGesture) {
+      // If waiting for palm open after fist hold completed
+      if (animator.waitingForPalmOpenAfterFist) {
+        if (checkIfPalmOpen(landmarks)) {
+          animator.waitingForPalmOpenAfterFist = false;
+          countdownStartTime = null;
+          animator.gestureDetected();
+          instructionElement.innerText = '';
+          console.log('Palm opened after fist hold, advancing animation');
+          currentBackgroundTrack = 'gesture';
+          advanceToNextAnimation();
+          animator.start();
+        } else {
+          instructionElement.innerText = translate("instructions_open_palm_to_continue");
+          countdownElement.style.display = 'none';
+          spriteImg.style.display = 'none';
+        }
+        canvasCtx.restore();
+        return;
+      }
+
       const fistDetected = checkIfFist(landmarks);
 
       if (!countdownStartTime && fistDetected) {
@@ -285,15 +305,10 @@ export function onResults(results) {
         }
 
         if (elapsedSeconds >= 3) {
-          // Countdown done, reset timer
+          // Countdown done, but wait for palm open before continuing
           countdownElement.style.display = 'none';
-          countdownStartTime = null;
-          animator.gestureDetected();
-          instructionElement.innerText = '';
-          console.log('Fist held for 3 seconds, advancing animation');
-          currentBackgroundTrack = 'gesture';
-          advanceToNextAnimation();
-          animator.start();
+          instructionElement.innerText = translate("instructions_open_palm_to_continue");
+          animator.waitingForPalmOpenAfterFist = true;
         }
       } else {
         // No fist detected yet, just prompt user
