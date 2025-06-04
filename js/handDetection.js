@@ -52,6 +52,11 @@ let loadedAssets = 0;
 let audioUnlocked = false; // <-- New flag to unlock audio only once
 let experienceStarted = false;
 
+let gestureCountdownTimer = null;
+let countdownStartTime = null;
+let countdownInProgress = false;
+const countdownElement = document.getElementById('gestureCountdown');
+
 // Calculate total assets to preload
 animationKeys.forEach(key => {
   const anim = animations[key];
@@ -228,31 +233,71 @@ export function onResults(results) {
 
     if (animator.isPausedForGesture) {
       if (checkIfFist(landmarks)) {
-        const currentKey = animationKeys[currentAnimationIndex];
-        const currentAnim = animations[currentKey];
+        // Hide the animation frame during countdown
+        spriteImg.style.display = 'none';
 
-        // Play gesture SFX if defined and not already played
-        if (currentAnim.gestureSfx && !animator.gestureSfxPlayed) {
-          const sfx = currentAnim.preloadedGestureSfx;
-          if (sfx) {
-            sfx.currentTime = 0;
-            sfx.play().catch(err => console.warn("Failed to play gesture SFX:", err));
+        if (!countdownInProgress) {
+          countdownInProgress = true;
+
+          const currentKey = animationKeys[currentAnimationIndex];
+          const currentAnim = animations[currentKey];
+
+          // Play gesture SFX
+          if (currentAnim.gestureSfx && !animator.gestureSfxPlayed) {
+            const sfx = currentAnim.preloadedGestureSfx;
+            if (sfx) {
+              sfx.currentTime = 0;
+              sfx.play().catch(err => console.warn("Failed to play gesture SFX:", err));
+            }
+            animator.gestureSfxPlayed = true;
           }
-          animator.gestureSfxPlayed = true;
-        }
 
-        animator.gestureDetected();
-        instructionElement.innerText = '';
-        console.log('Fist detected, setting gesture background track for open palm');
-        currentBackgroundTrack = 'gesture';
-        advanceToNextAnimation();
-        animator.start();
+          // Start countdown after a brief delay
+          setTimeout(() => {
+            countdownStartTime = Date.now();
+            countdownElement.innerText = '3';
+            countdownElement.style.display = 'block';
+
+            gestureCountdownTimer = setInterval(() => {
+              const elapsed = Math.floor((Date.now() - countdownStartTime) / 1000);
+              const remaining = 3 - elapsed;
+
+              if (remaining <= 0) {
+                clearInterval(gestureCountdownTimer);
+                countdownElement.style.display = 'none';
+                countdownInProgress = false;
+
+                // After countdown finishes, animation can show again
+                // (animator.start() will handle sprite visibility)
+                animator.gestureDetected();
+                instructionElement.innerText = '';
+                console.log('Fist held 3s — starting animation.');
+                currentBackgroundTrack = 'gesture';
+                advanceToNextAnimation();
+                animator.start();
+              } else {
+                countdownElement.innerText = remaining.toString();
+              }
+            }, 250);
+          }, 100);
+        }
       } else {
+        // Fist released early: cancel countdown, hide countdown UI, and show sprite again
+        if (countdownInProgress) {
+          clearInterval(gestureCountdownTimer);
+          countdownElement.style.display = 'none';
+          countdownInProgress = false;
+        }
+        // Show the animation frame again because fist is no longer held
+        spriteImg.style.display = 'block';
+
         instructionElement.innerText = translate("instructions_show_closed_fist");
       }
+
       canvasCtx.restore();
       return;
     }
+
 
     if (checkIfPalmOpen(landmarks)) {
       playMusic(currentBackgroundTrack);
@@ -283,7 +328,6 @@ export function onResults(results) {
 
   canvasCtx.restore();
 }
-
 
 function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
