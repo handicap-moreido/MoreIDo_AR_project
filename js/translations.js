@@ -1,7 +1,7 @@
 export const translations = {
   en: {
     thank_you: "Thank you for participating!",
-    completed: "You’ve completed the experience.",
+    completed: "You`ve completed the experience.",
     learn_more_link: "Learn more",
     learn_more_button: "Sign the petition",
     instructions_show_palm: "Show your palm!",
@@ -17,6 +17,7 @@ export const translations = {
     anim8_subtitle: "run... and play again -  with Viyan by my side. Now, we play beneath the trees, like before.",
     anim9_subtitle: "The war took a lot. But my prosthetic leg… reminds me of strength, support, and hope. I'm grateful.",
     anim10_subtitle: "Zain's story reflects the real struggles of children affected by war, but with help from organizations like Handicap International,",
+    anim11_subtitle:"recovery is possible. We can't undo the past, but we can shape the future. This future starts with you! Let your signature be a shield against war. Sign here to make a difference"
   },
   nl: {
     thank_you: "Bedankt voor je deelname!",

@@ -4,7 +4,7 @@ export const animations = {
       const frameNumber = i.toString().padStart(5, '0');
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_000-144f.mp3',
+    audio: 'Assets/Audio/anim1.mp3',
     subtitle: 'anim1_subtitle',
     requiresGesture: false
   },
@@ -13,7 +13,7 @@ export const animations = {
       const frameNumber = (i + 144).toString().padStart(5, '0'); // Start after anim1
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_145-378f.mp3', // Replace with actual file
+    audio: 'Assets/Audio/anim2.mp3', // Replace with actual file
     subtitle: 'anim2_subtitle',
     requiresGesture: false
   },
@@ -22,7 +22,7 @@ export const animations = {
       const frameNumber = (i + 377).toString().padStart(5, '0'); // Start after anim2
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_379-442f.mp3',
+    audio: 'Assets/Audio/anim3.mp3',
     subtitle: 'anim3_subtitle',
     requiresGesture: true
   },
@@ -31,7 +31,7 @@ export const animations = {
       const frameNumber = (i + 440).toString().padStart(5, '0'); // Start after anim3
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_443-541.mp3',
+    audio: 'Assets/Audio/anim4.mp3',
     subtitle: 'anim4_subtitle',
     requiresGesture: false
   },
@@ -40,7 +40,7 @@ export const animations = {
       const frameNumber = (i + 538).toString().padStart(5, '0'); // Start after anim4
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_542-710.mp3',
+    audio: 'Assets/Audio/anim5.mp3',
     subtitle: 'anim5_subtitle',
     requiresGesture: false
   },
@@ -49,7 +49,7 @@ export const animations = {
       const frameNumber = (i + 706).toString().padStart(5, '0'); // Start after anim5
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_711-861.mp3',
+    audio: 'Assets/Audio/anim6.mp3',
     subtitle: 'anim6_subtitle',
     requiresGesture: false
   },
@@ -58,7 +58,7 @@ export const animations = {
       const frameNumber = (i + 856).toString().padStart(5, '0'); // Start after anim6
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_862-1031.mp3',
+    audio: 'Assets/Audio/anim7.mp3',
     subtitle: 'anim7_subtitle',
     requiresGesture: false
   },
@@ -67,7 +67,7 @@ export const animations = {
       const frameNumber = (i + 1025).toString().padStart(5, '0'); // Start after anim7
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_1032-1225.mp3',
+    audio: 'Assets/Audio/anim8.mp3',
     subtitle: 'anim8_subtitle',
     requiresGesture: false
   },
@@ -76,7 +76,7 @@ export const animations = {
       const frameNumber = (i + 1218).toString().padStart(5, '0'); // Start after anim8
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_1226-1429.mp3',
+    audio: 'Assets/Audio/anim9.mp3',
     subtitle: 'anim9_subtitle',
     requiresGesture: false
   },
@@ -85,8 +85,8 @@ export const animations = {
       const frameNumber = (i + 1421).toString().padStart(5, '0'); // Start after anim9
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
-    audio: 'Assets/Audio/ENG_1430-1623.mp3',
+    audio: 'Assets/Audio/anim10.mp3',
     subtitle: 'anim10_subtitle',
     requiresGesture: false
-  }
+  },
 };
