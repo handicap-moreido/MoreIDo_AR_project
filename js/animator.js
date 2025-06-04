@@ -15,6 +15,7 @@ export class Animator {
     this.lastFrameTime = null;
     this.frameInterval = 1000 / this.frameRate;
     this.isPlaying = false;
+    this.gestureSfxPlayed = false;
   }
 
   setFrames(animationData) {
@@ -24,6 +25,7 @@ export class Animator {
     this.subtitleKey = animationData.subtitle || '';
     this.requiresGesture = animationData.requiresGesture || false;
     this.audio.src = animationData.audio;
+    this.gestureSfxPlayed = false;
     this.preloadedFrames = animationData.frames.map(src => {
       const img = new Image();
       img.src = src;
@@ -96,6 +98,7 @@ export class Animator {
     this.stop();
     this.currentFrame = 0;
     this.imageElement.src = this.preloadedFrames[0]?.src || '';
+    this.gestureSfxPlayed = false;
   }
 
   waitForGesture() {

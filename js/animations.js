@@ -19,12 +19,13 @@ export const animations = {
   },
   anim3: {
     frames: Array.from({ length: 63 }, (_, i) => {
-      const frameNumber = (i + 377).toString().padStart(5, '0'); // Start after anim2
+      const frameNumber = (i + 377).toString().padStart(5, '0');
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),
     audio: 'Assets/Audio/anim3.mp3',
     subtitle: 'anim3_subtitle',
-    requiresGesture: true
+    requiresGesture: true,
+    gestureSfx: 'Assets/Audio/Explosion.mp3'
   },
   anim4: {
     frames: Array.from({ length: 98 }, (_, i) => {

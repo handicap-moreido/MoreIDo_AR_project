@@ -195,14 +195,24 @@ export function onResults(results) {
 
     if (animator.isPausedForGesture) {
       if (checkIfFist(landmarks)) {
+        const currentKey = animationKeys[currentAnimationIndex];
+        const currentAnim = animations[currentKey];
+
+        // Play gesture SFX if defined and not already played
+        if (currentAnim.gestureSfx && !animator.gestureSfxPlayed) {
+          const sfx = new Audio(currentAnim.gestureSfx);
+          sfx.play().catch(err => console.warn("Failed to play gesture SFX:", err));
+          animator.gestureSfxPlayed = true;
+        }
+
         animator.gestureDetected();
         instructionElement.innerText = '';
-        // Set gesture music for next open palm detection
         console.log('Fist detected, setting gesture background track for open palm');
         currentBackgroundTrack = 'gesture';
         advanceToNextAnimation();
         animator.start();
-      } else {
+      }
+      else {
         instructionElement.innerText = translate("instructions_show_closed_fist");
       }
       canvasCtx.restore();
