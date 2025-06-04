@@ -198,6 +198,7 @@ body, html {
 }
 
 #instructions {
+  display: none; /* Hide it initially */
   position: fixed;
   top: env(safe-area-inset-top, 20px);
   left: 50%;
@@ -210,6 +211,7 @@ body, html {
   border-radius: 8px;
   box-sizing: border-box;
 }
+
 
 #language-wrapper {
   display: flex;

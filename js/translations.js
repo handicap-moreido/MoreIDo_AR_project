@@ -27,17 +27,6 @@ export const translations = {
     instructions_show_palm: "Toon je handpalm!",
     instructions_start: "Toon je hand om te beginnen!",
     instructions_show_closed_fist: "Sluit je hand!",
-    anim1_subtitle: "",
-    anim2_subtitle: "",
-    anim3_subtitle: "",
-    anim4_subtitle: "",
-    anim5_subtitle: "",
-    anim6_subtitle: "",
-    anim7_subtitle: "",
-    anim8_subtitle: "",
-    anim9_subtitle: "",
-    anim10_subtitle: "",
-    anim11_subtitle: ""
   },
   fr: {
     thank_you: "Merci pour votre participation!",

@@ -247,8 +247,7 @@ export function onResults(results) {
         currentBackgroundTrack = 'gesture';
         advanceToNextAnimation();
         animator.start();
-      }
-      else {
+      } else {
         instructionElement.innerText = translate("instructions_show_closed_fist");
       }
       canvasCtx.restore();
@@ -256,7 +255,7 @@ export function onResults(results) {
     }
 
     if (checkIfPalmOpen(landmarks)) {
-      playMusic(currentBackgroundTrack); // Play current background track
+      playMusic(currentBackgroundTrack);
       const handCenter = calculateHandCenter(landmarks);
       drawSpriteAtPalm(handCenter.x, handCenter.y);
       instructionElement.innerText = '';
@@ -267,17 +266,24 @@ export function onResults(results) {
       }
     } else {
       stopAnimation();
-      instructionElement.innerText = translate("instructions_show_palm");
+      if (hasStartedTracking) {
+        instructionElement.style.display = 'block';
+        instructionElement.innerText = translate("instructions_show_palm");
+      }
     }
   } else {
     stopAnimation();
-    instructionElement.innerText = translate("instructions_start");
+    if (hasStartedTracking) {
+      instructionElement.style.display = 'block';
+      instructionElement.innerText = translate("instructions_start");
+    }
     stopMusic();
     currentBackgroundTrack = 'default';
   }
 
   canvasCtx.restore();
 }
+
 
 function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
