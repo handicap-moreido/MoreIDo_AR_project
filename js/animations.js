@@ -82,7 +82,7 @@ export const animations = {
     requiresGesture: false
   },
   anim10: {
-    frames: Array.from({ length: 193 }, (_, i) => {
+    frames: Array.from({ length: 183 }, (_, i) => {
       const frameNumber = (i + 1421).toString().padStart(5, '0'); // Start after anim9
       return `Assets/Images/finalrender_ema_${frameNumber}.webp`;
     }),

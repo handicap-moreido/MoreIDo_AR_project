@@ -27,6 +27,18 @@ export const translations = {
     instructions_show_palm: "Toon je handpalm!",
     instructions_start: "Toon je hand om te beginnen!",
     instructions_show_closed_fist: "Sluit je hand!",
+    anim1_subtitle: "Hoi, ik ben Zain en ik ben elf jaar. Dit is mijn beste vriend, Viyan.",
+    anim2_subtitle: "Vroeger speelden we vaak voetbal in de olijfgaard vlak bij mijn huis. Op een dag schopte ik de bal te ver. \"Ik haal hem wel!\" zei ik.",
+    anim3_subtitle: "Maar toen ik een stap vooruit zette...",
+    anim4_subtitle: "ontplofte de wereld onder mijn voeten. Een landmijn…",
+    anim5_subtitle: "Ik werd wakker in het ziekenhuis – zonder mijn rechterbeen. Het leek wel een nachtmerrie. Maar de pijn was echt.",
+    anim6_subtitle: "Dagen gingen voorbij. En toen kwam er hulp.",
+    anim7_subtitle: "Handicap International gaf me een beenprothese en hoop!",
+    anim8_subtitle: "Stap voor stap leerde ik weer wandelen, lopen en spelen met Viyan aan mijn zijde. Nu spelen we terug onder de bomen, net zoals vroeger.",
+    anim9_subtitle: "De oorlog heeft veel van me afgenomen. Maar mijn prothese... staat voor kracht, steun en hoop. En ik ben dankbaar.",
+    anim10_subtitle: "Het verhaal van Zain weerspiegelt de harde realiteit van duizenden kinderen die getroffen zijn door oorlog, maar dankzij organisaties zoals Handicap International,",
+    anim11_subtitle: "is herstel mogelijk. We kunnen het verleden niet veranderen, maar samen kunnen we wel meebouwen aan een betere toekomst. Deze toekomst begint bij jou! Laat jouw handtekening een schild tegen oorlog zijn. Teken hier om het verschil te maken."
+
   },
   fr: {
     thank_you: "Merci pour votre participation!",
