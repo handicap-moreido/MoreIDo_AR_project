@@ -44,6 +44,7 @@ let pauseInProgress = false;
 let lastTapTime = 0;
 let showHandPrompt = false;
 let currentBackgroundTrack = 'default'; // Track open palm music ('default' or 'gesture')
+let hasStartedTracking = false; // Control hand tracking start
 const preloadStatus = {};
 let totalAssets = 0;
 let loadedAssets = 0;
@@ -178,7 +179,7 @@ export function onResults(results) {
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
   canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-  if (pauseInProgress || animationFinished) {
+  if (!hasStartedTracking || pauseInProgress || animationFinished) {
     stopAnimation();
     canvasCtx.restore();
     return;
@@ -281,9 +282,11 @@ function showThankYouPanel() {
 }
 
 function onUserDoubleTapStart() {
+  console.log('Double-tap/click detected, starting hand tracking');
   doubleTapPanel.style.display = 'none';
   handPromptContainer.style.display = 'block';
   showHandPrompt = true;
+  hasStartedTracking = true;
 }
 
 function startExperience() {
@@ -292,9 +295,13 @@ function startExperience() {
   pauseInProgress = false;
   currentAnimationIndex = 0;
   currentBackgroundTrack = 'default';
+  hasStartedTracking = false; // Hand tracking off until double-tap
   animator.stop();
   animator.setFrames(animations[animationKeys[0]], translate);
   animator.reset();
+  doubleTapPanel.style.display = 'block'; // Show double-tap prompt
+  handPromptContainer.style.display = 'none';
+  instructionElement.innerText = translate("instructions_double_tap"); // Optional: prompt text
 }
 
 // Audio unlock for animation audio
