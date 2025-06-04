@@ -49,10 +49,16 @@ const preloadStatus = {};
 let totalAssets = 0;
 let loadedAssets = 0;
 
+let audioUnlocked = false; // <-- New flag to unlock audio only once
+let experienceStarted = false;
+
 // Calculate total assets to preload
 animationKeys.forEach(key => {
   const anim = animations[key];
   totalAssets += anim.frames.length + 1; // Frames + audio
+  if (anim.gestureSfx) {
+    totalAssets++; // Count gesture SFX too
+  }
 });
 
 // Preload all animations and audio
@@ -72,6 +78,19 @@ function preloadAssets(callback) {
       };
       return img;
     });
+
+    // Preload gesture sound effect if it exists
+    if (anim.gestureSfx) {
+      const gestureAudio = new Audio();
+      gestureAudio.src = anim.gestureSfx;
+      gestureAudio.preload = 'auto';
+      gestureAudio.oncanplaythrough = () => updateProgress();
+      gestureAudio.onerror = () => {
+        console.warn(`Failed to load gesture SFX: ${anim.gestureSfx}`);
+        updateProgress();
+      };
+      anim.preloadedGestureSfx = gestureAudio;
+    }
 
     // Preload audio
     const audio = new Audio();
@@ -98,6 +117,28 @@ function preloadAssets(callback) {
       if (callback) callback();
     }
   }
+}
+
+// Unlock all audio on first user interaction
+function unlockAllAudio() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+
+  animationKeys.forEach(key => {
+    const anim = animations[key];
+    if (anim.preloadedAudio) {
+      anim.preloadedAudio.play().then(() => {
+        anim.preloadedAudio.pause();
+        anim.preloadedAudio.currentTime = 0;
+      }).catch(() => {});
+    }
+    if (anim.preloadedGestureSfx) {
+      anim.preloadedGestureSfx.play().then(() => {
+        anim.preloadedGestureSfx.pause();
+        anim.preloadedGestureSfx.currentTime = 0;
+      }).catch(() => {});
+    }
+  });
 }
 
 // Start preloading all assets
@@ -170,7 +211,6 @@ function pauseBeforePanel() {
   setTimeout(() => showThankYouPanel(), 2000);
 }
 
-// Called by Mediapipe
 export function onResults(results) {
   canvasElement.width = results.image.width;
   canvasElement.height = results.image.height;
@@ -200,8 +240,11 @@ export function onResults(results) {
 
         // Play gesture SFX if defined and not already played
         if (currentAnim.gestureSfx && !animator.gestureSfxPlayed) {
-          const sfx = new Audio(currentAnim.gestureSfx);
-          sfx.play().catch(err => console.warn("Failed to play gesture SFX:", err));
+          const sfx = currentAnim.preloadedGestureSfx;
+          if (sfx) {
+            sfx.currentTime = 0;
+            sfx.play().catch(err => console.warn("Failed to play gesture SFX:", err));
+          }
           animator.gestureSfxPlayed = true;
         }
 
@@ -293,31 +336,35 @@ function showThankYouPanel() {
 
 function onUserDoubleTapStart() {
   console.log('Double-tap/click detected, starting hand tracking');
-  doubleTapPanel.style.display = 'none';
+  doubleTapPanel.style.display = 'none'; // Hide double tap panel immediately
   handPromptContainer.style.display = 'block';
   showHandPrompt = true;
   hasStartedTracking = true;
 }
 
 function startExperience() {
-  console.log("Starting experience, resetting to anim1");
+  if (experienceStarted) return;
+  experienceStarted = true;
   animationFinished = false;
   pauseInProgress = false;
   currentAnimationIndex = 0;
   currentBackgroundTrack = 'default';
-  hasStartedTracking = false; // Hand tracking off until double-tap
+  hasStartedTracking = false;
   animator.stop();
   animator.setFrames(animations[animationKeys[0]], translate);
   animator.reset();
-  doubleTapPanel.style.display = 'block'; // Show double-tap prompt
+  doubleTapPanel.style.display = 'block';
   handPromptContainer.style.display = 'none';
-  instructionElement.innerText = translate("instructions_double_tap"); // Optional: prompt text
+  instructionElement.innerText = translate("instructions_double_tap");
 }
 
-// Audio unlock for animation audio
+// Unlock audio on first user interaction (touch or mouse)
 window.addEventListener('touchstart', () => {
-  const audio = new Audio();
-  audio.play().catch(e => console.warn('Animation audio unlock failed:', e.message));
+  unlockAllAudio();
+}, { once: true });
+
+window.addEventListener('mousedown', () => {
+  unlockAllAudio();
 }, { once: true });
 
 // Double tap detection
