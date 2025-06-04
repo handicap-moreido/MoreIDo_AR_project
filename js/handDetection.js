@@ -3,6 +3,7 @@ import { checkIfPalmOpen, calculateHandCenter, checkIfFist } from './handUtils.j
 import { Animator } from './animator.js';
 import { animations } from './animations.js';
 import { translate, onLanguageChange } from './language.js';
+import { playMusic, stopMusic } from './backgroundMusic.js';
 
 // Sprite setup
 const spriteImg = document.createElement('img');
@@ -42,6 +43,7 @@ let animationFinished = false;
 let pauseInProgress = false;
 let lastTapTime = 0;
 let showHandPrompt = false;
+let currentBackgroundTrack = 'default'; // Track open palm music ('default' or 'gesture')
 const preloadStatus = {};
 let totalAssets = 0;
 let loadedAssets = 0;
@@ -149,6 +151,12 @@ function advanceToNextAnimation() {
   const nextAnim = animations[nextKey];
   animator.setFrames(nextAnim, translate);
   animator.reset();
+  // Reset to default music for anim4 and beyond
+  if (currentAnimationIndex >= 3) { // After anim3
+    console.log(`Advancing to ${nextKey}, setting default background track`);
+    currentBackgroundTrack = 'default';
+    playMusic('default');
+  }
 }
 
 function pauseBeforePanel() {
@@ -156,6 +164,8 @@ function pauseBeforePanel() {
   animator.stop();
   spriteImg.style.display = 'none';
   instructionElement.innerText = '';
+  stopMusic();
+  currentBackgroundTrack = 'default';
   setTimeout(() => showThankYouPanel(), 2000);
 }
 
@@ -186,6 +196,9 @@ export function onResults(results) {
       if (checkIfFist(landmarks)) {
         animator.gestureDetected();
         instructionElement.innerText = '';
+        // Set gesture music for next open palm detection
+        console.log('Fist detected, setting gesture background track for open palm');
+        currentBackgroundTrack = 'gesture';
         advanceToNextAnimation();
         animator.start();
       } else {
@@ -196,11 +209,13 @@ export function onResults(results) {
     }
 
     if (checkIfPalmOpen(landmarks)) {
+      playMusic(currentBackgroundTrack); // Play current background track
       const handCenter = calculateHandCenter(landmarks);
       drawSpriteAtPalm(handCenter.x, handCenter.y);
       instructionElement.innerText = '';
 
-      if (!animator.rafId) {
+      if (!animator.rafId && loadedAssets >= totalAssets) {
+        console.log('Palm detected, resuming animation');
         animator.resume();
       }
     } else {
@@ -210,6 +225,8 @@ export function onResults(results) {
   } else {
     stopAnimation();
     instructionElement.innerText = translate("instructions_start");
+    stopMusic();
+    currentBackgroundTrack = 'default';
   }
 
   canvasCtx.restore();
@@ -241,6 +258,8 @@ function drawSpriteAtPalm(x, y) {
 function stopAnimation() {
   spriteImg.style.display = 'none';
   animator.pause();
+  stopMusic();
+  currentBackgroundTrack = 'default';
 }
 
 function showThankYouPanel() {
@@ -272,15 +291,16 @@ function startExperience() {
   animationFinished = false;
   pauseInProgress = false;
   currentAnimationIndex = 0;
+  currentBackgroundTrack = 'default';
   animator.stop();
   animator.setFrames(animations[animationKeys[0]], translate);
   animator.reset();
 }
 
-// Audio unlock for iOS
+// Audio unlock for animation audio
 window.addEventListener('touchstart', () => {
   const audio = new Audio();
-  audio.play().catch(() => {});
+  audio.play().catch(e => console.warn('Animation audio unlock failed:', e.message));
 }, { once: true });
 
 // Double tap detection
