@@ -41,14 +41,24 @@ export const translations = {
 
   },
   fr: {
-    thank_you: "Merci pour votre participation!",
+    thank_you: "Merci d'avoir participé !",
     completed: "Vous avez terminé l'expérience.",
     learn_more_link: "En savoir plus",
-    learn_more_button: "Signez la pétition",
-    instructions_show_palm: "Montrez votre paume!",
-    instructions_start: "Montrez votre main pour commencer!",
-    instructions_show_closed_fist: "Fermez votre main!",
-    anim1_subtitle: "Attaque du Ninja Rouge !",
-    anim2_subtitle: "Dit bonjour !",
+    learn_more_button: "Signer la pétition",
+    instructions_show_palm: "Montrez votre paume !",
+    instructions_start: "Montrez votre main pour commencer !",
+    instructions_show_closed_fist: "Fermez votre main !",
+    anim1_subtitle: "Bonjour, je m'appelle Zain et j'ai onze ans. Voici mon meilleur ami, Viyan.",
+    anim2_subtitle: "Nous jouions au football dans le verger d'oliviers près de chez moi. Un jour, j'ai trop frappé le ballon. « Je vais le chercher ! » ai-je dit.",
+    anim3_subtitle: "Mais quand j'ai fait un pas en avant...",
+    anim4_subtitle: "le monde a explosé sous mes pieds. Une mine terrestre…",
+    anim5_subtitle: "Je me suis réveillé à l'hôpital, sans ma jambe droite. C'était comme un mauvais rêve. Mais la douleur était bien réelle.",
+    anim6_subtitle: "Les jours ont passé. Puis... l'aide est arrivée.",
+    anim7_subtitle: "Handicap International m'a donné une prothèse de jambe — et de l'espoir. Pas à pas, j'ai appris à marcher",
+    anim8_subtitle: "courir... et à jouer de nouveau — avec Viyan à mes côtés. Maintenant, nous jouons sous les arbres, comme avant.",
+    anim9_subtitle: "La guerre m'a tout pris. Mais ma prothèse… me rappelle la force, le soutien et l'espoir. Je suis reconnaissant.",
+    anim10_subtitle: "L'histoire de Zain reflète les vraies difficultés des enfants touchés par la guerre, mais avec l'aide d'organisations comme Handicap International,",
+    anim11_subtitle: "la guérison est possible. Nous ne pouvons pas effacer le passé, mais nous pouvons façonner l'avenir. Cet avenir commence avec vous ! Que votre signature soit un bouclier contre la guerre. Signez ici pour faire la différence."
+
   }
 };
