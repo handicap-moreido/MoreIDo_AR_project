@@ -49,7 +49,7 @@ export const translations = {
     instructions_start: "Montrez votre main pour commencer !",
     instructions_show_closed_fist: "Fermez votre main !",
     anim1_subtitle: "Bonjour, je m'appelle Zain et j'ai onze ans. Voici mon meilleur ami, Viyan.",
-    anim2_subtitle: "Nous jouions au football dans le verger d'oliviers près de chez moi. Un jour, j'ai trop frappé le ballon. « Je vais le chercher ! » ai-je dit.",
+    anim2_subtitle: "Nous jouions au football dans le verger d'oliviers près de chez moi. Un jour, j'ai trop frappé le ballon. 'Je vais le chercher !' ai-je dit.",
     anim3_subtitle: "Mais quand j'ai fait un pas en avant...",
     anim4_subtitle: "le monde a explosé sous mes pieds. Une mine terrestre…",
     anim5_subtitle: "Je me suis réveillé à l'hôpital, sans ma jambe droite. C'était comme un mauvais rêve. Mais la douleur était bien réelle.",
