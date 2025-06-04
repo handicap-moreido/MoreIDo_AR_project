@@ -179,6 +179,7 @@ onLanguageChange(() => {
     if (animator.subtitleElement) {
       animator.subtitleElement.innerText = translate(animations[key].subtitle);
     }
+    playMusic(currentBackgroundTrack);
   }
 });
 
