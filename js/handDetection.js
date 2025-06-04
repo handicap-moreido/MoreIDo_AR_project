@@ -232,72 +232,61 @@ export function onResults(results) {
     const landmarks = results.multiHandLandmarks[0];
 
     if (animator.isPausedForGesture) {
-      if (checkIfFist(landmarks)) {
-        // Hide the animation frame during countdown
-        spriteImg.style.display = 'none';
+      const fistDetected = checkIfFist(landmarks);
 
-        if (!countdownInProgress) {
-          countdownInProgress = true;
+      if (!countdownStartTime && fistDetected) {
+        // First time fist detected — start countdown timer and play SFX
+        countdownStartTime = Date.now();
 
-          const currentKey = animationKeys[currentAnimationIndex];
-          const currentAnim = animations[currentKey];
+        const currentKey = animationKeys[currentAnimationIndex];
+        const currentAnim = animations[currentKey];
 
-          // Play gesture SFX
-          if (currentAnim.gestureSfx && !animator.gestureSfxPlayed) {
-            const sfx = currentAnim.preloadedGestureSfx;
-            if (sfx) {
-              sfx.currentTime = 0;
-              sfx.play().catch(err => console.warn("Failed to play gesture SFX:", err));
-            }
-            animator.gestureSfxPlayed = true;
+        if (currentAnim.gestureSfx && !animator.gestureSfxPlayed) {
+          const sfx = currentAnim.preloadedGestureSfx;
+          if (sfx) {
+            sfx.currentTime = 0;
+            sfx.play().catch(err => console.warn("Failed to play gesture SFX:", err));
           }
+          animator.gestureSfxPlayed = true;
+        }
+      }
 
-          // Start countdown after a brief delay
-          setTimeout(() => {
-            countdownStartTime = Date.now();
-            countdownElement.innerText = '3';
-            countdownElement.style.display = 'block';
+      if (countdownStartTime) {
+        const elapsedSeconds = (Date.now() - countdownStartTime) / 1000;
+        const remaining = Math.max(0, Math.ceil(3 - elapsedSeconds));
 
-            gestureCountdownTimer = setInterval(() => {
-              const elapsed = Math.floor((Date.now() - countdownStartTime) / 1000);
-              const remaining = 3 - elapsed;
+        if (fistDetected) {
+          // Show countdown and hide sprite while holding fist
+          countdownElement.style.display = 'block';
+          countdownElement.innerText = remaining.toString();
+          spriteImg.style.display = 'none';
+        } else {
+          // Fist opened early, hide countdown and sprite, but don't reset countdown timer
+          countdownElement.style.display = 'none';
+          spriteImg.style.display = 'none';
+        }
 
-              if (remaining <= 0) {
-                clearInterval(gestureCountdownTimer);
-                countdownElement.style.display = 'none';
-                countdownInProgress = false;
-
-                // After countdown finishes, animation can show again
-                // (animator.start() will handle sprite visibility)
-                animator.gestureDetected();
-                instructionElement.innerText = '';
-                console.log('Fist held 3s — starting animation.');
-                currentBackgroundTrack = 'gesture';
-                advanceToNextAnimation();
-                animator.start();
-              } else {
-                countdownElement.innerText = remaining.toString();
-              }
-            }, 250);
-          }, 100);
+        if (elapsedSeconds >= 3) {
+          // Countdown done, reset timer
+          countdownElement.style.display = 'none';
+          countdownStartTime = null;
+          animator.gestureDetected();
+          instructionElement.innerText = '';
+          console.log('Fist held for 3 seconds, advancing animation');
+          currentBackgroundTrack = 'gesture';
+          advanceToNextAnimation();
+          animator.start();
         }
       } else {
-        // Fist released early: cancel countdown, hide countdown UI, and show sprite again
-        if (countdownInProgress) {
-          clearInterval(gestureCountdownTimer);
-          countdownElement.style.display = 'none';
-          countdownInProgress = false;
-        }
-        // Show the animation frame again because fist is no longer held
-        spriteImg.style.display = 'block';
-
+        // No fist detected yet, just prompt user
         instructionElement.innerText = translate("instructions_show_closed_fist");
+        countdownElement.style.display = 'none';
+        spriteImg.style.display = 'none';
       }
 
       canvasCtx.restore();
       return;
     }
-
 
     if (checkIfPalmOpen(landmarks)) {
       playMusic(currentBackgroundTrack);
@@ -328,6 +317,7 @@ export function onResults(results) {
 
   canvasCtx.restore();
 }
+
 
 function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
