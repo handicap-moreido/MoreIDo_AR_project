@@ -262,7 +262,7 @@ export function onResults(results) {
           advanceToNextAnimation();
           animator.start();
         } else {
-          instructionElement.innerText = translate("instructions_open_palm_to_continue");
+          instructionElement.innerText = translate("instructions_show_palm");
           countdownElement.style.display = 'none';
           spriteImg.style.display = 'none';
         }
@@ -307,7 +307,7 @@ export function onResults(results) {
         if (elapsedSeconds >= 3) {
           // Countdown done, but wait for palm open before continuing
           countdownElement.style.display = 'none';
-          instructionElement.innerText = translate("instructions_open_palm_to_continue");
+          instructionElement.innerText = translate("instructions_show_palm");
           animator.waitingForPalmOpenAfterFist = true;
         }
       } else {
