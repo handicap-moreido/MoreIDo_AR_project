@@ -102,11 +102,25 @@ body, html {
   font-family: 'NunitoExtraBold', sans-serif;
   text-align: center;
   user-select: none;
+  animation: fadePulse 1s infinite alternate;
 }
+
 
 @keyframes pulse {
   0% { transform: scale(1.5); opacity: 0.7; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadePulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
 }
 
 .hand-video {
