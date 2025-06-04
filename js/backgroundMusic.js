@@ -3,7 +3,7 @@ import { animations } from './animations.js';
 // Audio objects
 const audioTracks = {
   default: new Audio('Assets/Audio/Background1.mp3'),
-  gesture: new Audio('Assets/Audio/BackgroundGesture.wav')
+  gesture: new Audio('Assets/Audio/BackgroundGesture.mp3')
 };
 
 // Configure audio
@@ -24,7 +24,7 @@ audioTracks.gesture.addEventListener('canplaythrough', () => {
   console.log('Gesture track loaded: Assets/Audio/BackgroundGesture.wav');
 });
 audioTracks.gesture.addEventListener('error', (e) => {
-  console.error('Failed to load gesture track: Assets/Audio/BackgroundGesture.wav, error:', e.message);
+  console.error('Failed to load gesture track: Assets/Audio/BackgroundGesture.mp3, error:', e.message);
 });
 
 // Audio unlock for iOS
