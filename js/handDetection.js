@@ -18,6 +18,11 @@ document.body.appendChild(spriteImg);
 // UI elements
 const subtitleElement = document.getElementById('subtitle');
 const instructionElement = document.getElementById('instructions');
+const instructionElementCenter = document.getElementById('centered-instruction') || document.createElement('div');
+instructionElementCenter.id = 'centered-instruction';
+instructionElementCenter.className = 'centered-instruction';
+instructionElementCenter.style.display = 'none'; // Ensure it's hidden by default
+document.body.appendChild(instructionElementCenter); // Ensure it's in the DOM
 const handPromptContainer = document.getElementById('handPromptContainer');
 const doubleTapPanel = document.getElementById('doubleTapInstructions');
 
@@ -49,12 +54,10 @@ const preloadStatus = {};
 let totalAssets = 0;
 let loadedAssets = 0;
 
-let audioUnlocked = false; // <-- New flag to unlock audio only once
+let audioUnlocked = false; // Flag to unlock audio only once
 let experienceStarted = false;
 
-let gestureCountdownTimer = null;
 let countdownStartTime = null;
-let countdownInProgress = false;
 const countdownElement = document.getElementById('gestureCountdown');
 
 const thankYouAudio = new Audio('Assets/Audio/anim11.mp3'); // Update path if needed
@@ -115,7 +118,7 @@ function preloadAssets(callback) {
     preloadStatus[key] = false;
   });
 
-  // 🔊 Preload thank-you panel audio
+  // Preload thank-you panel audio
   thankYouAudio.oncanplaythrough = () => updateProgress();
   thankYouAudio.onerror = () => {
     console.warn(`Failed to load thank you audio`);
@@ -155,7 +158,6 @@ function unlockAllAudio() {
   console.log('Audio unlocked and preloaded silently');
 }
 
-
 // Start preloading all assets
 preloadAssets(() => {
   console.log("All assets preloaded");
@@ -189,12 +191,17 @@ function onAnimationComplete() {
   console.log(`Animation ${currentKey} completed`);
 
   if (currentAnim.requiresGesture) {
+    console.log('Prompting for closed fist');
     animator.waitForGesture();
-    instructionElement.innerText = translate("instructions_show_closed_fist");
+    instructionElementCenter.style.display = 'block';
+    instructionElementCenter.innerText = translate("instructions_show_closed_fist");
+    instructionElement.innerText = ''; // Clear other instruction element
+    instructionElement.style.display = 'none';
   } else {
     advanceToNextAnimation();
     animator.start();
     instructionElement.innerText = '';
+    instructionElementCenter.style.display = 'none';
   }
 }
 
@@ -222,6 +229,7 @@ function pauseBeforePanel() {
   animator.stop();
   spriteImg.style.display = 'none';
   instructionElement.innerText = '';
+  instructionElementCenter.style.display = 'none';
   stopMusic();
   currentBackgroundTrack = 'default';
   setTimeout(() => showThankYouPanel(), 10);
@@ -256,6 +264,7 @@ export function onResults(results) {
           animator.waitingForPalmOpenAfterFist = false;
           countdownStartTime = null;
           animator.gestureDetected();
+          instructionElementCenter.style.display = 'none';
           instructionElement.innerText = '';
           console.log('Palm opened after fist hold, advancing animation');
           currentBackgroundTrack = 'gesture';
@@ -263,6 +272,8 @@ export function onResults(results) {
           animator.start();
         } else {
           instructionElement.innerText = translate("instructions_show_palm");
+          instructionElement.style.display = 'block';
+          instructionElementCenter.style.display = 'none';
           countdownElement.style.display = 'none';
           spriteImg.style.display = 'none';
         }
@@ -298,21 +309,30 @@ export function onResults(results) {
           countdownElement.style.display = 'block';
           countdownElement.innerText = remaining.toString();
           spriteImg.style.display = 'none';
+          instructionElementCenter.style.display = 'none';
+          instructionElement.innerText = '';
         } else {
           // Fist opened early, hide countdown and sprite, but don't reset countdown timer
           countdownElement.style.display = 'none';
           spriteImg.style.display = 'none';
+          instructionElementCenter.style.display = 'block';
+          instructionElementCenter.innerText = translate("instructions_show_closed_fist");
+          instructionElement.innerText = '';
         }
 
         if (elapsedSeconds >= 3) {
           // Countdown done, but wait for palm open before continuing
           countdownElement.style.display = 'none';
           instructionElement.innerText = translate("instructions_show_palm");
+          instructionElement.style.display = 'block';
+          instructionElementCenter.style.display = 'none';
           animator.waitingForPalmOpenAfterFist = true;
         }
       } else {
         // No fist detected yet, just prompt user
-        instructionElement.innerText = translate("instructions_show_closed_fist");
+        instructionElementCenter.style.display = 'block';
+        instructionElementCenter.innerText = translate("instructions_show_closed_fist");
+        instructionElement.innerText = '';
         countdownElement.style.display = 'none';
         spriteImg.style.display = 'none';
       }
@@ -326,6 +346,7 @@ export function onResults(results) {
       const handCenter = calculateHandCenter(landmarks);
       drawSpriteAtPalm(handCenter.x, handCenter.y);
       instructionElement.innerText = '';
+      instructionElementCenter.style.display = 'none';
 
       if (!animator.rafId && loadedAssets >= totalAssets) {
         console.log('Palm detected, resuming animation');
@@ -336,6 +357,7 @@ export function onResults(results) {
       if (hasStartedTracking) {
         instructionElement.style.display = 'block';
         instructionElement.innerText = translate("instructions_show_palm");
+        instructionElementCenter.style.display = 'none';
       }
     }
   } else {
@@ -343,6 +365,7 @@ export function onResults(results) {
     if (hasStartedTracking) {
       instructionElement.style.display = 'block';
       instructionElement.innerText = translate("instructions_start");
+      instructionElementCenter.style.display = 'none';
     }
     stopMusic();
     currentBackgroundTrack = 'default';
@@ -350,7 +373,6 @@ export function onResults(results) {
 
   canvasCtx.restore();
 }
-
 
 function drawSpriteAtPalm(x, y) {
   if (animationFinished || pauseInProgress) return;
@@ -380,6 +402,7 @@ function stopAnimation() {
   animator.pause();
   stopMusic();
   currentBackgroundTrack = 'default';
+  instructionElementCenter.style.display = 'none'; // Ensure centered instruction is hidden
 }
 
 function showThankYouPanel() {
@@ -430,6 +453,7 @@ function startExperience() {
   doubleTapPanel.style.display = 'block';
   handPromptContainer.style.display = 'none';
   instructionElement.innerText = translate("instructions_double_tap");
+  instructionElementCenter.style.display = 'none';
 }
 
 // Unlock audio on first user interaction (touch or mouse)
