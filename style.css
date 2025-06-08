@@ -223,18 +223,19 @@ body, html {
 }
 
 #instructions {
-  display: none; /* Hide it initially */
   position: fixed;
-  top: env(safe-area-inset-top, 20px);
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  padding: 5px 10px;
+  transform: translate(-50%, -50%);
   color: white;
-  font-size: 1.2rem;
-  max-width: 90vw;
-  z-index: 1000;
-  border-radius: 8px;
-  box-sizing: border-box;
+  font-size: 2em;
+  font-family: 'NunitoExtraBold', sans-serif;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  z-index: 998;
+  pointer-events: none;
+  animation: fadePulse 1s infinite alternate;
 }
 
 .centered-instruction {
@@ -376,7 +377,7 @@ body, html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 999;
+  z-index: 2;
   pointer-events: none;
   display: none;
 }
@@ -384,4 +385,5 @@ body, html {
 #handPromptGif {
   width: 200px; /* Adjust size if needed */
   height: auto;
+  z-index: 2;
 }
