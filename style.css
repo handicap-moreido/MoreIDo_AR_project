@@ -237,6 +237,23 @@ body, html {
   box-sizing: border-box;
 }
 
+.centered-instruction {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 2em;
+  font-family: 'NunitoExtraBold', sans-serif;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  z-index: 1000;
+  pointer-events: none;
+  animation: fadePulse 1s infinite alternate;
+}
+
 #gestureCountdown {
   position: fixed;
   top: 50%;
@@ -249,7 +266,6 @@ body, html {
   display: none;
   z-index: 9999;
 }
-
 
 #language-wrapper {
   display: flex;
