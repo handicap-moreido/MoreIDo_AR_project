@@ -10,7 +10,7 @@ const audioTracks = {
 Object.values(audioTracks).forEach(audio => {
   audio.preload = 'auto';
   audio.loop = true;
-  audio.volume = 0.3; // Lower volume to avoid overpowering animation audio
+  audio.volume = 0.2; // Lower volume to avoid overpowering animation audio
 });
 
 // Log loading status

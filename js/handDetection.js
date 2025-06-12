@@ -284,7 +284,7 @@ export function onResults(results) {
       const fistDetected = checkIfFist(landmarks);
 
       if (!countdownStartTime && fistDetected) {
-        // First time fist detected — start countdown timer and play SFX
+        //First time fist detected — start countdown timer and play SFX
         countdownStartTime = Date.now();
 
         const currentKey = animationKeys[currentAnimationIndex];
