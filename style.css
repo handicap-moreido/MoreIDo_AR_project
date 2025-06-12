@@ -144,19 +144,19 @@ body, html {
   bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
-  display: inline-block;
+  display: block;
   max-width: 90vw;
-  text-align: center;
+  background:  #3874c4;
   color: white;
-  background: #3874c4; /* subtle subtitle background */
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   padding: 0.5em 1em;
   line-height: 1.4;
+  text-align: center;
   white-space: normal;
   word-break: break-word;
-  border-radius: 0.3em;
-  box-sizing: border-box;
+  border-radius: 0.5em;
   z-index: 1000;
+  box-sizing: border-box;
   font-family: 'NunitoExtraBold', sans-serif;
 }
 
