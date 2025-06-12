@@ -21,8 +21,8 @@ const instructionElement = document.getElementById('instructions');
 const instructionElementCenter = document.getElementById('centered-instruction') || document.createElement('div');
 instructionElementCenter.id = 'centered-instruction';
 instructionElementCenter.className = 'centered-instruction';
-instructionElementCenter.style.display = 'none'; // Ensure it's hidden by default
-document.body.appendChild(instructionElementCenter); // Ensure it's in the DOM
+instructionElementCenter.style.display = 'none';
+document.body.appendChild(instructionElementCenter);
 const handPromptContainer = document.getElementById('handPromptContainer');
 const doubleTapPanel = document.getElementById('doubleTapInstructions');
 
@@ -48,33 +48,49 @@ let animationFinished = false;
 let pauseInProgress = false;
 let lastTapTime = 0;
 let showHandPrompt = false;
-let currentBackgroundTrack = 'default'; // Track open palm music ('default' or 'gesture')
-let hasStartedTracking = false; // Control hand tracking start
+let currentBackgroundTrack = 'default';
+let hasStartedTracking = false;
+let shouldPlayMusic = false; // New flag to control music playback
 const preloadStatus = {};
-let totalAssets = 0;
-let loadedAssets = 0;
+let totalInitialAssets = 0;
+let loadedInitialAssets = 0;
+let totalBackgroundAssets = 0;
+let loadedBackgroundAssets = 0;
 
-let audioUnlocked = false; // Flag to unlock audio only once
+let audioUnlocked = false;
 let experienceStarted = false;
 
 let countdownStartTime = null;
 const countdownElement = document.getElementById('gestureCountdown');
 
-const thankYouAudio = new Audio('Assets/Audio/anim11.mp3'); // Update path if needed
+const thankYouAudio = new Audio('Assets/Audio/anim11.mp3');
 thankYouAudio.preload = 'auto';
 
-// Calculate total assets to preload
-animationKeys.forEach(key => {
+// Calculate assets for initial and background batches
+const initialBatchKeys = animationKeys.slice(0, 3); // anim1, anim2, anim3
+const backgroundBatchKeys = animationKeys.slice(3); // anim4 to anim10
+
+initialBatchKeys.forEach(key => {
   const anim = animations[key];
-  totalAssets += anim.frames.length + 1; // Frames + audio
+  totalInitialAssets += anim.frames.length + 1; // Frames + audio
   if (anim.gestureSfx) {
-    totalAssets++; // Count gesture SFX too
+    totalInitialAssets++; // Gesture SFX
   }
 });
 
-// Preload all animations and audio
-function preloadAssets(callback) {
-  animationKeys.forEach(key => {
+backgroundBatchKeys.forEach(key => {
+  const anim = animations[key];
+  totalBackgroundAssets += anim.frames.length + 1; // Frames + audio
+  if (anim.gestureSfx) {
+    totalBackgroundAssets++; // Gesture SFX
+  }
+});
+
+totalInitialAssets++; // Thank-you audio
+
+// Preload initial batch (anim1, anim2, anim3)
+function preloadInitialAssets(callback) {
+  initialBatchKeys.forEach(key => {
     const anim = animations[key];
     if (preloadStatus[key]) return;
 
@@ -82,10 +98,10 @@ function preloadAssets(callback) {
     const images = anim.frames.map(src => {
       const img = new Image();
       img.src = src;
-      img.onload = () => updateProgress();
+      img.onload = () => updateInitialProgress();
       img.onerror = () => {
         console.warn(`Failed to load frame: ${src}`);
-        updateProgress();
+        updateInitialProgress();
       };
       return img;
     });
@@ -95,10 +111,10 @@ function preloadAssets(callback) {
       const gestureAudio = new Audio();
       gestureAudio.src = anim.gestureSfx;
       gestureAudio.preload = 'auto';
-      gestureAudio.oncanplaythrough = () => updateProgress();
+      gestureAudio.oncanplaythrough = () => updateInitialProgress();
       gestureAudio.onerror = () => {
-        //console.warn(`Failed to load gesture SFX: ${anim.gestureSfx}`);
-        updateProgress();
+        console.warn(`Failed to load gesture SFX: ${anim.gestureSfx}`);
+        updateInitialProgress();
       };
       anim.preloadedGestureSfx = gestureAudio;
     }
@@ -107,10 +123,10 @@ function preloadAssets(callback) {
     const audio = new Audio();
     audio.src = anim.audio;
     audio.preload = 'auto';
-    audio.oncanplaythrough = () => updateProgress();
+    audio.oncanplaythrough = () => updateInitialProgress();
     audio.onerror = () => {
       console.warn(`Failed to load audio: ${anim.audio}`);
-      updateProgress();
+      updateInitialProgress();
     };
 
     anim.preloadedImages = images;
@@ -119,23 +135,75 @@ function preloadAssets(callback) {
   });
 
   // Preload thank-you panel audio
-  thankYouAudio.oncanplaythrough = () => updateProgress();
+  thankYouAudio.oncanplaythrough = () => updateInitialProgress();
   thankYouAudio.onerror = () => {
-    //console.warn(`Failed to load thank you audio`);
-    updateProgress();
+    console.warn(`Failed to load thank you audio`);
+    updateInitialProgress();
   };
 
-  // Manually increase totalAssets count for thank-you audio
-  totalAssets++;
-
-  function updateProgress() {
-    loadedAssets++;
-    const progress = Math.round((loadedAssets / totalAssets) * 100);
+  function updateInitialProgress() {
+    loadedInitialAssets++;
+    const progress = Math.round((loadedInitialAssets / totalInitialAssets) * 100);
     loadingElement.innerText = `Loading assets... ${progress}%`;
-    if (loadedAssets >= totalAssets) {
-      animationKeys.forEach(k => preloadStatus[k] = true);
+    if (loadedInitialAssets >= totalInitialAssets) {
+      initialBatchKeys.forEach(k => preloadStatus[k] = true);
       loadingElement.style.display = 'none';
       if (callback) callback();
+    }
+  }
+}
+
+// Preload background batch (anim4 to anim10)
+function preloadBackgroundAssets() {
+  backgroundBatchKeys.forEach(key => {
+    const anim = animations[key];
+    if (preloadStatus[key]) return;
+
+    // Preload images
+    const images = anim.frames.map(src => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => updateBackgroundProgress();
+      img.onerror = () => {
+        console.warn(`Failed to load frame: ${src}`);
+        updateBackgroundProgress();
+      };
+      return img;
+    });
+
+    // Preload gesture sound effect if it exists
+    if (anim.gestureSfx) {
+      const gestureAudio = new Audio();
+      gestureAudio.src = anim.gestureSfx;
+      gestureAudio.preload = 'auto';
+      gestureAudio.oncanplaythrough = () => updateBackgroundProgress();
+      gestureAudio.onerror = () => {
+        console.warn(`Failed to load gesture SFX: ${anim.gestureSfx}`);
+        updateBackgroundProgress();
+      };
+      anim.preloadedGestureSfx = gestureAudio;
+    }
+
+    // Preload main animation audio
+    const audio = new Audio();
+    audio.src = anim.audio;
+    audio.preload = 'auto';
+    audio.oncanplaythrough = () => updateBackgroundProgress();
+    audio.onerror = () => {
+      console.warn(`Failed to load audio: ${anim.audio}`);
+      updateBackgroundProgress();
+    };
+
+    anim.preloadedImages = images;
+    anim.preloadedAudio = audio;
+    preloadStatus[key] = false;
+  });
+
+  function updateBackgroundProgress() {
+    loadedBackgroundAssets++;
+    if (loadedBackgroundAssets >= totalBackgroundAssets) {
+      backgroundBatchKeys.forEach(k => preloadStatus[k] = true);
+      console.log("Background assets preloaded");
     }
   }
 }
@@ -158,10 +226,12 @@ function unlockAllAudio() {
   console.log('Audio unlocked and preloaded silently');
 }
 
-// Start preloading all assets
-preloadAssets(() => {
-  console.log("All assets preloaded");
+// Start preloading initial assets
+preloadInitialAssets(() => {
+  console.log("Initial assets preloaded");
   startExperience();
+  // Start background preloading after initial batch
+  preloadBackgroundAssets();
 });
 
 // Animator setup
@@ -175,7 +245,7 @@ let animator = new Animator(
 );
 
 onLanguageChange(() => {
-  if (!animationFinished && !pauseInProgress) {
+  if (!animationFinished && !pauseInProgress && hasStartedTracking && shouldPlayMusic) {
     const key = animationKeys[currentAnimationIndex];
     animator.setFrames(animations[key], translate);
     if (animator.subtitleElement) {
@@ -195,8 +265,10 @@ function onAnimationComplete() {
     animator.waitForGesture();
     instructionElementCenter.style.display = 'block';
     instructionElementCenter.innerText = translate("instructions_show_closed_fist");
-    instructionElement.innerText = ''; // Clear other instruction element
+    instructionElement.innerText = '';
     instructionElement.style.display = 'none';
+    shouldPlayMusic = false;
+    stopMusic();
   } else {
     advanceToNextAnimation();
     animator.start();
@@ -214,13 +286,39 @@ function advanceToNextAnimation() {
 
   const nextKey = animationKeys[currentAnimationIndex];
   const nextAnim = animations[nextKey];
-  animator.setFrames(nextAnim, translate);
-  animator.reset();
-  // Reset to default music for anim4 and beyond
-  if (currentAnimationIndex >= 3) { // After anim3
-    console.log(`Advancing to ${nextKey}, setting default background track`);
-    currentBackgroundTrack = 'default';
-    playMusic('default');
+  // Check if next animation is preloaded
+  if (!preloadStatus[nextKey]) {
+    console.warn(`Animation ${nextKey} not yet preloaded, delaying playback`);
+    stopMusic(); // Ensure music is stopped during loading
+    loadingElement.style.display = 'block';
+    loadingElement.innerText = 'Loading next animation...';
+    const checkPreload = setInterval(() => {
+      if (preloadStatus[nextKey]) {
+        clearInterval(checkPreload);
+        loadingElement.style.display = 'none';
+        animator.setFrames(nextAnim, translate);
+        animator.reset();
+        animator.start();
+        shouldPlayMusic = true; // Enable music for the new animation
+        // Set music track for anim4 and beyond
+        if (currentAnimationIndex >= 3) {
+          console.log(`Advancing to ${nextKey}, setting default background track`);
+          currentBackgroundTrack = 'default';
+          playMusic('default');
+        }
+      }
+    }, 100);
+  } else {
+    animator.setFrames(nextAnim, translate);
+    animator.reset();
+    animator.start();
+    shouldPlayMusic = true; // Enable music for the new animation
+    // Set music track for anim4 and beyond
+    if (currentAnimationIndex >= 3) {
+      console.log(`Advancing to ${nextKey}, setting default background track`);
+      currentBackgroundTrack = 'default';
+      playMusic('default');
+    }
   }
 }
 
@@ -231,6 +329,7 @@ function pauseBeforePanel() {
   instructionElement.innerText = '';
   instructionElementCenter.style.display = 'none';
   stopMusic();
+  shouldPlayMusic = false;
   currentBackgroundTrack = 'default';
   setTimeout(() => showThankYouPanel(), 10);
 }
@@ -258,7 +357,6 @@ export function onResults(results) {
     const landmarks = results.multiHandLandmarks[0];
 
     if (animator.isPausedForGesture) {
-      // If waiting for palm open after fist hold completed
       if (animator.waitingForPalmOpenAfterFist) {
         if (checkIfPalmOpen(landmarks)) {
           animator.waitingForPalmOpenAfterFist = false;
@@ -268,6 +366,7 @@ export function onResults(results) {
           instructionElement.innerText = '';
           //console.log('Palm opened after fist hold, advancing animation');
           currentBackgroundTrack = 'gesture';
+          shouldPlayMusic = true;
           advanceToNextAnimation();
           animator.start();
         } else {
@@ -284,7 +383,6 @@ export function onResults(results) {
       const fistDetected = checkIfFist(landmarks);
 
       if (!countdownStartTime && fistDetected) {
-        //First time fist detected — start countdown timer and play SFX
         countdownStartTime = Date.now();
 
         const currentKey = animationKeys[currentAnimationIndex];
@@ -305,14 +403,12 @@ export function onResults(results) {
         const remaining = Math.max(0, Math.ceil(3 - elapsedSeconds));
 
         if (fistDetected) {
-          // Show countdown and hide sprite while holding fist
           countdownElement.style.display = 'block';
           countdownElement.innerText = remaining.toString();
           spriteImg.style.display = 'none';
           instructionElementCenter.style.display = 'none';
           instructionElement.innerText = '';
         } else {
-          // Fist opened early, hide countdown and sprite, but don't reset countdown timer
           countdownElement.style.display = 'none';
           spriteImg.style.display = 'none';
           instructionElementCenter.style.display = 'block';
@@ -321,7 +417,6 @@ export function onResults(results) {
         }
 
         if (elapsedSeconds >= 3) {
-          // Countdown done, but wait for palm open before continuing
           countdownElement.style.display = 'none';
           instructionElement.innerText = translate("instructions_show_palm");
           instructionElement.style.display = 'block';
@@ -329,7 +424,6 @@ export function onResults(results) {
           animator.waitingForPalmOpenAfterFist = true;
         }
       } else {
-        // No fist detected yet, just prompt user
         instructionElementCenter.style.display = 'block';
         instructionElementCenter.innerText = translate("instructions_show_closed_fist");
         instructionElement.innerText = '';
@@ -342,13 +436,15 @@ export function onResults(results) {
     }
 
     if (checkIfPalmOpen(landmarks)) {
-      playMusic(currentBackgroundTrack);
       const handCenter = calculateHandCenter(landmarks);
       drawSpriteAtPalm(handCenter.x, handCenter.y);
       instructionElement.innerText = '';
       instructionElementCenter.style.display = 'none';
 
-      if (!animator.rafId && loadedAssets >= totalAssets) {
+      if (preloadStatus[animationKeys[currentAnimationIndex]] && shouldPlayMusic) {
+        playMusic(currentBackgroundTrack); // Play music if animation is ready and should play
+      }
+      if (!animator.rafId && preloadStatus[animationKeys[currentAnimationIndex]]) {
         //console.log('Palm detected, resuming animation');
         animator.resume();
       }
@@ -368,6 +464,7 @@ export function onResults(results) {
       instructionElementCenter.style.display = 'none';
     }
     stopMusic();
+    shouldPlayMusic = false;
     currentBackgroundTrack = 'default';
   }
 
@@ -394,6 +491,7 @@ function drawSpriteAtPalm(x, y) {
 
   if (!animator.rafId) {
     animator.start();
+    shouldPlayMusic = true; // Ensure music can play when animation starts
   }
 }
 
@@ -401,8 +499,8 @@ function stopAnimation() {
   spriteImg.style.display = 'none';
   animator.pause();
   stopMusic();
-  currentBackgroundTrack = 'default';
-  instructionElementCenter.style.display = 'none'; // Ensure centered instruction is hidden
+  shouldPlayMusic = false;
+  instructionElementCenter.style.display = 'none';
 }
 
 function showThankYouPanel() {
@@ -414,7 +512,6 @@ function showThankYouPanel() {
   panel.style.opacity = '1';
   panel.style.pointerEvents = 'auto';
 
-  // Play thank you audio
   if (thankYouAudio) {
     thankYouAudio.currentTime = 0;
     // thankYouAudio.play().catch(err => {
@@ -433,10 +530,11 @@ function showThankYouPanel() {
 
 export function onUserDoubleTapStart() {
   //console.log('Double-tap/click detected, starting hand tracking');
-  doubleTapPanel.style.display = 'none'; // Hide double tap panel immediately
+  doubleTapPanel.style.display = 'none';
   handPromptContainer.style.display = 'block';
   showHandPrompt = true;
   hasStartedTracking = true;
+  shouldPlayMusic = true; // Enable music on double-tap
 }
 
 export function startExperience() {
@@ -448,6 +546,7 @@ export function startExperience() {
   currentAnimationIndex = 0;
   currentBackgroundTrack = 'default';
   hasStartedTracking = false;
+  shouldPlayMusic = false; // Music off until double-tap
   animator.stop();
   animator.setFrames(animations[animationKeys[0]], translate);
   animator.reset();
@@ -455,7 +554,6 @@ export function startExperience() {
   handPromptContainer.style.display = 'none';
   instructionElement.innerText = translate("instructions_double_tap");
   instructionElementCenter.style.display = 'none';
-  // Ensure transition panel is hidden at start
   const transitionPanel = document.getElementById('transition-loading-panel');
   if (transitionPanel) {
     transitionPanel.style.visibility = 'hidden';
@@ -464,7 +562,6 @@ export function startExperience() {
   }
 }
 
-// Unlock audio on first user interaction (touch or mouse)
 window.addEventListener('touchstart', () => {
   unlockAllAudio();
 }, { once: true });
@@ -473,7 +570,6 @@ window.addEventListener('mousedown', () => {
   unlockAllAudio();
 }, { once: true });
 
-// Double tap detection
 window.addEventListener('touchend', (e) => {
   const now = Date.now();
   if (now - lastTapTime < 300) {
