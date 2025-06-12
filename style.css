@@ -141,16 +141,16 @@ body, html {
 
 #subtitle {
   position: fixed;
-  bottom: 5%;
+  bottom: 2%;
   left: 50%;
+  right: -50%;
   transform: translateX(-50%);
-  display: block;
   max-width: 90vw;
-  background:  #3874c4;
+  background: #3874c4;
   color: white;
-  font-size: 1.1rem;
-  padding: 0.5em 1em;
-  line-height: 1.4;
+  font-size: 1.25rem;
+  padding: 0.4em 0.25em;
+  line-height: 1.25;
   text-align: center;
   white-space: normal;
   word-break: break-word;
