@@ -74,7 +74,7 @@ window.addEventListener('load', () => {
           transitionPanel.style.visibility = 'hidden';
           transitionPanel.style.opacity = '0';
           startExperience(); // Start experience after transition
-        }, 2000); // Show transition panel for 2 seconds
+        }, 5000); // Show transition panel for 2 seconds
       } else {
         console.warn('Transition loading panel not found in DOM');
         startExperience(); // Fallback to startExperience if panel is missing
