@@ -429,10 +429,6 @@ function showThankYouPanel() {
   document.getElementById('visit-link-button-2')?.addEventListener('click', () => {
     window.open('https://donate.handicapinternational.be/make-a-gift/~mijn-donatie?_gl=1%2Ali1rln%2A_gcl_au%2AMTczNzkxMjY0OC4xNzQ2NDYwNzM2%2A_ga%2AMTk2MjcyMTE0MC4xNzE0NjQ4OTMy%2A_ga_875BW6Q4LX%2AczE3NDkyMjI4NzgkbzI4NSRnMCR0MTc0OTIyMjg3OCRqNjAkbDAkaDA.', '_blank');
   }, { once: true });
-
-  document.getElementById('visit-link-button-3')?.addEventListener('click', () => {
-    window.open('https://www.handicapinternational.be/nl/revalidatiezorg', '_blank');
-  }, { once: true });
 }
 
 function onUserDoubleTapStart() {
