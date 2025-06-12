@@ -140,22 +140,25 @@ body, html {
 }
 
 #subtitle {
-  position: fixed;
-  bottom: 20px;
+  position: absolute;
+  bottom: 2vh;
   left: 50%;
   transform: translateX(-50%);
+  background: #3874c4;
   color: white;
-  font-size: 1.25em;
+  padding: 0.5em 1em;
+  font-size: 1.2rem;
   text-align: center;
-  pointer-events: none;
-  background-color: rgb(56, 116, 196);
-  z-index: 10;
-  user-select: none;
+  max-width: 90vw;
+  line-height: 1.4;
+  border-radius: 0.3em;
+  white-space: normal;       /* Allows proper word wrapping */
+  word-break: break-word;    /* Prevents overflow on long words */
+  z-index: 1000;             /* Make sure it stays above other elements */
+  display: none;             /* You can toggle this to show/hide via JS */
   font-family: 'NunitoRegular', sans-serif;
-  padding: 0.3em 0.6em; /* Optional: space around the text */
-  border-radius: 6px;    /* Optional: round corners */
-  display: inline-block; /* Wrap to text size */
 }
+
 
 #thank-you-panel,
 #language-panel {
