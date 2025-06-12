@@ -11,6 +11,7 @@ export function translate(key) {
 
 // Update UI text and notify listeners
 export function updateLanguage(lang) {
+  console.log(`Updating language to: ${lang}`);
   currentLang = lang;
 
   // Update static UI elements
@@ -36,12 +37,16 @@ export function getCurrentLang() {
 
 export function initLanguageSwitcher() {
   const switcher = document.getElementById('language-switcher');
-  if (!switcher) return;
+  if (!switcher) {
+    console.warn('Language switcher not found in DOM');
+    return;
+  }
 
   switcher.addEventListener('click', (e) => {
     if (e.target.tagName === 'BUTTON') {
       const selectedLang = e.target.dataset.lang;
       if (translations[selectedLang]) {
+        console.log(`Language button clicked: ${selectedLang}`);
         updateLanguage(selectedLang);
       }
     }

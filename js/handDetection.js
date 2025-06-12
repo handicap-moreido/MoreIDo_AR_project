@@ -431,7 +431,7 @@ function showThankYouPanel() {
   }, { once: true });
 }
 
-function onUserDoubleTapStart() {
+export function onUserDoubleTapStart() {
   //console.log('Double-tap/click detected, starting hand tracking');
   doubleTapPanel.style.display = 'none'; // Hide double tap panel immediately
   handPromptContainer.style.display = 'block';
@@ -439,9 +439,10 @@ function onUserDoubleTapStart() {
   hasStartedTracking = true;
 }
 
-function startExperience() {
+export function startExperience() {
   if (experienceStarted) return;
   experienceStarted = true;
+  console.log('Starting experience');
   animationFinished = false;
   pauseInProgress = false;
   currentAnimationIndex = 0;
@@ -454,6 +455,13 @@ function startExperience() {
   handPromptContainer.style.display = 'none';
   instructionElement.innerText = translate("instructions_double_tap");
   instructionElementCenter.style.display = 'none';
+  // Ensure transition panel is hidden at start
+  const transitionPanel = document.getElementById('transition-loading-panel');
+  if (transitionPanel) {
+    transitionPanel.style.visibility = 'hidden';
+    transitionPanel.style.opacity = '0';
+    console.log('Transition panel hidden in startExperience');
+  }
 }
 
 // Unlock audio on first user interaction (touch or mouse)
