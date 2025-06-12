@@ -141,19 +141,23 @@ body, html {
 
 #subtitle {
   position: fixed;
-  bottom: 5%; /* pushes it to the bottom, adjust as needed */
-  left: 0;
-  width: 100%;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-block;
+  max-width: 90vw;
   text-align: center;
   color: white;
-  background: #3874c4; /* optional background for readability */
+  background: #3874c4; /* subtle subtitle background */
   font-size: 1.2rem;
   padding: 0.5em 1em;
   line-height: 1.4;
-  white-space: normal;         /* allow wrapping */
+  white-space: normal;
   word-break: break-word;
+  border-radius: 0.3em;
   box-sizing: border-box;
   z-index: 1000;
+  font-family: 'NunitoExtraBold', sans-serif;
 }
 
 #thank-you-panel,
