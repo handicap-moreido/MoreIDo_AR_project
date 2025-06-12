@@ -97,7 +97,7 @@ function preloadAssets(callback) {
       gestureAudio.preload = 'auto';
       gestureAudio.oncanplaythrough = () => updateProgress();
       gestureAudio.onerror = () => {
-        console.warn(`Failed to load gesture SFX: ${anim.gestureSfx}`);
+        //console.warn(`Failed to load gesture SFX: ${anim.gestureSfx}`);
         updateProgress();
       };
       anim.preloadedGestureSfx = gestureAudio;
@@ -121,7 +121,7 @@ function preloadAssets(callback) {
   // Preload thank-you panel audio
   thankYouAudio.oncanplaythrough = () => updateProgress();
   thankYouAudio.onerror = () => {
-    console.warn(`Failed to load thank you audio`);
+    //console.warn(`Failed to load thank you audio`);
     updateProgress();
   };
 
@@ -188,10 +188,10 @@ onLanguageChange(() => {
 function onAnimationComplete() {
   const currentKey = animationKeys[currentAnimationIndex];
   const currentAnim = animations[currentKey];
-  console.log(`Animation ${currentKey} completed`);
+  //console.log(`Animation ${currentKey} completed`);
 
   if (currentAnim.requiresGesture) {
-    console.log('Prompting for closed fist');
+    //console.log('Prompting for closed fist');
     animator.waitForGesture();
     instructionElementCenter.style.display = 'block';
     instructionElementCenter.innerText = translate("instructions_show_closed_fist");
@@ -266,7 +266,7 @@ export function onResults(results) {
           animator.gestureDetected();
           instructionElementCenter.style.display = 'none';
           instructionElement.innerText = '';
-          console.log('Palm opened after fist hold, advancing animation');
+          //console.log('Palm opened after fist hold, advancing animation');
           currentBackgroundTrack = 'gesture';
           advanceToNextAnimation();
           animator.start();
@@ -349,7 +349,7 @@ export function onResults(results) {
       instructionElementCenter.style.display = 'none';
 
       if (!animator.rafId && loadedAssets >= totalAssets) {
-        console.log('Palm detected, resuming animation');
+        //console.log('Palm detected, resuming animation');
         animator.resume();
       }
     } else {
@@ -417,9 +417,9 @@ function showThankYouPanel() {
   // Play thank you audio
   if (thankYouAudio) {
     thankYouAudio.currentTime = 0;
-    thankYouAudio.play().catch(err => {
-      console.warn('Failed to play thank you audio:', err);
-    });
+    // thankYouAudio.play().catch(err => {
+    //   console.warn('Failed to play thank you audio:', err);
+    // });
   }
 
   document.getElementById('visit-link-button')?.addEventListener('click', () => {
@@ -427,12 +427,16 @@ function showThankYouPanel() {
   }, { once: true });
 
   document.getElementById('visit-link-button-2')?.addEventListener('click', () => {
-    window.open('https://docs.google.com/forms/d/e/1FAIpQLSe15mp24kB68aT9eyer4Z8bhXlJxJ0qgkP9QeC4BAe4mJdZCg/viewform?usp=header', '_blank');
+    window.open('https://donate.handicapinternational.be/make-a-gift/~mijn-donatie?_gl=1%2Ali1rln%2A_gcl_au%2AMTczNzkxMjY0OC4xNzQ2NDYwNzM2%2A_ga%2AMTk2MjcyMTE0MC4xNzE0NjQ4OTMy%2A_ga_875BW6Q4LX%2AczE3NDkyMjI4NzgkbzI4NSRnMCR0MTc0OTIyMjg3OCRqNjAkbDAkaDA.', '_blank');
+  }, { once: true });
+
+  document.getElementById('visit-link-button-3')?.addEventListener('click', () => {
+    window.open('https://www.handicapinternational.be/nl/revalidatiezorg', '_blank');
   }, { once: true });
 }
 
 function onUserDoubleTapStart() {
-  console.log('Double-tap/click detected, starting hand tracking');
+  //console.log('Double-tap/click detected, starting hand tracking');
   doubleTapPanel.style.display = 'none'; // Hide double tap panel immediately
   handPromptContainer.style.display = 'block';
   showHandPrompt = true;

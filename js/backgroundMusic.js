@@ -15,25 +15,25 @@ Object.values(audioTracks).forEach(audio => {
 
 // Log loading status
 audioTracks.default.addEventListener('canplaythrough', () => {
-  console.log('Background track loaded: Assets/Audio/Background1.mp3');
+  //console.log('Background track loaded: Assets/Audio/Background1.mp3');
 });
 audioTracks.default.addEventListener('error', (e) => {
-  console.error('Failed to load background track: Assets/Audio/Background1.mp3, error:', e.message);
+  //console.error('Failed to load background track: Assets/Audio/Background1.mp3, error:', e.message);
 });
 audioTracks.gesture.addEventListener('canplaythrough', () => {
-  console.log('Gesture track loaded: Assets/Audio/BackgroundGesture.wav');
+  //console.log('Gesture track loaded: Assets/Audio/BackgroundGesture.wav');
 });
 audioTracks.gesture.addEventListener('error', (e) => {
-  console.error('Failed to load gesture track: Assets/Audio/BackgroundGesture.mp3, error:', e.message);
+  //console.error('Failed to load gesture track: Assets/Audio/BackgroundGesture.mp3, error:', e.message);
 });
 
 // Audio unlock for iOS
 window.addEventListener('touchstart', () => {
-  console.log('Attempting to unlock background audio');
+  //console.log('Attempting to unlock background audio');
   Promise.all(
     Object.values(audioTracks).map(audio =>
       audio.play().then(() => {
-        console.log(`Audio unlocked for ${audio.src}`);
+        //console.log(`Audio unlocked for ${audio.src}`);
         audio.pause();
         audio.currentTime = 0;
       }).catch(e => console.warn(`Audio unlock failed for ${audio.src}:`, e.message))
@@ -43,7 +43,7 @@ window.addEventListener('touchstart', () => {
   });
 }, { once: true });
 window.addEventListener('click', () => {
-  console.log('Attempting to unlock background audio (click)');
+  //console.log('Attempting to unlock background audio (click)');
   Promise.all(
     Object.values(audioTracks).map(audio =>
       audio.play().then(() => {
@@ -53,7 +53,7 @@ window.addEventListener('click', () => {
       }).catch(e => console.warn(`Audio unlock failed for ${audio.src} (click):`, e.message))
     )
   ).then(() => {
-    console.log('All background audio unlocked (click)');
+    //console.log('All background audio unlocked (click)');
   });
 }, { once: true });
 
@@ -63,28 +63,28 @@ let currentTrack = null;
 // Play music by track name ('default' or 'gesture')
 export function playMusic(trackName) {
   if (!audioTracks[trackName]) {
-    console.error(`Invalid track name: ${trackName}`);
+    //console.error(`Invalid track name: ${trackName}`);
     return;
   }
-  console.log(`Attempting to play background track: ${trackName}`);
+  //console.log(`Attempting to play background track: ${trackName}`);
   
   // Stop current track if playing
   if (currentTrack && currentTrack !== audioTracks[trackName]) {
     currentTrack.pause();
     currentTrack.currentTime = 0;
-    console.log(`Stopped previous track: ${currentTrack.src}`);
+    //console.log(`Stopped previous track: ${currentTrack.src}`);
   }
   
   // Play new track
   currentTrack = audioTracks[trackName];
   currentTrack.play().then(() => {
-    console.log(`Playing background track: ${currentTrack.src}`);
+    //console.log(`Playing background track: ${currentTrack.src}`);
   }).catch(e => console.error(`Failed to play background track ${trackName}:`, e.message));
 }
 
 // Stop all music
 export function stopMusic() {
-  console.log('Stopping all background music');
+  //console.log('Stopping all background music');
   Object.values(audioTracks).forEach(audio => {
     audio.pause();
     audio.currentTime = 0;

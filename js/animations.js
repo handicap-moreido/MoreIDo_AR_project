@@ -81,4 +81,12 @@ export const animations = {
     subtitle: 'anim9_subtitle',
     requiresGesture: false
   },
+  anim10: {
+    frames: Array.from({ length: 122 }, (_, i) => {
+      const frameNumber = (i + 1421).toString().padStart(5, '0'); // Start after anim9
+      return `Assets/Images/final_${frameNumber}.webp`;
+    }),
+    audio: 'Assets/Audio/English/Part10.mp3',
+    requiresGesture: false
+  },
 };

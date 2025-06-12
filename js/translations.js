@@ -16,7 +16,7 @@ export const translations = {
     anim7_subtitle: "Handicap International gave me a prosthetic leg—and hope. Step by step, I learned to walk",
     anim8_subtitle: "run... and play again -  with Viyan by my side. Now, we play beneath the trees, like before.",
     anim9_subtitle: "The war took a lot. But my prosthetic leg… reminds me of strength, support, and hope. I'm grateful.",
-    anim10_subtitle: "Zain's story reflects the real struggles of children affected by war, but with help from organizations like Handicap International,",
+    anim10_subtitle: "",
     anim11_subtitle:"recovery is possible. We can't undo the past, but we can shape the future. This future starts with you! Let your signature be a shield against war. Sign here to make a difference"
   },
   nl: {
@@ -36,7 +36,7 @@ export const translations = {
     anim7_subtitle: "Handicap International gaf me een beenprothese en hoop!",
     anim8_subtitle: "Stap voor stap leerde ik weer wandelen, lopen en spelen met Viyan aan mijn zijde. Nu spelen we terug onder de bomen, net zoals vroeger.",
     anim9_subtitle: "De oorlog heeft veel van me afgenomen. Maar mijn prothese... staat voor kracht, steun en hoop. En ik ben dankbaar.",
-    anim10_subtitle: "Het verhaal van Zain weerspiegelt de harde realiteit van duizenden kinderen die getroffen zijn door oorlog, maar dankzij organisaties zoals Handicap International,",
+    anim10_subtitle: "",
     anim11_subtitle: "is herstel mogelijk. We kunnen het verleden niet veranderen, maar samen kunnen we wel meebouwen aan een betere toekomst. Deze toekomst begint bij jou! Laat jouw handtekening een schild tegen oorlog zijn. Teken hier om het verschil te maken."
 
   },
@@ -57,7 +57,7 @@ export const translations = {
     anim7_subtitle: "Handicap International m'a donné une prothèse de jambe — et de l'espoir. Pas à pas, j'ai appris à marcher",
     anim8_subtitle: "courir... et à jouer de nouveau — avec Viyan à mes côtés. Maintenant, nous jouons sous les arbres, comme avant.",
     anim9_subtitle: "La guerre m'a tout pris. Mais ma prothèse… me rappelle la force, le soutien et l'espoir. Je suis reconnaissant.",
-    anim10_subtitle: "L'histoire de Zain reflète les vraies difficultés des enfants touchés par la guerre, mais avec l'aide d'organisations comme Handicap International,",
+    anim10_subtitle: "",
     anim11_subtitle: "la guérison est possible. Nous ne pouvons pas effacer le passé, mais nous pouvons façonner l'avenir. Cet avenir commence avec vous ! Que votre signature soit un bouclier contre la guerre. Signez ici pour faire la différence."
 
   }
