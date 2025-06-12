@@ -140,25 +140,21 @@ body, html {
 }
 
 #subtitle {
-  position: absolute;
-  bottom: 2vh;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #3874c4;
-  color: white;
-  padding: 0.5em 1em;
-  font-size: 1.2rem;
+  position: fixed;
+  bottom: 5%; /* pushes it to the bottom, adjust as needed */
+  left: 0;
+  width: 100%;
   text-align: center;
-  max-width: 90vw;
+  color: white;
+  background: #3874c4; /* optional background for readability */
+  font-size: 1.2rem;
+  padding: 0.5em 1em;
   line-height: 1.4;
-  border-radius: 0.3em;
-  white-space: normal;       /* Allows proper word wrapping */
-  word-break: break-word;    /* Prevents overflow on long words */
-  z-index: 1000;             /* Make sure it stays above other elements */
-  display: none;             /* You can toggle this to show/hide via JS */
-  font-family: 'NunitoRegular', sans-serif;
+  white-space: normal;         /* allow wrapping */
+  word-break: break-word;
+  box-sizing: border-box;
+  z-index: 1000;
 }
-
 
 #thank-you-panel,
 #language-panel {
