@@ -379,18 +379,30 @@ body, html {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6); /* translucent, if desired */
-  z-index: 5; /* MUST be lower than your language selection's z-index */
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 5;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  pointer-events: none; /* ← makes it click-through */
+  pointer-events: none;
 }
 
 #doubleTapInstructions img {
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 35vw;
+  max-height: 35vh;
 }
+
+#doubleTapInstructions p {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px; /* fixed space below image */
+  pointer-events: none; /* keep text non-interactive */
+  user-select: none;
+}
+
 
 #handPromptContainer {
   position: fixed;
