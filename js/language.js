@@ -21,6 +21,7 @@ export function updateLanguage(lang) {
   const thankYouLink = document.querySelector('.thank-you-link');
   const instructionsEl = document.getElementById('instructions');
   const Audio = document.getElementById('volume-text');
+  const DoubleTapText = document.getElementById('doubleTapInstructions p');
 
   if (thankYouHeading) thankYouHeading.innerText = translate('thank_you');
   if (thankYouPara) thankYouPara.innerText = translate('completed');
@@ -28,6 +29,7 @@ export function updateLanguage(lang) {
   if (thankYouLink) thankYouLink.innerText = translate('learn_more_link');
   if (instructionsEl) instructionsEl.innerText = translate('instructions_start');
   if (Audio) Audio.innerText = translate('Audio');
+  if (DoubleTapText) DoubleTapText.innerText = translate("DoubleTapText");
 
   // Notify listeners (for dynamic text like animation subtitles)
   languageChangeListeners.forEach(cb => cb(currentLang));
