@@ -424,3 +424,9 @@ body, html {
   justify-content: center;
   z-index: 2000;
 }
+
+#transition-loading-panel img {
+  max-width: 150px;
+  animation: pulse 2s infinite alternate;
+  margin-bottom: 40px; /* space between image and text */
+}
