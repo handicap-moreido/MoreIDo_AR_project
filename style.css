@@ -390,9 +390,12 @@ body, html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: 10; /* higher than canvas z-index 2 */
   pointer-events: none;
-  display: none;
+  display: block;
+  transform: translate(-50%, -50%) scale(2);
+  opacity: 100%;
+  animation: fadePulse 1s infinite alternate;
 }
 
 #handPromptGif {

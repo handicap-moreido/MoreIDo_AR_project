@@ -43,11 +43,6 @@ document.body.appendChild(instructionElementCenter);
 
 const handPromptContainer = document.getElementById('handPromptContainer') || document.createElement('div');
 handPromptContainer.id = 'handPromptContainer';
-handPromptContainer.style.position = 'fixed';
-handPromptContainer.style.width = '100%';
-handPromptContainer.style.height = '100%';
-handPromptContainer.style.visibility = 'hidden';
-document.body.appendChild(handPromptContainer);
 
 const doubleTapPanel = document.getElementById('doubleTapInstructions') || document.createElement('div');
 doubleTapPanel.id = 'doubleTapInstructions';
@@ -128,11 +123,9 @@ function preloadAllAssets(callback) {
         gestureAudio.preload = 'auto';
         gestureAudio.oncanplaythrough = () => {
           anim.gestureSfxLoaded = true;
-          console.log(`Mobile: Loaded gesture SFX: ${anim.gestureSfx}`);
           updateAudioProgress();
         };
         gestureAudio.onerror = () => {
-          console.warn(`Mobile: Failed to load gesture SFX: ${anim.gestureSfx}`);
           anim.gestureSfxLoaded = true;
           updateAudioProgress();
         };
@@ -144,11 +137,9 @@ function preloadAllAssets(callback) {
       audio.preload = 'auto';
       audio.oncanplaythrough = () => {
         anim.audioLoaded = true;
-        console.log(`Mobile: Loaded audio: ${anim.audio}`);
         updateAudioProgress();
       };
       audio.onerror = () => {
-        console.warn(`Mobile: Failed to load audio: ${anim.audio}`);
         anim.audioLoaded = true;
         updateAudioProgress();
       };
@@ -159,11 +150,9 @@ function preloadAllAssets(callback) {
 
     thankYouAudio.oncanplaythrough = () => {
       thankYouAudioLoaded = true;
-      console.log('Mobile: Loaded thank-you audio');
       updateAudioProgress();
     };
     thankYouAudio.onerror = () => {
-      console.warn('Mobile: Failed to load thank-you audio');
       thankYouAudioLoaded = true;
       updateAudioProgress();
     };
@@ -186,11 +175,9 @@ function preloadAllAssets(callback) {
         const img = new Image();
         img.src = src;
         img.onload = () => {
-          console.log(`Mobile: Loaded frame: ${src}`);
           updateFrameProgress();
         };
         img.onerror = () => {
-          console.warn(`Mobile: Failed to load frame: ${src}`);
           updateFrameProgress();
         };
         return img;
@@ -212,7 +199,6 @@ function preloadAllAssets(callback) {
     if (loadedAssets >= totalAssets) {
       animationKeys.forEach(k => preloadStatus[k] = true);
       loadingElement.style.visibility = 'hidden';
-      console.log('Mobile: All assets fully loaded');
       if (callback) callback();
     }
   }
@@ -228,26 +214,23 @@ function unlockAllAudio() {
   animationKeys.forEach(key => {
     const anim = animations[key];
     if (anim.preloadedAudio && !anim.audioLoaded) {
-      console.log(`Mobile: Loading audio for ${key}`);
       anim.preloadedAudio.load();
     }
     if (anim.preloadedGestureSfx && !anim.gestureSfxLoaded) {
-      console.log(`Mobile: Loading gesture SFX for ${key}`);
       anim.preloadedGestureSfx.load();
     }
   });
 
   if (!thankYouAudioLoaded) {
-    console.log('Mobile: Loading thank-you audio');
     thankYouAudio.load();
   }
 
-  console.log('Mobile: Audio unlocked');
+  console.log('Audio unlocked');
 }
 
 // Start preloading all assets
 preloadAllAssets(() => {
-  console.log("Mobile: All assets preloaded");
+  console.log("All assets preloaded");
   startExperience();
 });
 
@@ -275,10 +258,8 @@ onLanguageChange(() => {
 function onAnimationComplete() {
   const currentKey = animationKeys[currentAnimationIndex];
   const currentAnim = animations[currentKey];
-  console.log(`Mobile: Animation ${currentKey} completed, index: ${currentAnimationIndex}`);
 
   if (currentAnim.requiresGesture) {
-    console.log('Mobile: Prompting for closed fist');
     animator.waitForGesture();
     instructionElementCenter.style.visibility = 'visible';
     instructionElementCenter.innerText = translate("instructions_show_closed_fist");
@@ -297,28 +278,22 @@ function onAnimationComplete() {
 function advanceToNextAnimation() {
   const now = Date.now();
   if (now - lastAdvanceTime < 500) {
-    console.log(`Mobile: Debounced advanceToNextAnimation, index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
     return;
   }
   lastAdvanceTime = now;
 
-  console.log(`Mobile: Advancing from index ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
-
   if (animationKeys[currentAnimationIndex] === 'anim10') {
-    console.log('Mobile: Completed anim10, pausing before panel');
     pauseBeforePanel();
     return;
   }
 
   if (currentAnimationIndex >= animationKeys.length - 1) {
-    console.error(`Mobile: Invalid index increment attempted: ${currentAnimationIndex}`);
     return;
   }
 
   currentAnimationIndex++;
   const nextKey = animationKeys[currentAnimationIndex];
   const nextAnim = animations[nextKey];
-  console.log(`Mobile: Advancing to ${nextKey}, index: ${currentAnimationIndex}, frameCount: ${nextAnim.frames.length}`);
 
   // Reset animator state
   animator.isPausedForGesture = false;
@@ -327,11 +302,9 @@ function advanceToNextAnimation() {
   animator.gestureTimeout = null;
 
   if (!preloadStatus[nextKey]) {
-    console.warn(`Mobile: Animation ${nextKey} not preloaded, using first frame`);
     const fallbackAnim = { ...nextAnim, frames: [nextAnim.frames[0] || ''], preloadedImages: [nextAnim.preloadedImages?.[0] || new Image()] };
     startNextAnimation(fallbackAnim, nextKey);
   } else {
-    console.log(`Mobile: ${nextKey} already preloaded`);
     startNextAnimation(nextAnim, nextKey);
   }
 }
@@ -340,7 +313,6 @@ function startNextAnimation(nextAnim, nextKey) {
   animator.setFrames(nextAnim);
   animator.reset();
   animator.start();
-  console.log(`Mobile: Started ${nextKey}, rafId: ${animator.rafId}, index: ${currentAnimationIndex}, frameCount: ${nextAnim.frames.length}`);
   shouldPlayMusic = true;
   if (currentAnimationIndex >= 3) {
     currentBackgroundTrack = 'default';
@@ -350,7 +322,6 @@ function startNextAnimation(nextAnim, nextKey) {
   // Watchdog to ensure animation starts
   setTimeout(() => {
     if (animationKeys[currentAnimationIndex] === nextKey && !animator.isPlaying) {
-      console.warn(`Mobile: Animation ${nextKey} failed to start, retrying`);
       animator.start();
     }
   }, 2000);
@@ -358,7 +329,6 @@ function startNextAnimation(nextAnim, nextKey) {
 
 function pauseBeforePanel() {
   if (animationKeys[currentAnimationIndex] !== 'anim10' || currentAnimationIndex !== 9) {
-    console.error(`Mobile: Attempted to pause before panel at wrong index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
     return;
   }
   pauseInProgress = true;
@@ -369,7 +339,6 @@ function pauseBeforePanel() {
   stopMusic();
   shouldPlayMusic = false;
   currentBackgroundTrack = 'default';
-  console.log(`Mobile: Pausing before thank-you panel, index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
   setTimeout(() => showThankYouPanel(), 10);
 }
 
@@ -394,7 +363,6 @@ export function onResults(results) {
     }
 
     const landmarks = results.multiHandLandmarks[0];
-    console.log(`Mobile: Hand detected, index: ${currentAnimationIndex}, isPausedForGesture: ${animator.isPausedForGesture}`);
 
     if (animator.isPausedForGesture) {
       if (animator.waitingForPalmOpenAfterFist) {
@@ -420,7 +388,6 @@ export function onResults(results) {
 
           if (!animator.gestureTimeout) {
             animator.gestureTimeout = setTimeout(() => {
-              console.log(`Mobile: Gesture timeout, advancing anyway, index: ${currentAnimationIndex}`);
               animator.waitingForPalmOpenAfterFist = false;
               animator.isPausedForGesture = false;
               countdownStartTime = null;
@@ -440,7 +407,6 @@ export function onResults(results) {
       }
 
       const fistDetected = checkIfFist(landmarks);
-      console.log(`Mobile: Checking for fist, detected: ${fistDetected}, index: ${currentAnimationIndex}`);
 
       if (!countdownStartTime && fistDetected) {
         countdownStartTime = Date.now();
@@ -507,7 +473,6 @@ export function onResults(results) {
         playMusic(currentBackgroundTrack);
       }
       if (!animator.rafId && preloadStatus[animationKeys[currentAnimationIndex]]) {
-        console.log(`Mobile: Palm detected, resuming animation, index: ${currentAnimationIndex}`);
         animator.resume();
       }
     } else {
@@ -542,7 +507,6 @@ function drawSpriteAtPalm(x, y) {
 
   spriteImg.style.transform = `translate(${px}px, ${py}px) translate(-50%, -50%)`;
   spriteImg.style.visibility = 'visible';
-  console.log(`Mobile: Sprite positioned at x=${x}, y=${y}, px=${px}, py=${py}, index: ${currentAnimationIndex}`);
 
   if (!animator.rafId) {
     animator.start();
@@ -562,12 +526,11 @@ function stopAnimation() {
 
 function showThankYouPanel() {
   if (animationKeys[currentAnimationIndex] !== 'anim10' || currentAnimationIndex !== 9) {
-    console.error(`Mobile: Attempted to show thank-you panel at wrong index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
+    console.error(`Attempted to show thank-you panel at wrong index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
     return;
   }
   animationFinished = true;
   pauseInProgress = false;
-  console.log(`Mobile: Showing thank-you panel, index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
 
   const panel = document.getElementById('thank-you-panel');
   panel.style.visibility = 'visible';
@@ -576,7 +539,7 @@ function showThankYouPanel() {
 
   if (thankYouAudio && thankYouAudioLoaded) {
     thankYouAudio.currentTime = 0;
-    thankYouAudio.play().catch(err => console.warn('Mobile: Failed to play thank you audio:', err));
+    thankYouAudio.play().catch(err => console.warn('Failed to play thank you audio:', err));
   }
 
   document.getElementById('visit-link-button')?.addEventListener('click', () => {
@@ -589,7 +552,6 @@ function showThankYouPanel() {
 }
 
 export function onUserDoubleTapStart() {
-  console.log(`Mobile: Double-tap/click detected, starting hand tracking, index: ${currentAnimationIndex}`);
   doubleTapPanel.style.visibility = 'hidden';
   handPromptContainer.style.visibility = 'visible';
   showHandPrompt = true;
@@ -600,7 +562,6 @@ export function onUserDoubleTapStart() {
 export function startExperience() {
   if (experienceStarted) return;
   experienceStarted = true;
-  console.log('Mobile: Starting experience, resetting index to 0');
   animationFinished = false;
   pauseInProgress = false;
   currentAnimationIndex = 0;
@@ -618,7 +579,6 @@ export function startExperience() {
   if (transitionPanel) {
     transitionPanel.style.visibility = 'hidden';
     transitionPanel.style.opacity = '0';
-    console.log('Mobile: Transition panel hidden in startExperience');
   }
 }
 
