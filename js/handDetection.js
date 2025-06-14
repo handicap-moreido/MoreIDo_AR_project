@@ -9,11 +9,10 @@ import { playMusic, stopMusic } from './backgroundMusic.js';
 const spriteImg = document.createElement('img');
 spriteImg.className = 'sprite-animation';
 spriteImg.style.position = 'fixed';
-spriteImg.style.width = '300px'; // Fixed size to prevent layout shifts
+spriteImg.style.width = '300px';
 spriteImg.style.height = '400px';
 spriteImg.style.pointerEvents = 'none';
-spriteImg.style.visibility = 'hidden'; // Use visibility to reserve space
-spriteImg.style.transform = 'translate(-50%, -50%)'; // Center sprite
+spriteImg.style.visibility = 'hidden';
 document.body.appendChild(spriteImg);
 
 // UI elements
@@ -245,11 +244,11 @@ function preloadInitialAssets(callback) {
   preloadInitialAudio(() => preloadInitialFrames());
 }
 
-// Preload background batch (anim4 to anim10) with staggered audio loading
+// Preload background batch (anim4 to anim10) with prioritized anim4
 function preloadBackgroundAssets() {
   let currentAudioIndex = 0;
 
-  // Load one audio file at a time
+  // Load one audio file at a time, prioritizing anim4
   function loadNextBackgroundAudio(onComplete) {
     if (currentAudioIndex >= backgroundBatchKeys.length) {
       console.log('All background audio preloaded');
@@ -257,6 +256,7 @@ function preloadBackgroundAssets() {
       return;
     }
 
+    // Prioritize anim4 (index 0 in backgroundBatchKeys)
     const key = backgroundBatchKeys[currentAudioIndex];
     const anim = animations[key];
     if (preloadStatus[key] || (anim.audioLoaded && (!anim.gestureSfx || anim.gestureSfxLoaded))) {
@@ -315,7 +315,6 @@ function preloadBackgroundAssets() {
         loadedBackgroundAudioAssets++;
         updateBackgroundProgress();
         currentAudioIndex++;
-        // Schedule next audio load during idle time
         if ('requestIdleCallback' in window) {
           requestIdleCallback(() => loadNextBackgroundAudio(onComplete));
         } else {
@@ -324,7 +323,6 @@ function preloadBackgroundAssets() {
       }
     }
 
-    // Start loading if there are audio files
     if (audioFilesToLoad === 0) {
       currentAudioIndex++;
       loadNextBackgroundAudio(onComplete);
@@ -407,7 +405,7 @@ function unlockAllAudio() {
 preloadInitialAssets(() => {
   console.log("Initial assets preloaded");
   startExperience();
-  // Delay background preloading to stabilize UI
+  // Delay background preloading to stabilize UI, but prioritize anim4
   setTimeout(() => preloadBackgroundAssets(), 1000);
 });
 
@@ -463,6 +461,8 @@ function advanceToNextAnimation() {
 
   const nextKey = animationKeys[currentAnimationIndex];
   const nextAnim = animations[nextKey];
+  console.log(`Advancing to ${nextKey}`);
+
   // Check if next animation is preloaded
   if (!preloadStatus[nextKey]) {
     console.warn(`Animation ${nextKey} not yet preloaded, delaying playback`);
@@ -476,6 +476,7 @@ function advanceToNextAnimation() {
         animator.setFrames(nextAnim, translate);
         animator.reset();
         animator.start();
+        console.log(`Started ${nextKey}, rafId: ${animator.rafId}`);
         shouldPlayMusic = true;
         // Set music track for anim4 and beyond
         if (currentAnimationIndex >= 3) {
@@ -489,6 +490,7 @@ function advanceToNextAnimation() {
     animator.setFrames(nextAnim, translate);
     animator.reset();
     animator.start();
+    console.log(`Started ${nextKey}, rafId: ${animator.rafId}`);
     shouldPlayMusic = true;
     // Set music track for anim4 and beyond
     if (currentAnimationIndex >= 3) {
@@ -532,16 +534,20 @@ export function onResults(results) {
     }
 
     const landmarks = results.multiHandLandmarks[0];
+    console.log(`Mobile: Hand detected, landmarks count: ${landmarks.length}`);
 
     if (animator.isPausedForGesture) {
       if (animator.waitingForPalmOpenAfterFist) {
-        if (checkIfPalmOpen(landmarks)) {
+        const palmDetected = checkIfPalmOpen(landmarks);
+        console.log(`Mobile: Waiting for palm open, detected: ${palmDetected}`);
+
+        if (palmDetected) {
           animator.waitingForPalmOpenAfterFist = false;
           countdownStartTime = null;
           animator.gestureDetected();
           instructionElementCenter.style.visibility = 'hidden';
           instructionElement.innerText = '';
-          console.log('Palm opened after fist hold, advancing animation');
+          console.log('Mobile: Palm opened after fist hold, advancing animation');
           currentBackgroundTrack = 'gesture';
           shouldPlayMusic = true;
           advanceToNextAnimation();
@@ -552,12 +558,29 @@ export function onResults(results) {
           instructionElementCenter.style.visibility = 'hidden';
           countdownElement.style.visibility = 'hidden';
           spriteImg.style.visibility = 'hidden';
+
+          // Timeout to prevent gesture stall on mobile
+          if (!animator.gestureTimeout) {
+            animator.gestureTimeout = setTimeout(() => {
+              console.log('Mobile: Gesture timeout, advancing anyway');
+              animator.waitingForPalmOpenAfterFist = false;
+              countdownStartTime = null;
+              animator.gestureDetected();
+              instructionElementCenter.style.visibility = 'hidden';
+              instructionElement.innerText = '';
+              currentBackgroundTrack = 'gesture';
+              shouldPlayMusic = true;
+              advanceToNextAnimation();
+              animator.start();
+            }, 5000); // 5s timeout
+          }
         }
         canvasCtx.restore();
         return;
       }
 
       const fistDetected = checkIfFist(landmarks);
+      console.log(`Mobile: Checking for fist, detected: ${fistDetected}`);
 
       if (!countdownStartTime && fistDetected) {
         countdownStartTime = Date.now();
@@ -599,6 +622,8 @@ export function onResults(results) {
           instructionElement.style.visibility = 'visible';
           instructionElementCenter.style.visibility = 'hidden';
           animator.waitingForPalmOpenAfterFist = true;
+          clearTimeout(animator.gestureTimeout);
+          animator.gestureTimeout = null;
         }
       } else {
         instructionElementCenter.style.visibility = 'visible';
@@ -622,7 +647,7 @@ export function onResults(results) {
         playMusic(currentBackgroundTrack);
       }
       if (!animator.rafId && preloadStatus[animationKeys[currentAnimationIndex]]) {
-        console.log('Palm detected, resuming animation');
+        console.log('Mobile: Palm detected, resuming animation');
         animator.resume();
       }
     } else {
@@ -658,6 +683,7 @@ function drawSpriteAtPalm(x, y) {
   // Center sprite at hand using transform
   spriteImg.style.transform = `translate(${px}px, ${py}px) translate(-50%, -50%)`;
   spriteImg.style.visibility = 'visible';
+  console.log(`Mobile: Sprite positioned at x=${x}, y=${y}, px=${px}, py=${py}`);
 
   if (!animator.rafId) {
     animator.start();
@@ -671,6 +697,8 @@ function stopAnimation() {
   stopMusic();
   shouldPlayMusic = false;
   instructionElementCenter.style.visibility = 'hidden';
+  clearTimeout(animator.gestureTimeout);
+  animator.gestureTimeout = null;
 }
 
 function showThankYouPanel() {
@@ -699,7 +727,7 @@ function showThankYouPanel() {
 }
 
 export function onUserDoubleTapStart() {
-  console.log('Double-tap/click detected, starting hand tracking');
+  console.log('Mobile: Double-tap/click detected, starting hand tracking');
   doubleTapPanel.style.visibility = 'hidden';
   handPromptContainer.style.visibility = 'visible';
   showHandPrompt = true;
