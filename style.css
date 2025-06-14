@@ -199,6 +199,13 @@ body, html {
   pointer-events: auto;
 }
 
+#thank-you-panel .thank-you-text {
+  margin-bottom: 15px;
+  font-size: 0.7em;
+  color: white;
+  font-family: 'NunitoExtraBold', sans-serif;
+}
+
 #language-panel {
   background: rgba(0, 150, 255, 1);
   z-index: 9998;
