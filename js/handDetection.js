@@ -85,18 +85,12 @@ let hasStartedTracking = false;
 let shouldPlayMusic = false;
 let lastAdvanceTime = 0; // Debounce advanceToNextAnimation
 const preloadStatus = {};
-let totalInitialAssets = 0;
-let loadedInitialAssets = 0;
-let totalInitialAudioAssets = 0;
-let loadedInitialAudioAssets = 0;
-let totalInitialFrameAssets = 0;
-let loadedInitialFrameAssets = 0;
-let totalBackgroundAssets = 0;
-let loadedBackgroundAssets = 0;
-let totalBackgroundAudioAssets = 0;
-let loadedBackgroundAudioAssets = 0;
-let totalBackgroundFrameAssets = 0;
-let loadedBackgroundFrameAssets = 0;
+let totalAssets = 0;
+let loadedAssets = 0;
+let totalAudioAssets = 0;
+let loadedAudioAssets = 0;
+let totalFrameAssets = 0;
+let loadedFrameAssets = 0;
 
 let audioUnlocked = false;
 let experienceStarted = false;
@@ -108,36 +102,23 @@ const thankYouAudio = new Audio('Assets/Audio/anim11.mp3');
 thankYouAudio.preload = 'auto';
 let thankYouAudioLoaded = false;
 
-// Calculate assets for initial and background batches
-const initialBatchKeys = animationKeys.slice(0, 4); // anim1, anim2, anim3, anim4
-const backgroundBatchKeys = animationKeys.slice(4); // anim5 to anim10
-
-initialBatchKeys.forEach(key => {
+// Calculate assets for all animations
+animationKeys.forEach(key => {
   const anim = animations[key];
-  totalInitialFrameAssets += anim.frames.length;
-  totalInitialAudioAssets += 1;
+  totalFrameAssets += anim.frames.length;
+  totalAudioAssets += 1;
   if (anim.gestureSfx) {
-    totalInitialAudioAssets++;
+    totalAudioAssets++;
   }
 });
 
-backgroundBatchKeys.forEach(key => {
-  const anim = animations[key];
-  totalBackgroundFrameAssets += anim.frames.length;
-  totalBackgroundAudioAssets += 1;
-  if (anim.gestureSfx) {
-    totalBackgroundAudioAssets++;
-  }
-});
+totalAudioAssets++; // Thank-you audio
+totalAssets = totalAudioAssets + totalFrameAssets;
 
-totalInitialAudioAssets++; // Thank-you audio
-totalInitialAssets = totalInitialAudioAssets + totalInitialFrameAssets;
-totalBackgroundAssets = totalBackgroundAudioAssets + totalBackgroundFrameAssets;
-
-// Preload initial batch (anim1, anim2, anim3, anim4)
-function preloadInitialAssets(callback) {
-  function preloadInitialAudio(onAudioComplete) {
-    initialBatchKeys.forEach(key => {
+// Preload all assets (anim1 to anim10)
+function preloadAllAssets(callback) {
+  function preloadAudio(onAudioComplete) {
+    animationKeys.forEach(key => {
       const anim = animations[key];
       if (preloadStatus[key]) return;
 
@@ -148,12 +129,12 @@ function preloadInitialAssets(callback) {
         gestureAudio.oncanplaythrough = () => {
           anim.gestureSfxLoaded = true;
           console.log(`Mobile: Loaded gesture SFX: ${anim.gestureSfx}`);
-          updateInitialAudioProgress();
+          updateAudioProgress();
         };
         gestureAudio.onerror = () => {
           console.warn(`Mobile: Failed to load gesture SFX: ${anim.gestureSfx}`);
           anim.gestureSfxLoaded = true;
-          updateInitialAudioProgress();
+          updateAudioProgress();
         };
         anim.preloadedGestureSfx = gestureAudio;
       }
@@ -164,12 +145,12 @@ function preloadInitialAssets(callback) {
       audio.oncanplaythrough = () => {
         anim.audioLoaded = true;
         console.log(`Mobile: Loaded audio: ${anim.audio}`);
-        updateInitialAudioProgress();
+        updateAudioProgress();
       };
       audio.onerror = () => {
         console.warn(`Mobile: Failed to load audio: ${anim.audio}`);
         anim.audioLoaded = true;
-        updateInitialAudioProgress();
+        updateAudioProgress();
       };
       anim.preloadedAudio = audio;
 
@@ -179,25 +160,25 @@ function preloadInitialAssets(callback) {
     thankYouAudio.oncanplaythrough = () => {
       thankYouAudioLoaded = true;
       console.log('Mobile: Loaded thank-you audio');
-      updateInitialAudioProgress();
+      updateAudioProgress();
     };
     thankYouAudio.onerror = () => {
       console.warn('Mobile: Failed to load thank-you audio');
       thankYouAudioLoaded = true;
-      updateInitialAudioProgress();
+      updateAudioProgress();
     };
 
-    function updateInitialAudioProgress() {
-      loadedInitialAudioAssets++;
-      updateInitialProgress();
-      if (loadedInitialAudioAssets >= totalInitialAudioAssets) {
+    function updateAudioProgress() {
+      loadedAudioAssets++;
+      updateProgress();
+      if (loadedAudioAssets >= totalAudioAssets) {
         onAudioComplete();
       }
     }
   }
 
-  function preloadInitialFrames() {
-    initialBatchKeys.forEach(key => {
+  function preloadFrames() {
+    animationKeys.forEach(key => {
       const anim = animations[key];
       if (preloadStatus[key]) return;
 
@@ -206,11 +187,11 @@ function preloadInitialAssets(callback) {
         img.src = src;
         img.onload = () => {
           console.log(`Mobile: Loaded frame: ${src}`);
-          updateInitialFrameProgress();
+          updateFrameProgress();
         };
         img.onerror = () => {
           console.warn(`Mobile: Failed to load frame: ${src}`);
-          updateInitialFrameProgress();
+          updateFrameProgress();
         };
         return img;
       });
@@ -218,146 +199,25 @@ function preloadInitialAssets(callback) {
       anim.preloadedImages = images;
     });
 
-    function updateInitialFrameProgress() {
-      loadedInitialFrameAssets++;
-      updateInitialProgress();
+    function updateFrameProgress() {
+      loadedFrameAssets++;
+      updateProgress();
     }
   }
 
-  function updateInitialProgress() {
-    loadedInitialAssets = loadedInitialAudioAssets + loadedInitialFrameAssets;
-    const progress = Math.round((loadedInitialAssets / totalInitialAssets) * 100);
+  function updateProgress() {
+    loadedAssets = loadedAudioAssets + loadedFrameAssets;
+    const progress = Math.round((loadedAssets / totalAssets) * 100);
     loadingElement.innerText = `Loading assets... ${progress}%`;
-    if (loadedInitialAssets >= totalInitialAssets) {
-      initialBatchKeys.forEach(k => preloadStatus[k] = true);
+    if (loadedAssets >= totalAssets) {
+      animationKeys.forEach(k => preloadStatus[k] = true);
       loadingElement.style.visibility = 'hidden';
-      console.log('Mobile: Initial assets fully loaded');
+      console.log('Mobile: All assets fully loaded');
       if (callback) callback();
     }
   }
 
-  preloadInitialAudio(() => preloadInitialFrames());
-}
-
-// Preload background batch (anim5 to anim10)
-function preloadBackgroundAssets(prioritizeAnim5 = false) {
-  let currentAudioIndex = 0;
-  const keysToPreload = prioritizeAnim5 ? ['anim5'].concat(backgroundBatchKeys.filter(k => k !== 'anim5')) : backgroundBatchKeys;
-
-  function loadNextBackgroundAudio(onComplete) {
-    if (currentAudioIndex >= keysToPreload.length) {
-      console.log('Mobile: All background audio preloaded');
-      onComplete();
-      return;
-    }
-
-    const key = keysToPreload[currentAudioIndex];
-    const anim = animations[key];
-    if (preloadStatus[key] || (anim.audioLoaded && (!anim.gestureSfx || anim.gestureSfxLoaded))) {
-      currentAudioIndex++;
-      loadNextBackgroundAudio(onComplete);
-      return;
-    }
-
-    let audioFilesToLoad = 0;
-    let audioFilesLoaded = 0;
-
-    if (anim.gestureSfx && !anim.gestureSfxLoaded) {
-      audioFilesToLoad++;
-      const gestureAudio = new Audio();
-      gestureAudio.src = anim.gestureSfx;
-      gestureAudio.preload = 'auto';
-      gestureAudio.oncanplaythrough = () => {
-        anim.gestureSfxLoaded = true;
-        console.log(`Mobile: Loaded gesture SFX: ${anim.gestureSfx}`);
-        audioFilesLoaded++;
-        checkAudioComplete();
-      };
-      gestureAudio.onerror = () => {
-        console.warn(`Mobile: Failed to load gesture SFX: ${anim.gestureSfx}`);
-        anim.gestureSfxLoaded = true;
-        audioFilesLoaded++;
-        checkAudioComplete();
-      };
-      anim.preloadedGestureSfx = gestureAudio;
-    }
-
-    if (!anim.audioLoaded) {
-      audioFilesToLoad++;
-      const audio = new Audio();
-      audio.src = anim.audio;
-      audio.preload = 'auto';
-      audio.oncanplaythrough = () => {
-        anim.audioLoaded = true;
-        console.log(`Mobile: Loaded audio: ${anim.audio}`);
-        audioFilesLoaded++;
-        checkAudioComplete();
-      };
-      audio.onerror = () => {
-        console.warn(`Mobile: Failed to load audio: ${anim.audio}`);
-        anim.audioLoaded = true;
-        audioFilesLoaded++;
-        checkAudioComplete();
-      };
-      anim.preloadedAudio = audio;
-    }
-
-    function checkAudioComplete() {
-      if (audioFilesLoaded >= audioFilesToLoad) {
-        loadedBackgroundAudioAssets++;
-        updateBackgroundProgress();
-        currentAudioIndex++;
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(() => loadNextBackgroundAudio(onComplete));
-        } else {
-          setTimeout(() => loadNextBackgroundAudio(onComplete), 100);
-        }
-      }
-    }
-
-    if (audioFilesToLoad === 0) {
-      currentAudioIndex++;
-      loadNextBackgroundAudio(onComplete);
-    }
-  }
-
-  function preloadBackgroundFrames() {
-    keysToPreload.forEach(key => {
-      const anim = animations[key];
-      if (preloadStatus[key]) return;
-
-      const images = anim.frames.map(src => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => {
-          console.log(`Mobile: Loaded background frame: ${src}`);
-          updateBackgroundFrameProgress();
-        };
-        img.onerror = () => {
-          console.warn(`Mobile: Failed to load background frame: ${src}`);
-          updateBackgroundFrameProgress();
-        };
-        return img;
-      });
-
-      anim.preloadedImages = images;
-    });
-
-    function updateBackgroundFrameProgress() {
-      loadedBackgroundFrameAssets++;
-      updateBackgroundProgress();
-    }
-  }
-
-  function updateBackgroundProgress() {
-    loadedBackgroundAssets = loadedBackgroundAudioAssets + loadedBackgroundFrameAssets;
-    if (loadedBackgroundAssets >= totalBackgroundAssets) {
-      keysToPreload.forEach(k => preloadStatus[k] = true);
-      console.log("Mobile: Background assets preloaded");
-    }
-  }
-
-  loadNextBackgroundAudio(() => preloadBackgroundFrames());
+  preloadAudio(() => preloadFrames());
 }
 
 // Unlock all audio on first user interaction
@@ -385,14 +245,10 @@ function unlockAllAudio() {
   console.log('Mobile: Audio unlocked');
 }
 
-// Start preloading initial assets
-preloadInitialAssets(() => {
-  console.log("Mobile: Initial assets preloaded");
+// Start preloading all assets
+preloadAllAssets(() => {
+  console.log("Mobile: All assets preloaded");
   startExperience();
-  // Start background preloading earlier, prioritizing anim5
-  setTimeout(() => {
-    preloadBackgroundAssets(true);
-  }, 1000);
 });
 
 // Animator setup
@@ -471,32 +327,9 @@ function advanceToNextAnimation() {
   animator.gestureTimeout = null;
 
   if (!preloadStatus[nextKey]) {
-    console.warn(`Mobile: Animation ${nextKey} not preloaded, waiting`);
-    loadingElement.style.visibility = 'visible';
-    loadingElement.innerText = `Loading ${nextKey}...`;
-    
-    let retryCount = 0;
-    const maxRetries = 3;
-    const retryPreload = () => {
-      if (preloadStatus[nextKey]) {
-        console.log(`Mobile: ${nextKey} preloaded successfully`);
-        loadingElement.style.visibility = 'hidden';
-        startNextAnimation(nextAnim, nextKey);
-        return;
-      }
-      if (retryCount >= maxRetries) {
-        console.warn(`Mobile: Preload failed for ${nextKey} after ${maxRetries} retries, using first frame`);
-        loadingElement.style.visibility = 'hidden';
-        const fallbackAnim = { ...nextAnim, frames: [nextAnim.frames[0] || ''], preloadedImages: [nextAnim.preloadedImages?.[0] || new Image()] };
-        startNextAnimation(fallbackAnim, nextKey);
-        return;
-      }
-      retryCount++;
-      console.log(`Mobile: Retry ${retryCount} for preloading ${nextKey}`);
-      setTimeout(retryPreload, 1000);
-    };
-    
-    retryPreload();
+    console.warn(`Mobile: Animation ${nextKey} not preloaded, using first frame`);
+    const fallbackAnim = { ...nextAnim, frames: [nextAnim.frames[0] || ''], preloadedImages: [nextAnim.preloadedImages?.[0] || new Image()] };
+    startNextAnimation(fallbackAnim, nextKey);
   } else {
     console.log(`Mobile: ${nextKey} already preloaded`);
     startNextAnimation(nextAnim, nextKey);
