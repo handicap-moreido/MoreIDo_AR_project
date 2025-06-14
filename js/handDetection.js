@@ -147,11 +147,11 @@ function preloadInitialAssets(callback) {
         gestureAudio.preload = 'auto';
         gestureAudio.oncanplaythrough = () => {
           anim.gestureSfxLoaded = true;
-          console.log(`Loaded gesture SFX: ${anim.gestureSfx}`);
+          console.log(`Mobile: Loaded gesture SFX: ${anim.gestureSfx}`);
           updateInitialAudioProgress();
         };
         gestureAudio.onerror = () => {
-          console.warn(`Failed to load gesture SFX: ${anim.gestureSfx}`);
+          console.warn(`Mobile: Failed to load gesture SFX: ${anim.gestureSfx}`);
           anim.gestureSfxLoaded = true;
           updateInitialAudioProgress();
         };
@@ -163,11 +163,11 @@ function preloadInitialAssets(callback) {
       audio.preload = 'auto';
       audio.oncanplaythrough = () => {
         anim.audioLoaded = true;
-        console.log(`Loaded audio: ${anim.audio}`);
+        console.log(`Mobile: Loaded audio: ${anim.audio}`);
         updateInitialAudioProgress();
       };
       audio.onerror = () => {
-        console.warn(`Failed to load audio: ${anim.audio}`);
+        console.warn(`Mobile: Failed to load audio: ${anim.audio}`);
         anim.audioLoaded = true;
         updateInitialAudioProgress();
       };
@@ -178,11 +178,11 @@ function preloadInitialAssets(callback) {
 
     thankYouAudio.oncanplaythrough = () => {
       thankYouAudioLoaded = true;
-      console.log('Loaded thank-you audio');
+      console.log('Mobile: Loaded thank-you audio');
       updateInitialAudioProgress();
     };
     thankYouAudio.onerror = () => {
-      console.warn('Failed to load thank-you audio');
+      console.warn('Mobile: Failed to load thank-you audio');
       thankYouAudioLoaded = true;
       updateInitialAudioProgress();
     };
@@ -205,11 +205,11 @@ function preloadInitialAssets(callback) {
         const img = new Image();
         img.src = src;
         img.onload = () => {
-          console.log(`Loaded frame: ${src}`);
+          console.log(`Mobile: Loaded frame: ${src}`);
           updateInitialFrameProgress();
         };
         img.onerror = () => {
-          console.warn(`Failed to load frame: ${src}`);
+          console.warn(`Mobile: Failed to load frame: ${src}`);
           updateInitialFrameProgress();
         };
         return img;
@@ -231,7 +231,7 @@ function preloadInitialAssets(callback) {
     if (loadedInitialAssets >= totalInitialAssets) {
       initialBatchKeys.forEach(k => preloadStatus[k] = true);
       loadingElement.style.visibility = 'hidden';
-      console.log('Initial assets fully loaded');
+      console.log('Mobile: Initial assets fully loaded');
       if (callback) callback();
     }
   }
@@ -240,17 +240,18 @@ function preloadInitialAssets(callback) {
 }
 
 // Preload background batch (anim5 to anim10)
-function preloadBackgroundAssets() {
+function preloadBackgroundAssets(prioritizeAnim5 = false) {
   let currentAudioIndex = 0;
+  const keysToPreload = prioritizeAnim5 ? ['anim5'].concat(backgroundBatchKeys.filter(k => k !== 'anim5')) : backgroundBatchKeys;
 
   function loadNextBackgroundAudio(onComplete) {
-    if (currentAudioIndex >= backgroundBatchKeys.length) {
-      console.log('All background audio preloaded');
+    if (currentAudioIndex >= keysToPreload.length) {
+      console.log('Mobile: All background audio preloaded');
       onComplete();
       return;
     }
 
-    const key = backgroundBatchKeys[currentAudioIndex];
+    const key = keysToPreload[currentAudioIndex];
     const anim = animations[key];
     if (preloadStatus[key] || (anim.audioLoaded && (!anim.gestureSfx || anim.gestureSfxLoaded))) {
       currentAudioIndex++;
@@ -268,12 +269,12 @@ function preloadBackgroundAssets() {
       gestureAudio.preload = 'auto';
       gestureAudio.oncanplaythrough = () => {
         anim.gestureSfxLoaded = true;
-        console.log(`Loaded gesture SFX: ${anim.gestureSfx}`);
+        console.log(`Mobile: Loaded gesture SFX: ${anim.gestureSfx}`);
         audioFilesLoaded++;
         checkAudioComplete();
       };
       gestureAudio.onerror = () => {
-        console.warn(`Failed to load gesture SFX: ${anim.gestureSfx}`);
+        console.warn(`Mobile: Failed to load gesture SFX: ${anim.gestureSfx}`);
         anim.gestureSfxLoaded = true;
         audioFilesLoaded++;
         checkAudioComplete();
@@ -288,12 +289,12 @@ function preloadBackgroundAssets() {
       audio.preload = 'auto';
       audio.oncanplaythrough = () => {
         anim.audioLoaded = true;
-        console.log(`Loaded audio: ${anim.audio}`);
+        console.log(`Mobile: Loaded audio: ${anim.audio}`);
         audioFilesLoaded++;
         checkAudioComplete();
       };
       audio.onerror = () => {
-        console.warn(`Failed to load audio: ${anim.audio}`);
+        console.warn(`Mobile: Failed to load audio: ${anim.audio}`);
         anim.audioLoaded = true;
         audioFilesLoaded++;
         checkAudioComplete();
@@ -321,7 +322,7 @@ function preloadBackgroundAssets() {
   }
 
   function preloadBackgroundFrames() {
-    backgroundBatchKeys.forEach(key => {
+    keysToPreload.forEach(key => {
       const anim = animations[key];
       if (preloadStatus[key]) return;
 
@@ -329,11 +330,11 @@ function preloadBackgroundAssets() {
         const img = new Image();
         img.src = src;
         img.onload = () => {
-          console.log(`Loaded background frame: ${src}`);
+          console.log(`Mobile: Loaded background frame: ${src}`);
           updateBackgroundFrameProgress();
         };
         img.onerror = () => {
-          console.warn(`Failed to load background frame: ${src}`);
+          console.warn(`Mobile: Failed to load background frame: ${src}`);
           updateBackgroundFrameProgress();
         };
         return img;
@@ -351,8 +352,8 @@ function preloadBackgroundAssets() {
   function updateBackgroundProgress() {
     loadedBackgroundAssets = loadedBackgroundAudioAssets + loadedBackgroundFrameAssets;
     if (loadedBackgroundAssets >= totalBackgroundAssets) {
-      backgroundBatchKeys.forEach(k => preloadStatus[k] = true);
-      console.log("Background assets preloaded");
+      keysToPreload.forEach(k => preloadStatus[k] = true);
+      console.log("Mobile: Background assets preloaded");
     }
   }
 
@@ -367,28 +368,31 @@ function unlockAllAudio() {
   animationKeys.forEach(key => {
     const anim = animations[key];
     if (anim.preloadedAudio && !anim.audioLoaded) {
-      console.log(`Loading audio for ${key}`);
+      console.log(`Mobile: Loading audio for ${key}`);
       anim.preloadedAudio.load();
     }
     if (anim.preloadedGestureSfx && !anim.gestureSfxLoaded) {
-      console.log(`Loading gesture SFX for ${key}`);
+      console.log(`Mobile: Loading gesture SFX for ${key}`);
       anim.preloadedGestureSfx.load();
     }
   });
 
   if (!thankYouAudioLoaded) {
-    console.log('Loading thank-you audio');
+    console.log('Mobile: Loading thank-you audio');
     thankYouAudio.load();
   }
 
-  console.log('Audio unlocked');
+  console.log('Mobile: Audio unlocked');
 }
 
 // Start preloading initial assets
 preloadInitialAssets(() => {
-  console.log("Initial assets preloaded");
+  console.log("Mobile: Initial assets preloaded");
   startExperience();
-  setTimeout(() => preloadBackgroundAssets(), 1000);
+  // Start background preloading earlier, prioritizing anim5
+  setTimeout(() => {
+    preloadBackgroundAssets(true);
+  }, 1000);
 });
 
 // Animator setup
@@ -437,24 +441,28 @@ function onAnimationComplete() {
 function advanceToNextAnimation() {
   const now = Date.now();
   if (now - lastAdvanceTime < 500) {
-    console.log(`Mobile: Debounced advanceToNextAnimation, index: ${currentAnimationIndex}`);
+    console.log(`Mobile: Debounced advanceToNextAnimation, index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
     return;
   }
   lastAdvanceTime = now;
 
-  console.log(`Mobile: Advancing from index ${currentAnimationIndex}`);
+  console.log(`Mobile: Advancing from index ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
 
-  // Check if current animation is anim10
   if (animationKeys[currentAnimationIndex] === 'anim10') {
     console.log('Mobile: Completed anim10, pausing before panel');
     pauseBeforePanel();
     return;
   }
 
+  if (currentAnimationIndex >= animationKeys.length - 1) {
+    console.error(`Mobile: Invalid index increment attempted: ${currentAnimationIndex}`);
+    return;
+  }
+
   currentAnimationIndex++;
   const nextKey = animationKeys[currentAnimationIndex];
   const nextAnim = animations[nextKey];
-  console.log(`Mobile: Advancing to ${nextKey}, index: ${currentAnimationIndex}`);
+  console.log(`Mobile: Advancing to ${nextKey}, index: ${currentAnimationIndex}, frameCount: ${nextAnim.frames.length}`);
 
   // Reset animator state
   animator.isPausedForGesture = false;
@@ -462,58 +470,64 @@ function advanceToNextAnimation() {
   clearTimeout(animator.gestureTimeout);
   animator.gestureTimeout = null;
 
-  // Check if next animation is preloaded
   if (!preloadStatus[nextKey]) {
-    console.warn(`Mobile: Animation ${nextKey} not yet preloaded, delaying playback`);
-    stopMusic();
+    console.warn(`Mobile: Animation ${nextKey} not preloaded, waiting`);
     loadingElement.style.visibility = 'visible';
-    loadingElement.innerText = 'Loading next animation...';
-    const checkPreload = setInterval(() => {
+    loadingElement.innerText = `Loading ${nextKey}...`;
+    
+    let retryCount = 0;
+    const maxRetries = 3;
+    const retryPreload = () => {
       if (preloadStatus[nextKey]) {
-        clearInterval(checkPreload);
+        console.log(`Mobile: ${nextKey} preloaded successfully`);
         loadingElement.style.visibility = 'hidden';
-        animator.setFrames(nextAnim, translate);
-        animator.reset();
-        animator.start();
-        console.log(`Mobile: Started ${nextKey}, rafId: ${animator.rafId}`);
-        shouldPlayMusic = true;
-        if (currentAnimationIndex >= 3) {
-          currentBackgroundTrack = 'default';
-          playMusic('default');
-        }
+        startNextAnimation(nextAnim, nextKey);
+        return;
       }
-    }, 100);
-    // Fallback: Use placeholder if preload takes too long
-    setTimeout(() => {
-      if (!preloadStatus[nextKey]) {
-        console.warn(`Mobile: Preload timeout for ${nextKey}, using placeholder`);
-        clearInterval(checkPreload);
+      if (retryCount >= maxRetries) {
+        console.warn(`Mobile: Preload failed for ${nextKey} after ${maxRetries} retries, using first frame`);
         loadingElement.style.visibility = 'hidden';
-        animator.setFrames({ ...nextAnim, frames: [nextAnim.frames[0] || ''] }, translate);
-        animator.reset();
-        animator.start();
-        console.log(`Mobile: Started ${nextKey} with placeholder, rafId: ${animator.rafId}`);
-        shouldPlayMusic = true;
-        if (currentAnimationIndex >= 3) {
-          currentBackgroundTrack = 'default';
-          playMusic('default');
-        }
+        const fallbackAnim = { ...nextAnim, frames: [nextAnim.frames[0] || ''], preloadedImages: [nextAnim.preloadedImages?.[0] || new Image()] };
+        startNextAnimation(fallbackAnim, nextKey);
+        return;
       }
-    }, 5000);
+      retryCount++;
+      console.log(`Mobile: Retry ${retryCount} for preloading ${nextKey}`);
+      setTimeout(retryPreload, 1000);
+    };
+    
+    retryPreload();
   } else {
-    animator.setFrames(nextAnim, translate);
-    animator.reset();
-    animator.start();
-    console.log(`Mobile: Started ${nextKey}, rafId: ${animator.rafId}`);
-    shouldPlayMusic = true;
-    if (currentAnimationIndex >= 3) {
-      currentBackgroundTrack = 'default';
-      playMusic('default');
-    }
+    console.log(`Mobile: ${nextKey} already preloaded`);
+    startNextAnimation(nextAnim, nextKey);
   }
 }
 
+function startNextAnimation(nextAnim, nextKey) {
+  animator.setFrames(nextAnim);
+  animator.reset();
+  animator.start();
+  console.log(`Mobile: Started ${nextKey}, rafId: ${animator.rafId}, index: ${currentAnimationIndex}, frameCount: ${nextAnim.frames.length}`);
+  shouldPlayMusic = true;
+  if (currentAnimationIndex >= 3) {
+    currentBackgroundTrack = 'default';
+    playMusic('default');
+  }
+
+  // Watchdog to ensure animation starts
+  setTimeout(() => {
+    if (animationKeys[currentAnimationIndex] === nextKey && !animator.isPlaying) {
+      console.warn(`Mobile: Animation ${nextKey} failed to start, retrying`);
+      animator.start();
+    }
+  }, 2000);
+}
+
 function pauseBeforePanel() {
+  if (animationKeys[currentAnimationIndex] !== 'anim10' || currentAnimationIndex !== 9) {
+    console.error(`Mobile: Attempted to pause before panel at wrong index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
+    return;
+  }
   pauseInProgress = true;
   animator.stop();
   spriteImg.style.visibility = 'hidden';
@@ -522,7 +536,7 @@ function pauseBeforePanel() {
   stopMusic();
   shouldPlayMusic = false;
   currentBackgroundTrack = 'default';
-  console.log(`Mobile: Pausing before thank-you panel, index: ${currentAnimationIndex}`);
+  console.log(`Mobile: Pausing before thank-you panel, index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
   setTimeout(() => showThankYouPanel(), 10);
 }
 
@@ -605,7 +619,7 @@ export function onResults(results) {
           const sfx = currentAnim.preloadedGestureSfx;
           if (sfx) {
             sfx.currentTime = 0;
-            sfx.play().catch(err => console.warn("Failed to play gesture SFX:", err));
+            sfx.play().catch(err => console.warn("Mobile: Failed to play gesture SFX:", err));
           }
           animator.gestureSfxPlayed = true;
         }
@@ -714,20 +728,22 @@ function stopAnimation() {
 }
 
 function showThankYouPanel() {
+  if (animationKeys[currentAnimationIndex] !== 'anim10' || currentAnimationIndex !== 9) {
+    console.error(`Mobile: Attempted to show thank-you panel at wrong index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
+    return;
+  }
   animationFinished = true;
   pauseInProgress = false;
-  console.log(`Mobile: Showing thank-you panel, index: ${currentAnimationIndex}`);
+  console.log(`Mobile: Showing thank-you panel, index: ${currentAnimationIndex}, key: ${animationKeys[currentAnimationIndex]}`);
 
   const panel = document.getElementById('thank-you-panel');
   panel.style.visibility = 'visible';
   panel.style.opacity = '1';
   panel.style.pointerEvents = 'auto';
 
-  if (thankYouAudio) {
+  if (thankYouAudio && thankYouAudioLoaded) {
     thankYouAudio.currentTime = 0;
-    // thankYouAudio.play().catch(err => {
-    //   console.warn('Failed to play thank you audio:', err);
-    // });
+    thankYouAudio.play().catch(err => console.warn('Mobile: Failed to play thank you audio:', err));
   }
 
   document.getElementById('visit-link-button')?.addEventListener('click', () => {
