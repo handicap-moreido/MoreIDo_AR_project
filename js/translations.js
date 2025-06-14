@@ -21,7 +21,7 @@ export const translations = {
   },
   nl: {
     thank_you: "Bedankt voor je deelname!",
-    completed: "Je hebt de ervaring voltooid.",
+    completed: "90% van de slachtoffers van explosieve wapens in dichtbevolkte gebieden zijn burgers. Kinderen lopen bijzonder veel risico.\nBurgers hebben geen toegang meer tot gezondheidszorg, onderwijs en hun eigen huis. Wat overblijft zijn steden in puin en een bevolking gevangen door angst en trauma.\nHandicap International helpt deze onschuldige mensen te beschermen en het verbod op verboden wapens te handhaven.\nHun werk omvat het ruimen van landmijnen, het bieden van revalidatie, ondersteuning voor overlevenden en het richten op langetermijnherstel voor gemeenschappen.",
     learn_more_link: "Leer meer",
     learn_more_button: "Teken de petitie",
     instructions_show_palm: "Toon je handpalm!",
@@ -42,7 +42,7 @@ export const translations = {
   },
   fr: {
     thank_you: "Merci d'avoir participé !",
-    completed: "Vous avez terminé l'expérience.",
+    completed: "90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés.\nLes civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Ce qui reste, ce sont des villes en ruines et une population prisonnière de la peur et du traumatisme.\nHandicap International aide à protéger ces personnes innocentes et à maintenir l’interdiction des armes interdites.\nLeur travail consiste à déminer, offrir des services de réhabilitation, soutenir les survivants et se concentrer sur les efforts de rétablissement à long terme pour les communautés.",
     learn_more_link: "En savoir plus",
     learn_more_button: "Signer la pétition",
     instructions_show_palm: "Montrez votre paume !",
