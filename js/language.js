@@ -20,12 +20,14 @@ export function updateLanguage(lang) {
   const learnMoreBtn = document.getElementById('visit-link-button');
   const thankYouLink = document.querySelector('.thank-you-link');
   const instructionsEl = document.getElementById('instructions');
+  const Audio = document.getElementById('volume-text');
 
   if (thankYouHeading) thankYouHeading.innerText = translate('thank_you');
   if (thankYouPara) thankYouPara.innerText = translate('completed');
   if (learnMoreBtn) learnMoreBtn.innerText = translate('learn_more_button');
   if (thankYouLink) thankYouLink.innerText = translate('learn_more_link');
   if (instructionsEl) instructionsEl.innerText = translate('instructions_start');
+  if (Audio) Audio.innerText = translate('Audio');
 
   // Notify listeners (for dynamic text like animation subtitles)
   languageChangeListeners.forEach(cb => cb(currentLang));
