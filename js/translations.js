@@ -3,7 +3,7 @@ export const translations = {
     thank_you: "Thank you for participating!",
     Audio: "Better experienced with volume",
     completed: "90% of victims of explosive weapons in populated area are civilians. Children are especially at risk.\nCivilians no longer have access to healthcare, education and their own house. Wat remains are cities in ruins, and a population trapped by fear and trauma.\nHandicap International helps protect these innocent people and keep the ban on forbidden weapons.\nTheir work involves clearing landmines, offering rehabilitation, support for survivors and focusing on long-term recovery efforts for communities.",
-    DoubleTapText: "Double Tap to flip the camera",
+    DoubleTapText: "Double tap to flip the camera",
     learn_more_link: "Learn more about rehabilitation care",
     learn_more_button: "Sign the petition",
     instructions_show_palm: "Show your palm!",
