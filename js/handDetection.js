@@ -110,101 +110,76 @@ animationKeys.forEach(key => {
 totalAudioAssets++; // Thank-you audio
 totalAssets = totalAudioAssets + totalFrameAssets;
 
-// Preload all assets (anim1 to anim10)
-function preloadAllAssets(callback) {
-  function preloadAudio(onAudioComplete) {
-    animationKeys.forEach(key => {
-      const anim = animations[key];
-      if (preloadStatus[key]) return;
+export function preloadFrames(callback) {
+  animationKeys.forEach(key => {
+    const anim = animations[key];
+    if (preloadStatus[key]) return;
 
-      if (anim.gestureSfx) {
-        const gestureAudio = new Audio();
-        gestureAudio.src = anim.gestureSfx;
-        gestureAudio.preload = 'auto';
-        gestureAudio.oncanplaythrough = () => {
-          anim.gestureSfxLoaded = true;
-          updateAudioProgress();
-        };
-        gestureAudio.onerror = () => {
-          anim.gestureSfxLoaded = true;
-          updateAudioProgress();
-        };
-        anim.preloadedGestureSfx = gestureAudio;
-      }
-
-      const audio = new Audio();
-      audio.src = anim.audio;
-      audio.preload = 'auto';
-      audio.oncanplaythrough = () => {
-        anim.audioLoaded = true;
-        updateAudioProgress();
-      };
-      audio.onerror = () => {
-        anim.audioLoaded = true;
-        updateAudioProgress();
-      };
-      anim.preloadedAudio = audio;
-
-      preloadStatus[key] = false;
+    const images = anim.frames.map(src => {
+      const img = new Image();
+      img.src = src;
+      img.onload = updateFrameProgress;
+      img.onerror = updateFrameProgress;
+      return img;
     });
 
-    thankYouAudio.oncanplaythrough = () => {
-      thankYouAudioLoaded = true;
-      updateAudioProgress();
-    };
-    thankYouAudio.onerror = () => {
-      thankYouAudioLoaded = true;
-      updateAudioProgress();
-    };
+    anim.preloadedImages = images;
+  });
 
-    function updateAudioProgress() {
-      loadedAudioAssets++;
-      updateProgress();
-      if (loadedAudioAssets >= totalAudioAssets) {
-        onAudioComplete();
-      }
+  function updateFrameProgress() {
+    loadedFrameAssets++;
+    updateProgress();
+    if (loadedFrameAssets >= totalFrameAssets && callback) {
+      callback();
     }
   }
+}
 
-  function preloadFrames() {
-    animationKeys.forEach(key => {
-      const anim = animations[key];
-      if (preloadStatus[key]) return;
+export function preloadAudio(callback) {
+  animationKeys.forEach(key => {
+    const anim = animations[key];
+    if (anim.preloadedAudio || anim.audioLoaded) return;
 
-      const images = anim.frames.map(src => {
-        const img = new Image();
-        img.src = src;
-        img.onload = () => {
-          updateFrameProgress();
-        };
-        img.onerror = () => {
-          updateFrameProgress();
-        };
-        return img;
-      });
+    const audio = new Audio();
+    audio.src = anim.audio;
+    audio.preload = 'auto';
+    audio.oncanplaythrough = updateAudioProgress;
+    audio.onerror = updateAudioProgress;
+    anim.preloadedAudio = audio;
 
-      anim.preloadedImages = images;
-    });
+    if (anim.gestureSfx) {
+      const gestureAudio = new Audio();
+      gestureAudio.src = anim.gestureSfx;
+      gestureAudio.preload = 'auto';
+      gestureAudio.oncanplaythrough = updateAudioProgress;
+      gestureAudio.onerror = updateAudioProgress;
+      anim.preloadedGestureSfx = gestureAudio;
+    }
+  });
 
-    function updateFrameProgress() {
-      loadedFrameAssets++;
-      updateProgress();
+  thankYouAudio.oncanplaythrough = updateAudioProgress;
+  thankYouAudio.onerror = updateAudioProgress;
+
+  function updateAudioProgress() {
+    loadedAudioAssets++;
+    updateProgress();
+    if (loadedAudioAssets >= totalAudioAssets && callback) {
+      callback();
     }
   }
+}
 
   function updateProgress() {
-    loadedAssets = loadedAudioAssets + loadedFrameAssets;
+    loadedAssets = loadedFrameAssets + loadedAudioAssets;
     const progress = Math.round((loadedAssets / totalAssets) * 100);
     loadingElement.innerText = `Loading assets... ${progress}%`;
+
     if (loadedAssets >= totalAssets) {
       animationKeys.forEach(k => preloadStatus[k] = true);
-      loadingElement.style.visibility = 'hidden';
-      if (callback) callback();
     }
   }
 
-  preloadAudio(() => preloadFrames());
-}
+  //preloadAudio(() => preloadFrames());
 
 // Unlock all audio on first user interaction
 function unlockAllAudio() {
@@ -228,10 +203,8 @@ function unlockAllAudio() {
   console.log('Audio unlocked');
 }
 
-// Start preloading all assets
-preloadAllAssets(() => {
-  console.log("All assets preloaded");
-  startExperience();
+preloadFrames(() => {
+  console.log("Frames loaded. Waiting for language selection.");
 });
 
 // Animator setup

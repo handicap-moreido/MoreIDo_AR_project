@@ -1,4 +1,6 @@
 import { translations } from './translations.js';
+import { setAudioLanguage } from './animations.js';
+import { preloadAudio, startExperience } from './handDetection.js';
 
 // Default language
 let currentLang = 'en';
@@ -33,7 +35,25 @@ export function updateLanguage(lang) {
 
   // Notify listeners (for dynamic text like animation subtitles)
   languageChangeListeners.forEach(cb => cb(currentLang));
+
+  setAudioLanguage(lang);
+
+  // Show loading UI
+  const loadingElement = document.getElementById('loading');
+  if (loadingElement) {
+    loadingElement.style.visibility = 'visible';
+    loadingElement.innerText = 'Loading audio...';
+  }
+
+  // Defer audio loading until after language is selected
+  preloadAudio(() => {
+    console.log("Audio loaded after language change");
+    if (loadingElement) loadingElement.style.visibility = 'hidden';
+    // Optionally start experience if this is the trigger point
+    startExperience();
+  });
 }
+
 
 export function getCurrentLang() {
   return currentLang;
