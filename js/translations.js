@@ -2,7 +2,7 @@ export const translations = {
   en: {
     thank_you: "Thank you for participating!",
     Audio: "Better experienced with volume",
-    completed: "90% of victims of explosive weapons in populated area are civilians. Children are especially at risk. Civilians no longer have access to healthcare, education and their own house. Wat remains are cities in ruins, and a population trapped by fear and trauma.\nHandicap International helps protect these innocent people and keep the ban on forbidden weapons. Their work involves clearing landmines, offering rehabilitation, support for survivors and focusing on long-term recovery efforts for communities.",
+    completed: "90% of victims of explosive weapons in populated areas are civilians. Children are especially at risk. Civilians no longer have access to healthcare, education, and their own houses. What remains are cities in ruins, and a population trapped by fear and trauma.\nHandicap International helps protect these innocent people and keeps the ban on forbidden weapons. Their work involves clearing landmines, offering rehabilitation, support for survivors, and focusing on long-term recovery efforts for communities.",
     DoubleTapText: "Double tap to flip the camera",
     learn_more_link: "Learn more about rehabilitation care",
     learn_more_button: "Sign the petition",
@@ -24,7 +24,7 @@ export const translations = {
   nl: {
     thank_you: "Bedankt voor je deelname!",
     Audio: "Beter te ervaren met geluid",
-    completed: "90% van de slachtoffers van explosieve wapens in dichtbevolkte gebieden zijn burgers. Kinderen lopen bijzonder veel risico.Burgers hebben geen toegang meer tot gezondheidszorg, onderwijs en hun eigen huis. Wat overblijft zijn steden in puin en een bevolking gevangen door angst en trauma.\nHandicap International helpt deze onschuldige mensen te beschermen en het verbod op verboden wapens te handhaven. Hun werk omvat het ruimen van landmijnen, het bieden van revalidatie, ondersteuning voor overlevenden en het richten op langetermijnherstel voor gemeenschappen.",
+    completed: "90% van de slachtoffers van explosieve wapens in dichtbevolkte gebieden zijn burgers. Kinderen lopen bijzonder veel risico.Burgers hebben geen toegang meer tot gezondheidszorg, onderwijs en hun eigen huis. Wat overblijft, zijn steden in puin en een bevolking gevangen door angst en trauma.\nHandicap International helpt deze onschuldige mensen te beschermen en het verbod op verboden wapens te handhaven. Hun werk omvat het ruimen van landmijnen, het bieden van revalidatie, het ondersteunen van overlevenden en het bevorderen van langetermijnherstel voor gemeenschappen",
     DoubleTapText: "Dubbel tik om de camera te draaien",
     learn_more_link: "Leer meer",
     learn_more_button: "Teken de petitie",
@@ -47,7 +47,7 @@ export const translations = {
   fr: {
     thank_you: "Merci d'avoir participé !",
     Audio: "Mieux vécu avec le volume",
-    completed: "90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés. sLes civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Ce qui reste, ce sont des villes en ruines et une population prisonnière de la peur et du traumatisme.\nHandicap International aide à protéger ces personnes innocentes et à maintenir l’interdiction des armes interdites. Leur travail consiste à déminer, offrir des services de réhabilitation, soutenir les survivants et se concentrer sur les efforts de rétablissement à long terme pour les communautés.",
+    completed: "90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés. sLes civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Ce qui reste, ce sont des villes en ruines et une population prisonnière de la peur et du traumatisme.\n90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés. sLes civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Ce qui reste, ce sont des villes en ruines et une population prisonnière de la peur et du traumatisme.",
     DoubleTapText: "Double tapez pour retourner la caméra",
     learn_more_link: "En savoir plus",
     learn_more_button: "Signer la pétition",
