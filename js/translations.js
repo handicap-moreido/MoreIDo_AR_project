@@ -37,9 +37,9 @@ export const translations = {
     anim4_subtitle: "ontplofte de wereld onder mijn voeten. Een landmijn…",
     anim5_subtitle: "Ik werd wakker in het ziekenhuis – zonder mijn rechterbeen. Het leek wel een nachtmerrie. Maar de pijn was echt.",
     anim6_subtitle: "Dagen gingen voorbij. En toen kwam er hulp.",
-    anim7_subtitle: "Handicap International gaf me een beenprothese en hoop!",
+    anim7_subtitle: "Handicap International gaf me een prothese en hoop!",
     anim8_subtitle: "Stap voor stap leerde ik weer wandelen, lopen en spelen met Viyan aan mijn zijde. Nu spelen we terug onder de bomen, net zoals vroeger.",
-    anim9_subtitle: "De oorlog heeft veel van me afgenomen. Maar mijn prothese... staat voor kracht, steun en hoop. En ik ben dankbaar.",
+    anim9_subtitle: "De oorlog heeft veel van me afgenomen. Maar mijn prothese... staat voor kracht, steun en hoop. Ik ben dankbaar.",
     anim10_subtitle: "",
     anim11_subtitle: "is herstel mogelijk. We kunnen het verleden niet veranderen, maar samen kunnen we wel meebouwen aan een betere toekomst. Deze toekomst begint bij jou! Laat jouw handtekening een schild tegen oorlog zijn. Teken hier om het verschil te maken."
 
