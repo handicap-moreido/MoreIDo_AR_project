@@ -24,7 +24,7 @@ export const translations = {
   nl: {
     thank_you: "Bedankt voor je deelname!",
     Audio: "Beter te ervaren met geluid",
-    completed: "90% van de slachtoffers van explosieve wapens in dichtbevolkte gebieden zijn burgers. Kinderen lopen bijzonder veel risico.Burgers hebben geen toegang meer tot gezondheidszorg, onderwijs en hun eigen huis. Wat overblijft, zijn steden in puin en een bevolking gevangen door angst en trauma.\nHandicap International helpt deze onschuldige mensen te beschermen en het verbod op verboden wapens te handhaven. Hun werk omvat het ruimen van landmijnen, het bieden van revalidatie, het ondersteunen van overlevenden en het bevorderen van langetermijnherstel voor gemeenschappen.",
+    completed: "90% van de slachtoffers van explosieve wapens in dichtbevolkte gebieden zijn burgers. Kinderen lopen bijzonder veel risico. Burgers hebben geen toegang meer tot gezondheidszorg, onderwijs en hun eigen huis. Wat overblijft, zijn steden in puin en een bevolking gevangen door angst en trauma.\nHandicap International helpt deze onschuldige mensen te beschermen en het verbod op verboden wapens te handhaven. Hun werk omvat het ruimen van landmijnen, het bieden van revalidatie, het ondersteunen van overlevenden en het bevorderen van langetermijnherstel voor gemeenschappen.",
     DoubleTapText: "Dubbel tik om de camera te draaien",
     learn_more_link: "Leer meer",
     learn_more_button: "Teken de petitie",
