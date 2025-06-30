@@ -47,7 +47,7 @@ export const translations = {
   fr: {
     thank_you: "Merci d'avoir participé !",
     Audio: "Mieux vécu avec le volume",
-    completed: "90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés. Les civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Ce qui reste, ce sont des villes en ruines et une population prisonnière de la peur et de ses traumatismes.\n90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés. sLes civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Ce qui reste, ce sont des villes en ruines et une population prisonnière de la peur et du traumatisme.",
+    completed: "90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés. Les civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Il ne reste que des villes en ruines et une population prisonnière de la peur et de ses traumatismes.\n90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés. sLes civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Ce qui reste, ce sont des villes en ruines et une population prisonnière de la peur et du traumatisme.",
     DoubleTapText: "Double tapez pour retourner la caméra",
     learn_more_link: "En savoir plus",
     learn_more_button: "Signer la pétition",
