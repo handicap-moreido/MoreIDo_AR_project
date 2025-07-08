@@ -61,8 +61,8 @@ export const translations = {
     anim5_subtitle: "Je me suis réveillé à l'hôpital, sans ma jambe droite. Cela ressemblait à un cauchemar. Mais la douleur était bien réelle.",
     anim6_subtitle: "Les jours ont passé. Puis... l'aide est arrivée.",
     anim7_subtitle: "Handicap International m'a donné une prothèse — et de l'espoir. Pas à pas, j'ai réappris à marcher",
-    anim8_subtitle: "courir... et à jouer — avec Viyan à mes côtés. Maintenant, nous jouons sous les arbres, comme avant.",
-    anim9_subtitle: "La guerre m'a tout pris. Mais ma prothèse… représente la force, le soutien et l'espoir. Je suis reconnaissant.",
+    anim8_subtitle: "courir... et à jouer — avec Viyan à mes côtés. Aujourd'hui, nous jouons sous les arbres, comme avant.",
+    anim9_subtitle: "La guerre m'a fait perdre beaucoup de choses. Mais ma prothèse… représente la force, le soutien et l'espoir. Je suis reconnaissant.",
     anim10_subtitle: "",
     anim11_subtitle: "la guérison est possible. Nous ne pouvons pas effacer le passé, mais nous pouvons façonner l'avenir. Cet avenir commence avec vous ! Que votre signature soit un bouclier contre la guerre. Signez ici pour faire la différence."
 
