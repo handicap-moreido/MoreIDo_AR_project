@@ -80,9 +80,31 @@
     <div class="link-and-button">
       <a href="https://www.handicapinternational.be/nl/revalidatiezorg" target="_blank" class="thank-you-link">Learn more about rehabilitation care</a>
       <button id="visit-link-button" class="thank-you-button">Sign the petition</button>
-      <button id="visit-link-button-2" class="thank-you-button">Donate</button>
+      <button id="donate-button" class="thank-you-button">Donate</button>
     </div>
   </div>
+<script>
+  const translations = {
+    en: {
+      donate: "Donate"
+    },
+    nl: {
+      donate: "Doneer"
+    },
+    fr: {
+      donate: "Faire un don"
+    }
+  };
 
+  const donateButton = document.getElementById("donate-button");
+  const languageButtons = document.querySelectorAll("#language-switcher button");
+
+  languageButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const selectedLang = button.getAttribute("data-lang");
+      donateButton.textContent = translations[selectedLang].donate;
+    });
+  });
+</script>
 </body>
 </html>
