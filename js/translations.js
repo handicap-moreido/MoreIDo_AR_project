@@ -37,7 +37,7 @@ export const translations = {
     anim4_subtitle: "ontplofte de wereld onder mijn voeten. Een landmijn…",
     anim5_subtitle: "Ik werd wakker in het ziekenhuis – zonder mijn rechterbeen. Het leek wel een nachtmerrie. Maar de pijn was echt.",
     anim6_subtitle: "Dagen gingen voorbij. En toen kwam er hulp.",
-    anim7_subtitle: "Handicap International gaf me een prothese en hoop!",
+    anim7_subtitle: "Handicap International gaf me een beenprothese en hoop!",
     anim8_subtitle: "Stap voor stap leerde ik weer wandelen, lopen en spelen met Viyan aan mijn zijde. Nu spelen we terug onder de bomen, net zoals vroeger.",
     anim9_subtitle: "De oorlog heeft veel van me afgenomen. Maar mijn prothese... staat voor kracht, steun en hoop. Ik ben dankbaar.",
     anim10_subtitle: "",
@@ -45,7 +45,7 @@ export const translations = {
 
   },
   fr: {
-    thank_you: "Merci d'avoir participé !",
+    thank_you: "Merci d'avoir participé!",
     Audio: "Mieux vécu avec le volume",
     completed: "90 % des victimes d’armes explosives en zones peuplées sont des civils. Les enfants sont particulièrement exposés. Les civils n’ont plus accès aux soins de santé, à l’éducation ni à leur propre maison. Il ne reste que des villes en ruines et une population prisonnière de la peur et de ses traumatismes.\nHandicap International aide à protéger ces personnes innocentes et à maintenir les traités d’interdiction des armes explosives. Leur travail consiste à déminer, offrir des services et un soutien à long terme aux communautés affectées.",
     DoubleTapText: "Double tapez pour retourner la caméra",
@@ -61,7 +61,7 @@ export const translations = {
     anim5_subtitle: "Je me suis réveillé à l'hôpital, sans ma jambe droite. Cela ressemblait à un cauchemar. Mais la douleur était bien réelle.",
     anim6_subtitle: "Les jours ont passé. Puis... l'aide est arrivée.",
     anim7_subtitle: "Handicap International m'a donné une prothèse — et de l'espoir. Pas à pas, j'ai réappris à marcher",
-    anim8_subtitle: "courir... et à jouer — avec Viyan à mes côtés. Aujourd'hui, nous jouons sous les arbres, comme avant.",
+    anim8_subtitle: "à courir... et à jouer — avec Viyan à mes côtés. Aujourd'hui, nous jouons sous les arbres, comme avant.",
     anim9_subtitle: "La guerre m'a fait perdre beaucoup de choses. Mais ma prothèse… représente la force, le soutien et l'espoir. Je suis reconnaissant.",
     anim10_subtitle: "",
     anim11_subtitle: "la guérison est possible. Nous ne pouvons pas effacer le passé, mais nous pouvons façonner l'avenir. Cet avenir commence avec vous ! Que votre signature soit un bouclier contre la guerre. Signez ici pour faire la différence."
