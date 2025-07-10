@@ -106,5 +106,14 @@
     });
   });
 </script>
+  languageButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const selectedLang = button.getAttribute("data-lang");
+    donateButton.textContent = translations[selectedLang].donate;
+  });
+});
+  donateButton.addEventListener("click", () => {
+  window.open("https://donate.handicapinternational.be/make-a-gift/~mijn-donatie?_gl=1%2A1tw25r3%2A_gcl_aw%2AR0NMLjE3NDgyNDgwNTAuQ2owS0NRandvdERCQmhDUUFSSXNBRzVwaW5OLVlXcFU0c3ZJb0FvcV9UTFJUam9vZU5RRHJCTVpHUTRSX1FCUXNZVzFKTFFWVE5JQUpoY2FBcVV2RUFMd193Y0I.%2A_gcl_au%2AOTk2MzgyOTkuMTc0Nzc0MTc2NA..%2A_ga%2AMTgyMjk1MzYzMy4xNzQ3NzQxNzYx%2A_ga_875BW6Q4LX%2AczE3NTIxODY4NDMkbzEzJGcxJHQxNzUyMTg2ODU0JGo0OSRsMCRoMA..&_cv=1", "_blank");
+});
 </body>
 </html>
