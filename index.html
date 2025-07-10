@@ -73,7 +73,7 @@
     <h2 style="margin-bottom: 5px;">Thank you for participating!</h2>
     <p class="thank-you-text">
       90% of victims of explosive weapons in populated area are civilians. Children are especially at risk.
-      Civilians no longer have access to healthcare, education and their own house. Wat remains are cities in ruins, and a population trapped by fear and trauma.
+      Civilians no longer have access to healthcare, education and their own house. What remains are cities in ruins, and a population trapped by fear and trauma.
       Handicap International helps protect these innocent people and keep the ban on forbidden weapons.
       Their work involves clearing landmines, offering rehabilitation, support for survivors and focusing on long-term recovery efforts for communities.
     </p>
@@ -81,19 +81,37 @@
       <a href="https://www.handicapinternational.be/nl/revalidatiezorg" target="_blank" class="thank-you-link">Learn more about rehabilitation care</a>
       <button id="visit-link-button" class="thank-you-button">Sign the petition</button>
       <button id="donate-button" class="thank-you-button">Donate</button>
-    </div>
-  </div>
-<script>
-  const translations = {
-    en: {
-      donate: "Donate"
-    },
-    nl: {
-      donate: "Doneer"
-    },
-    fr: {
-      donate: "Faire un don"
-    }
-  };
+ </div> <!-- sluit link-and-button div correct -->
+</div> <!-- sluit thank-you-panel correct -->
+      
+  <script>
+  window.addEventListener("DOMContentLoaded", () => {
+    const translations = {
+      en: {
+        donate: "Donate"
+      },
+      nl: {
+        donate: "Doneer"
+      },
+      fr: {
+        donate: "Faire un don"
+      }
+    };
+
+    const donateButton = document.getElementById("donate-button");
+    const languageButtons = document.querySelectorAll("#language-switcher button");
+
+    languageButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const selectedLang = button.getAttribute("data-lang");
+        donateButton.textContent = translations[selectedLang].donate;
+      });
+    });
+
+    donateButton.addEventListener("click", () => {
+      window.open("https://donate.handicapinternational.be/make-a-gift/~mijn-donatie?_gl=1%2A1tw25r3%2A_gcl_aw%2AR0NMLjE3NDgyNDgwNTAuQ2owS0NRandvdERCQmhDUUFSSXNBRzVwaW5OLVlXcFU0c3ZJb0FvcV9UTFJUam9vZU5RRHJCTVpHUTRSX1FCUXNZVzFKTFFWVE5JQUpoY2FBcVV2RUFMd193Y0I.%2A_gcl_au%2AOTk2MzgyOTkuMTc0Nzc0MTc2NA..%2A_ga%2AMTgyMjk1MzYzMy4xNzQ3NzQxNzYx%2A_ga_875BW6Q4LX%2AczE3NTIxODY4NDMkbzEzJGcxJHQxNzUyMTg2ODU0JGo0OSRsMCRoMA..&_cv=1", "_blank");
+    });
+  });
+</script>
 </body>
 </html>
