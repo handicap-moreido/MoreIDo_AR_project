@@ -54,7 +54,7 @@ export const translations = {
     instructions_show_palm: "Ouvre ta main!",
     instructions_start: "Montrez votre paume pour commencer!",
     instructions_show_closed_fist: "Serre le poing!",
-    anim1_subtitle: "Bonjour, je m'appelle Zain et j'ai onze ans. Voici mon meilleur ami, Viyan.",
+    anim1_subtitle: "Bonjour, je m'appelle Zain. J'ai onze ans et voici mon meilleur ami, Viyan.",
     anim2_subtitle: "Nous jouions souvent au football dans l'oliveraie près de ma maison. Un jour, j'ai botté le ballon trop loin. 'Je vais le chercher!' J'ai dit.",
     anim3_subtitle: "Mais quand j'ai fait un pas en avant...",
     anim4_subtitle: "le monde a explosé sous mes yeux. Une mine terrestre…",
