@@ -31,7 +31,7 @@ export const translations = {
     instructions_show_palm: "Open je hand!",
     instructions_start: "Laat je handpalm zien om te beginnen!",
     instructions_show_closed_fist: "Maak een vuist!",
-    anim1_subtitle: "Hoi, ik ben Zain en ik ben elf jaar. Dit is mijn beste vriend, Viyan.",
+    anim1_subtitle: "Hoi, ik ben Zain. Ik ben elf jaar en dit is mijn beste vriend, Viyan.",
     anim2_subtitle: "Vroeger speelden we vaak voetbal in de olijfgaard vlak bij mijn huis. Op een dag schopte ik de bal te ver. \"Ik haal hem wel!\" zei ik.",
     anim3_subtitle: "Maar toen ik een stap vooruit zette...",
     anim4_subtitle: "ontplofte de wereld onder mijn voeten. Een landmijn…",
